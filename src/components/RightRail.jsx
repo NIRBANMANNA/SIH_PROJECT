@@ -116,7 +116,7 @@ function RowCard({ animCls, region, city, condition, icon, temp, onClick }) {
   )
 }
 
-export default function RightRail({ tempUnit = 'C' }) {
+export default function RightRail({ tempUnit = 'C', style }) {
   const { activePanchayat, setActivePanchayat, panchayatsInBlock, weatherData: activeData } = useDashboard()
 
   // Find 3 inactive panchayats to render in rows
@@ -141,7 +141,8 @@ export default function RightRail({ tempUnit = 'C' }) {
         zIndex: 10,
         display: 'flex',
         flexDirection: 'column',
-        gap: 'calc(20 * var(--u))',
+        gap: 'calc(12 * var(--u))',
+        ...style
       }}
     >
       <BigCard cityData={activeData} tempUnit={tempUnit} />

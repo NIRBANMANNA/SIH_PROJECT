@@ -48,7 +48,7 @@ export default function Header({
       style={{
         position: 'absolute',
         top: 'calc(22 * var(--u))',
-        left: 'calc(126 * var(--u))',
+        left: 'calc(100 * var(--u))',
         right: 'calc(37 * var(--u))',
         height: 'calc(52 * var(--u))',
         zIndex: 20,
@@ -58,16 +58,16 @@ export default function Header({
       }}
     >
       {/* Left: greeting */}
-      <div>
+      <div style={{ display: 'flex', alignItems: 'baseline', gap: 'calc(6 * var(--u))' }}>
         <div
           className="anim-hello"
-          style={{ fontSize: 'calc(16 * var(--u))', fontWeight: 400, color: 'rgba(255,255,255,.93)', lineHeight: 1 }}
+          style={{ fontSize: 'calc(18 * var(--u))', fontWeight: 400, color: 'rgba(255,255,255,.93)', lineHeight: 1 }}
         >
-          Welcome
+          Welcome,
         </div>
         <div
           className="anim-who"
-          style={{ fontSize: 'calc(19.5 * var(--u))', fontWeight: 700, letterSpacing: 'calc(-.35 * var(--u))', color: '#fff', marginTop: 'calc(13 * var(--u))' }}
+          style={{ fontSize: 'calc(19.5 * var(--u))', fontWeight: 700, letterSpacing: 'calc(-.35 * var(--u))', color: '#fff', lineHeight: 1 }}
         >
           Nirban Manna
         </div>
@@ -84,9 +84,9 @@ export default function Header({
           onClick={handleAddLocationClick}
           className="anim-tool1 rounded-2xl border-2 border-dashed border-white/80 bg-white/12 text-white backdrop-blur-md transition-all duration-300 hover:translate-x-[-3px] hover:translate-y-[-3px] hover:rounded-md hover:bg-white/22 hover:border-white hover:shadow-[3px_3px_0px_white] active:translate-x-[0px] active:translate-y-[0px] active:rounded-2xl active:shadow-none cursor-pointer flex items-center justify-center"
           aria-label="Add location"
-          style={{ width: 'calc(52 * var(--u))', height: 'calc(52 * var(--u))', flexShrink: 0 }}
+          style={{ width: 'calc(40 * var(--u))', height: 'calc(40 * var(--u))', flexShrink: 0 }}
         >
-          <Icon id="i-plus" width="20" height="20" />
+          <Icon id="i-plus" width="18" height="18" />
         </button>
 
         {/* Search button */}
@@ -98,14 +98,14 @@ export default function Header({
           className="anim-tool2 rounded-2xl border-2 border-dashed border-white/80 bg-white/12 text-white backdrop-blur-md transition-all duration-300 hover:translate-x-[-3px] hover:translate-y-[-3px] hover:rounded-md hover:bg-white/22 hover:border-white hover:shadow-[3px_3px_0px_white] active:translate-x-[0px] active:translate-y-[0px] active:rounded-2xl active:shadow-none cursor-pointer flex items-center justify-center"
           aria-label="Search"
           style={{
-            width: 'calc(52 * var(--u))',
-            height: 'calc(52 * var(--u))',
+            width: 'calc(40 * var(--u))',
+            height: 'calc(40 * var(--u))',
             flexShrink: 0,
             background: searchOpen ? 'rgba(255,255,255,0.28)' : 'rgba(255,255,255,0.12)',
             borderColor: searchOpen ? '#fff' : 'rgba(255,255,255,0.80)'
           }}
         >
-          <Icon id="i-search" width="20" height="20" />
+          <Icon id="i-search" width="18" height="18" />
         </button>
 
         {/* Notifications button */}
@@ -117,14 +117,14 @@ export default function Header({
           className="anim-tool3 rounded-2xl border-2 border-dashed border-white/80 bg-white/12 text-white backdrop-blur-md transition-all duration-300 hover:translate-x-[-3px] hover:translate-y-[-3px] hover:rounded-md hover:bg-white/22 hover:border-white hover:shadow-[3px_3px_0px_white] active:translate-x-[0px] active:translate-y-[0px] active:rounded-2xl active:shadow-none cursor-pointer flex items-center justify-center relative"
           aria-label="Notifications"
           style={{
-            width: 'calc(52 * var(--u))',
-            height: 'calc(52 * var(--u))',
+            width: 'calc(40 * var(--u))',
+            height: 'calc(40 * var(--u))',
             flexShrink: 0,
             background: notificationsOpen ? 'rgba(255,255,255,0.28)' : 'rgba(255,255,255,0.12)',
             borderColor: notificationsOpen ? '#fff' : 'rgba(255,255,255,0.80)'
           }}
         >
-          <Icon id="i-bell" width="20" height="20" />
+          <Icon id="i-bell" width="18" height="18" />
           {unreadCount > 0 && (
             <span
               style={{
@@ -155,12 +155,12 @@ export default function Header({
           role="img"
           aria-label="Nirban Manna profile"
           style={{
-            width: 'calc(52 * var(--u))', height: 'calc(52 * var(--u))',
+            width: 'calc(40 * var(--u))', height: 'calc(40 * var(--u))',
             borderRadius: '50%', overflow: 'hidden', flexShrink: 0,
           }}
         >
           {imgError ? (
-            <svg width="52" height="52" aria-hidden="true"><use href="#i-avatar"/></svg>
+            <svg width="40" height="40" aria-hidden="true"><use href="#i-avatar"/></svg>
           ) : (
             <img
               src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=160&h=160&fit=crop&crop=faces&q=80&auto=format"

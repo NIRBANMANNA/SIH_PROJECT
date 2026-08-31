@@ -12,12 +12,13 @@ export const mockWeather = {
     rainfall: "15.5mm",
     background: 'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=1600&q=80',
     temps: [
-      { val: '31°', icon: 'i-cloud', cls: 'anim-temp1' },
-      { val: '31°', icon: 'i-cloud', cls: 'anim-temp2' },
-      { val: '30°', icon: 'i-hail', cls: 'anim-temp3' },
-      { val: '29°', icon: 'i-hail', cls: 'anim-temp4' },
-      { val: '29°', icon: 'i-cloud', cls: 'anim-temp5' },
-      { val: '28°', icon: 'i-cloud', cls: 'anim-temp6' },
+      { val: '31°', icon: 'i-cloud', cls: 'anim-temp1', rain: '12.5' },
+                  { val: '31°', icon: 'i-cloud', cls: 'anim-temp2', rain: '18.0' },
+                  { val: '30°', icon: 'i-hail', cls: 'anim-temp3', rain: '25.2' },
+                  { val: '29°', icon: 'i-hail', cls: 'anim-temp4', rain: '22.8' },
+                  { val: '29°', icon: 'i-cloud', cls: 'anim-temp5', rain: '14.2' },
+                  { val: '28°', icon: 'i-cloud', cls: 'anim-temp6', rain: '5.5' },
+                  { val: '27°', icon: 'i-cloud', cls: 'anim-temp7', rain: '2.0' },
     ],
     days: [
       { label: 'Sunday',    cls: 'anim-day1', temp: '32°' },
@@ -26,8 +27,10 @@ export const mockWeather = {
       { label: 'Wednesday', cls: 'anim-day4', temp: '31°', active: true },
       { label: 'Thursday',  cls: 'anim-day5', temp: '33°' },
       { label: 'Friday',    cls: 'anim-day6', temp: '34°' },
+      { label: 'Saturday',  cls: 'anim-day7', temp: '33°' },
     ],
-    wavePath: "M0,79 C30,79 50,64 80,62 C110,60 135,75 165,78 C195,81 220,58 255,55 C290,52 315,68 350,72 C385,76 410,52 445,48 C480,44 505,62 540,65 C575,68 600,46 635,44 C670,42 700,62 735,68 C770,74 805,62 835,60"
+    wavePath: "M0,79 C30,79 50,64 80,62 C110,60 135,75 165,78 C195,81 220,58 255,55 C290,52 315,68 350,72 C385,76 410,52 445,48 C480,44 505,62 540,65 C575,68 600,46 635,44 C670,42 700,62 735,68 C770,74 805,62 835,60",
+    rainWavePath: "M0,180 C100,120 200,60 300,80 C400,120 500,150 600,180 C700,210 800,225 835,225"
   },
   "p2": {
     city: "Babnan (Polba)",
@@ -42,12 +45,13 @@ export const mockWeather = {
     rainfall: "5.2mm",
     background: 'https://images.unsplash.com/photo-1483702721041-b23de737a886?w=1600&q=80',
     temps: [
-      { val: '32°', icon: 'i-cloud2', cls: 'anim-temp1' },
-      { val: '32°', icon: 'i-cloud', cls: 'anim-temp2' },
-      { val: '31°', icon: 'i-cloud', cls: 'anim-temp3' },
-      { val: '31°', icon: 'i-cloud', cls: 'anim-temp4' },
-      { val: '30°', icon: 'i-cloud', cls: 'anim-temp5' },
-      { val: '29°', icon: 'i-cloud', cls: 'anim-temp6' },
+      { val: '32°', icon: 'i-cloud2', cls: 'anim-temp1', rain: '8.0' },
+                  { val: '32°', icon: 'i-cloud', cls: 'anim-temp2', rain: '10.5' },
+                  { val: '31°', icon: 'i-cloud', cls: 'anim-temp3', rain: '15.0' },
+                  { val: '31°', icon: 'i-cloud', cls: 'anim-temp4', rain: '12.0' },
+                  { val: '30°', icon: 'i-cloud', cls: 'anim-temp5', rain: '9.2' },
+                  { val: '29°', icon: 'i-cloud', cls: 'anim-temp6', rain: '18.8' },
+                  { val: '28°', icon: 'i-cloud', cls: 'anim-temp7', rain: '14.5' },
     ],
     days: [
       { label: 'Sunday',    cls: 'anim-day1', temp: '33°' },
@@ -56,8 +60,10 @@ export const mockWeather = {
       { label: 'Wednesday', cls: 'anim-day4', temp: '30°', active: true },
       { label: 'Thursday',  cls: 'anim-day5', temp: '29°' },
       { label: 'Friday',    cls: 'anim-day6', temp: '28°' },
+      { label: 'Saturday',  cls: 'anim-day7', temp: '30°' },
     ],
-    wavePath: "M0,60 C40,55 80,45 120,40 C160,35 200,45 240,40 C280,35 320,30 360,25 C400,20 440,30 480,25 C520,20 560,15 600,10 C640,5 680,15 720,20 C760,25 800,20 835,15"
+    wavePath: "M0,60 C40,55 80,45 120,40 C160,35 200,45 240,40 C280,35 320,30 360,25 C400,20 440,30 480,25 C520,20 560,15 600,10 C640,5 680,15 720,20 C760,25 800,20 835,15",
+    rainWavePath: "M0,200 C150,180 250,150 400,160 C550,180 650,120 835,140"
   },
   "p3": {
     city: "Sugandhya",
@@ -72,12 +78,13 @@ export const mockWeather = {
     rainfall: "0mm",
     background: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1600&q=80',
     temps: [
-      { val: '34°', icon: 'i-sun', cls: 'anim-temp1' },
-      { val: '35°', icon: 'i-sun', cls: 'anim-temp2' },
-      { val: '36°', icon: 'i-sun', cls: 'anim-temp3' },
-      { val: '36°', icon: 'i-sun', cls: 'anim-temp4' },
-      { val: '35°', icon: 'i-sun', cls: 'anim-temp5' },
-      { val: '33°', icon: 'i-sun', cls: 'anim-temp6' },
+      { val: '34°', icon: 'i-sun', cls: 'anim-temp1', rain: '2.0' },
+                  { val: '35°', icon: 'i-sun', cls: 'anim-temp2', rain: '5.0' },
+                  { val: '36°', icon: 'i-sun', cls: 'anim-temp3', rain: '8.0' },
+                  { val: '36°', icon: 'i-sun', cls: 'anim-temp4', rain: '10.0' },
+                  { val: '35°', icon: 'i-sun', cls: 'anim-temp5', rain: '6.0' },
+                  { val: '33°', icon: 'i-sun', cls: 'anim-temp6', rain: '4.0' },
+                  { val: '32°', icon: 'i-sun', cls: 'anim-temp7', rain: '3.0' },
     ],
     days: [
       { label: 'Sunday',    cls: 'anim-day1', temp: '35°' },
@@ -86,8 +93,10 @@ export const mockWeather = {
       { label: 'Wednesday', cls: 'anim-day4', temp: '36°', active: true },
       { label: 'Thursday',  cls: 'anim-day5', temp: '34°' },
       { label: 'Friday',    cls: 'anim-day6', temp: '33°' },
+      { label: 'Saturday',  cls: 'anim-day7', temp: '34°' },
     ],
-    wavePath: "M0,25 C50,22 100,18 150,15 C200,12 250,8 300,5 C350,2 400,10 450,8 C500,5 550,4 600,2 C650,0 700,8 750,5 C800,2 820,8 835,5"
+    wavePath: "M0,25 C50,22 100,18 150,15 C200,12 250,8 300,5 C350,2 400,10 450,8 C500,5 550,4 600,2 C650,0 700,8 750,5 C800,2 820,8 835,5",
+    rainWavePath: "M0,220 C200,180 400,150 835,160"
   },
   "p4": {
     city: "Polba",
@@ -102,12 +111,13 @@ export const mockWeather = {
     rainfall: "0.5mm",
     background: 'https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?w=1600&q=80',
     temps: [
-      { val: '33°', icon: 'i-cloud2', cls: 'anim-temp1' },
-      { val: '34°', icon: 'i-cloud2', cls: 'anim-temp2' },
-      { val: '35°', icon: 'i-sun', cls: 'anim-temp3' },
-      { val: '34°', icon: 'i-cloud2', cls: 'anim-temp4' },
-      { val: '33°', icon: 'i-cloud2', cls: 'anim-temp5' },
-      { val: '31°', icon: 'i-cloud2', cls: 'anim-temp6' },
+      { val: '33°', icon: 'i-cloud2', cls: 'anim-temp1', rain: '10.2' },
+                  { val: '34°', icon: 'i-cloud2', cls: 'anim-temp2', rain: '15.5' },
+                  { val: '35°', icon: 'i-sun', cls: 'anim-temp3', rain: '8.0' },
+                  { val: '34°', icon: 'i-cloud2', cls: 'anim-temp4', rain: '14.0' },
+                  { val: '33°', icon: 'i-cloud2', cls: 'anim-temp5', rain: '22.0' },
+                  { val: '31°', icon: 'i-cloud2', cls: 'anim-temp6', rain: '26.2' },
+                  { val: '30°', icon: 'i-cloud2', cls: 'anim-temp7', rain: '24.5' },
     ],
     days: [
       { label: 'Sunday',    cls: 'anim-day1', temp: '34°' },
@@ -116,8 +126,10 @@ export const mockWeather = {
       { label: 'Wednesday', cls: 'anim-day4', temp: '33°', active: true },
       { label: 'Thursday',  cls: 'anim-day5', temp: '32°' },
       { label: 'Friday',    cls: 'anim-day6', temp: '31°' },
+      { label: 'Saturday',  cls: 'anim-day7', temp: '33°' },
     ],
-    wavePath: "M0,45 C50,40 100,35 150,30 C200,25 250,20 300,18 C350,15 400,22 450,20 C500,18 550,12 600,10 C650,8 700,15 750,12 C800,10 820,15 835,12"
+    wavePath: "M0,45 C50,40 100,35 150,30 C200,25 250,20 300,18 C350,15 400,22 450,20 C500,18 550,12 600,10 C650,8 700,15 750,12 C800,10 820,15 835,12",
+    rainWavePath: "M0,190 C200,140 400,180 600,120 C700,100 800,110 835,120"
   }
 }
 

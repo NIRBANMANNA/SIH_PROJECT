@@ -4,6 +4,7 @@ const DEFAULT_WAVE_PATH = "M0,79 C30,79 50,64 80,62 C110,60 135,75 165,78 C195,8
 
 export default function Forecast({ cityData, tempUnit, style }) {
   const wavePath = cityData.wavePath || DEFAULT_WAVE_PATH
+  const rainWavePath = cityData.rainWavePath || "M0,230 L835,230 Z"
 
   const convertTemp = (tempStr) => {
     if (tempUnit === 'C') return tempStr
@@ -27,16 +28,21 @@ export default function Forecast({ cityData, tempUnit, style }) {
     >
       {/* Temps row */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-        {cityData.temps.map(({ val, icon, cls }) => (
+        {cityData.temps.slice(0, 7).map(({ val, icon, cls, rain }, index) => (
           <div
-            key={val + icon}
+            key={cls || index}
             className={cls}
-            style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'calc(8 * var(--u))' }}
+            style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'calc(6 * var(--u))' }}
           >
             <span style={{ fontSize: 'calc(37 * var(--u))', fontWeight: 400, letterSpacing: 'calc(-.7 * var(--u))', color: '#fff', lineHeight: 1 }}>
               {convertTemp(val)}
             </span>
             <Icon id={icon} width="32" height="32" style={{ opacity: 0.9 }} />
+            {rain !== undefined && (
+              <span style={{ fontSize: 'calc(14 * var(--u))', fontWeight: 500, color: 'rgba(255,255,255,.6)', marginTop: 'calc(2 * var(--u))' }}>
+                {rain}mm
+              </span>
+            )}
           </div>
         ))}
       </div>
@@ -56,10 +62,15 @@ export default function Forecast({ cityData, tempUnit, style }) {
             <stop offset="92%"  stopColor="#fff" stopOpacity="1"/>
             <stop offset="100%" stopColor="#fff" stopOpacity="0"/>
           </linearGradient>
-          {/* vertical fade for fill */}
+          {/* vertical fade for temp fill */}
           <linearGradient id="wf" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0%"   stopColor="#fff" stopOpacity=".32"/>
             <stop offset="100%" stopColor="#fff" stopOpacity=".04"/>
+          </linearGradient>
+          {/* vertical fade for rain fill */}
+          <linearGradient id="rf" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%"   stopColor="#93c5fd" stopOpacity=".6"/>
+            <stop offset="100%" stopColor="#93c5fd" stopOpacity=".1"/>
           </linearGradient>
           {/* mask to fade fill bottom */}
           <linearGradient id="wfade" x1="0" y1="0" x2="0" y2="1">
@@ -75,7 +86,15 @@ export default function Forecast({ cityData, tempUnit, style }) {
           </clipPath>
         </defs>
 
-        {/* fill — clipped by wipe animation */}
+        {/* rain fill — drawn behind temp fill */}
+        <g clipPath="url(#wclip)">
+          <path
+            d={`${rainWavePath} L835,230 L0,230 Z`}
+            fill="url(#rf)"
+          />
+        </g>
+
+        {/* temp fill — clipped by wipe animation */}
         <g clipPath="url(#wclip)">
           <path
             d={`${wavePath} L835,230 L0,230 Z`}
@@ -92,7 +111,7 @@ export default function Forecast({ cityData, tempUnit, style }) {
 
       {/* Days row */}
       <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 'calc(-31 * var(--u))' }}>
-        {cityData.days.map(({ label, cls, active }) => (
+        {cityData.days.slice(0, 7).map(({ label, cls, active }) => (
           <span
             key={label}
             className={cls}

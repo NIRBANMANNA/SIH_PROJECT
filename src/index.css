@@ -6,7 +6,7 @@
 
 /* ─── Custom properties & scaling ─────────────────────── */
 :root {
-  --u: clamp(0.65px, min(100vw / 1357, 100dvh / 871), 1.35px);
+  --u: clamp(0.81px, min(100vw / 1085, 100dvh / 696), 1.69px);
   --ink: #ffffff;
   --glass: rgba(255, 255, 255, .155);
   --glass-line: rgba(255, 255, 255, .20);
@@ -49,7 +49,7 @@
 
 @supports not (height: 100dvh) {
   :root {
-    --u: clamp(0.65px, min(100vw / 1357, 100vh / 871), 1.35px);
+    --u: clamp(0.81px, min(100vw / 1085, 100vh / 696), 1.69px);
   }
 }
 
@@ -467,7 +467,7 @@ body,
 /* ─── Mobile ≤860px ─────────────────────────────────────── */
 @media (max-width: 860px) {
   :root {
-    --u: min(100vw / 430, 1.22px);
+    --u: min(100vw / 344, 1.52px);
   }
 
   html, body, #root {
@@ -492,7 +492,7 @@ body,
 
 @media (max-width: 420px) {
   :root {
-    --u: calc(100vw / 430);
+    --u: calc(100vw / 344);
   }
 }
 

@@ -1,8 +1,4 @@
 export default function Hero({ cityData, tempUnit, style }) {
-  const words = cityData.condition.split(' ')
-  const line1 = words[0]
-  const line2 = words.slice(1).join(' ') || 'Outlook'
-
   // Format temperature in description details if Fahrenheit is active
   let detailText = cityData.detail
   if (tempUnit === 'F') {
@@ -60,10 +56,7 @@ export default function Hero({ cityData, tempUnit, style }) {
         }}
       >
         <span style={{ overflow: 'hidden', display: 'block' }}>
-          <span className="anim-h1l1" style={{ display: 'block' }}>{line1}</span>
-        </span>
-        <span style={{ overflow: 'hidden', display: 'block' }}>
-          <span className="anim-h1l2" style={{ display: 'block' }}>{line2}</span>
+          <span className="anim-h1l1" style={{ display: 'block' }}>{cityData.condition}</span>
         </span>
       </h1>
 
