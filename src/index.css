@@ -72,6 +72,30 @@ body,
   -webkit-text-size-adjust: 100%;
 }
 
+/* ─── Global Scrollbar Styling ───────────────────────────── */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.4);
+}
+
+html {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}
+
 /* ─── Keyframes ─────────────────────────────────────────── */
 @keyframes riseIn {
   from {
