@@ -31,6 +31,7 @@ export default function App() {
           <Route path="map" element={<WeatherMap />} />
           <Route path="forecast" element={<ForecastDownscaled />} />
           <Route path="alerts" element={<RiskAlerts />} />
+          <Route path="cropadvisory" element={<CropAdvisory />} />
           <Route path="advisory" element={<CropAdvisory />} />
           <Route path="historical" element={<HistoricalTrends />} />
           <Route path="accuracy" element={<Accuracy />} />
