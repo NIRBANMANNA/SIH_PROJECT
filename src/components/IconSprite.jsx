@@ -133,6 +133,97 @@ export default function IconSprite() {
         <circle cx="26" cy="21" r="9" fill="rgba(255,255,255,.7)"/>
         <path d="M6 48c0-11 9-18 20-18s20 7 20 18" fill="rgba(255,255,255,.7)"/>
       </symbol>
+
+      {/* i-flood: Waterlogging / Flood */}
+      <symbol id="i-flood" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M2 13c1.5-1 3.5-1 5 0s3.5 1 5 0 3.5-1 5 0 3.5 1 5 0" />
+        <path d="M2 17c1.5-1 3.5-1 5 0s3.5 1 5 0 3.5-1 5 0 3.5 1 5 0" />
+        <path d="M2 21c1.5-1 3.5-1 5 0s3.5 1 5 0 3.5-1 5 0 3.5 1 5 0" />
+        <path d="M12 3v6m0 0l-2.5-2.5M12 9l2.5-2.5" />
+      </symbol>
+
+      {/* i-flame: Heat Stress */}
+      <symbol id="i-flame" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 3z" />
+      </symbol>
+
+      {/* i-thermo */}
+      <symbol id="i-thermo" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z" />
+      </symbol>
+
+      {/* i-drought: Drought / Dry Spell */}
+      <symbol id="i-drought" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="12" cy="7" r="4" />
+        <path d="M12 1v2M12 11v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M1 12h2M21 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+        <path d="M3 21h18M6 18l3 3m3-3l3 3m3-3l3 3" />
+      </symbol>
+
+      {/* i-wind-strong: Strong Wind */}
+      <symbol id="i-wind-strong" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M17.7 7.7a2.5 2.5 0 1 1 1.8 4.3H2" />
+        <path d="M9.6 4.6A2 2 0 1 1 11 8H2" />
+        <path d="M12.6 19.4A2 2 0 1 0 14 16H2" />
+        <path d="M19 14h3" />
+      </symbol>
+
+      {/* i-snowflake: Cold Stress */}
+      <symbol id="i-snowflake" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <line x1="12" y1="2" x2="12" y2="22" />
+        <line x1="2" y1="12" x2="22" y2="12" />
+        <line x1="4.93" y1="4.93" x2="19.07" y2="19.07" />
+        <line x1="19.07" y1="4.93" x2="4.93" y2="19.07" />
+        <path d="M10 4l2-2 2 2m-4 16l2 2 2-2M4 10l-2 2 2 2m16-4l2 2-2 2" />
+      </symbol>
+
+      {/* i-alert-triangle */}
+      <symbol id="i-alert-triangle" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+        <line x1="12" y1="9" x2="12" y2="13" />
+        <line x1="12" y1="17" x2="12.01" y2="17" />
+      </symbol>
+
+      {/* i-shield-alert */}
+      <symbol id="i-shield-alert" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+        <line x1="12" y1="8" x2="12" y2="12" />
+        <line x1="12" y1="16" x2="12.01" y2="16" />
+      </symbol>
+
+      {/* i-clock */}
+      <symbol id="i-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="12" cy="12" r="10" />
+        <polyline points="12 6 12 12 16 14" />
+      </symbol>
+
+      {/* i-broadcast */}
+      <symbol id="i-broadcast" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M4.93 19.07A10 10 0 0 1 4.93 4.93m14.14 0a10 10 0 0 1 0 14.14M7.76 16.24a6 6 0 0 1 0-8.48m8.48 0a6 6 0 0 1 0 8.48M12 13a1 1 0 1 0 0-2 1 1 0 0 0 0 2z" />
+      </symbol>
+
+      {/* i-check-circle */}
+      <symbol id="i-check-circle" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+        <polyline points="22 4 12 14.01 9 11.01" />
+      </symbol>
+
+      {/* i-filter */}
+      <symbol id="i-filter" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
+      </symbol>
+
+      {/* i-refresh */}
+      <symbol id="i-refresh" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <polyline points="23 4 23 10 17 10" />
+        <polyline points="1 20 1 14 7 14" />
+        <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
+      </symbol>
+
+      {/* i-send */}
+      <symbol id="i-send" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <line x1="22" y1="2" x2="11" y2="13" />
+        <polygon points="22 2 15 22 11 13 2 9 22 2" />
+      </symbol>
     </svg>
   )
 }

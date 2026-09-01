@@ -1,0 +1,866 @@
+export const riskCategoryConfig = {
+  "heavy-rainfall": {
+    id: "heavy-rainfall",
+    name: "Heavy Rainfall",
+    icon: "i-cloud",
+    color: "#3b82f6",
+    badgeBg: "rgba(59, 130, 246, 0.15)",
+    border: "rgba(59, 130, 246, 0.3)",
+    unit: "mm/24h",
+    parameter: "Precipitation Accumulation"
+  },
+  "waterlogging": {
+    id: "waterlogging",
+    name: "Waterlogging / Flood",
+    icon: "i-flood",
+    color: "#06b6d4",
+    badgeBg: "rgba(6, 182, 212, 0.15)",
+    border: "rgba(6, 182, 212, 0.3)",
+    unit: "cm depth",
+    parameter: "Soil Saturation & Runoff"
+  },
+  "heat-stress": {
+    id: "heat-stress",
+    name: "Heat Stress",
+    icon: "i-flame",
+    color: "#f97316",
+    badgeBg: "rgba(249, 115, 22, 0.15)",
+    border: "rgba(249, 115, 22, 0.3)",
+    unit: "°C (HI)",
+    parameter: "Temperature-Humidity Index"
+  },
+  "drought": {
+    id: "drought",
+    name: "Drought / Dry Spell",
+    icon: "i-drought",
+    color: "#eab308",
+    badgeBg: "rgba(234, 179, 8, 0.15)",
+    border: "rgba(234, 179, 8, 0.3)",
+    unit: "SPEI index",
+    parameter: "Soil Moisture Deficit"
+  },
+  "strong-wind": {
+    id: "strong-wind",
+    name: "Strong Wind",
+    icon: "i-wind-strong",
+    color: "#a855f7",
+    badgeBg: "rgba(168, 85, 247, 0.15)",
+    border: "rgba(168, 85, 247, 0.3)",
+    unit: "km/h gust",
+    parameter: "Atmospheric Pressure Gradient"
+  },
+  "cold-stress": {
+    id: "cold-stress",
+    name: "Cold Stress",
+    icon: "i-snowflake",
+    color: "#38bdf8",
+    badgeBg: "rgba(56, 189, 248, 0.15)",
+    border: "rgba(56, 189, 248, 0.3)",
+    unit: "°C min",
+    parameter: "Minimum Night Temperature"
+  }
+}
+
+export const riskLevelColors = {
+  CRITICAL: {
+    bg: "rgba(239, 68, 68, 0.18)",
+    border: "rgba(239, 68, 68, 0.5)",
+    solidBorder: "#ef4444",
+    text: "#fca5a5",
+    glow: "rgba(239, 68, 68, 0.35)",
+    label: "CRITICAL",
+    badgeClass: "badge-critical"
+  },
+  HIGH: {
+    bg: "rgba(249, 115, 22, 0.18)",
+    border: "rgba(249, 115, 22, 0.5)",
+    solidBorder: "#f97316",
+    text: "#fdba74",
+    glow: "rgba(249, 115, 22, 0.3)",
+    label: "HIGH",
+    badgeClass: "badge-high"
+  },
+  MODERATE: {
+    bg: "rgba(234, 179, 8, 0.18)",
+    border: "rgba(234, 179, 8, 0.5)",
+    solidBorder: "#eab308",
+    text: "#fde047",
+    glow: "rgba(234, 179, 8, 0.25)",
+    label: "MODERATE",
+    badgeClass: "badge-moderate"
+  },
+  LOW: {
+    bg: "rgba(34, 197, 94, 0.14)",
+    border: "rgba(34, 197, 94, 0.4)",
+    solidBorder: "#22c55e",
+    text: "#86efac",
+    glow: "rgba(34, 197, 94, 0.2)",
+    label: "LOW",
+    badgeClass: "badge-low"
+  }
+}
+
+export const mockPanchayatRisks = {
+  "p1": {
+    panchayatName: "Amnan (Polba)",
+    overallThreatLevel: "HIGH",
+    threatScore: 82,
+    summary: "Heavy convective rainfall and lowland flood risk active for the next 24 hours. Immediate drainage clearing advised.",
+    lastUpdated: "Today, 06:45 PM",
+    alerts: [
+      {
+        id: "alt-p1-1",
+        type: "Heavy Rainfall",
+        level: "HIGH",
+        title: "Heavy Rainfall Alert",
+        headline: "Heavy rainfall expected in the next 24 hours.",
+        validUntil: "Tomorrow, 8:00 PM",
+        issuedAt: "Today, 06:00 PM",
+        affectedZones: ["Amnan Lower Fields", "Polba West Drainage Sector", "Babnan Channel Confluence"],
+        bulletinText: "Intense downpours (30-45mm) forecast over the block. Saturated topsoil will cause rapid water accumulation in low-lying paddy plots.",
+        actions: [
+          "Open peripheral field drainage outlets immediately",
+          "Postpone foliar pesticide spraying and top-dressing with nitrogen",
+          "Ensure harvested produce and seed nurseries are stored in raised dry platforms"
+        ],
+        acknowledged: false
+      },
+      {
+        id: "alt-p1-2",
+        type: "Waterlogging / Flood",
+        level: "MODERATE",
+        title: "Waterlogging Watch",
+        headline: "Moderate water stagnancy anticipated in low-elevation crop zones.",
+        validUntil: "Tomorrow, 11:30 PM",
+        issuedAt: "Today, 05:15 PM",
+        affectedZones: ["Low-lying Tillering Beds", "Bandel Canal Outfall"],
+        bulletinText: "Runoff velocity remains slow due to silted trenches. Water depth may exceed 12 cm in depression zones.",
+        actions: [
+          "Inspect bund height and clear weed blockages from main ditches",
+          "Prepare portable suction pumps for vulnerable nursery plots"
+        ],
+        acknowledged: false
+      }
+    ],
+    risks: [
+      {
+        id: "heavy-rainfall",
+        category: "Heavy Rainfall",
+        riskLevel: "HIGH",
+        severity: "Severe (34.5 mm/24h)",
+        probability: 88,
+        expectedTime: "Next 4 - 8 Hours",
+        description: "Intense precipitation spells likely as monsoon convective cells track eastward. High runoff potential on saturated soil.",
+        affectedCrops: ["Rice (Tillering)", "Jute (Vegetative)", "Vegetables"],
+        mitigation: "Halt all chemical applications; reinforce drainage channels to avert water stagnancy.",
+        metrics: {
+          "Accumulation Rate": "8.5 mm/h",
+          "Soil Moisture": "94% Saturation",
+          "Flash Runoff Risk": "High"
+        }
+      },
+      {
+        id: "waterlogging",
+        category: "Waterlogging / Flood",
+        riskLevel: "HIGH",
+        severity: "High (Submersion risk 10-18 cm)",
+        probability: 76,
+        expectedTime: "Tonight into Tomorrow Morning",
+        description: "Depression plots in low river basins face standing water accumulation. Risk of root suffocation in non-submergence tolerant varieties.",
+        affectedCrops: ["Vegetables", "Sesame", "Young Rice Seedlings"],
+        mitigation: "Dig temporary trenches at 10m intervals; facilitate unimpeded gravitational drainage.",
+        metrics: {
+          "Infiltration Rate": "Slow (Clayey)",
+          "Field Water Level": "+14 cm",
+          "Drainage Efficiency": "42%"
+        }
+      },
+      {
+        id: "heat-stress",
+        category: "Heat Stress",
+        riskLevel: "LOW",
+        severity: "Low (Max 32°C, HI 36°C)",
+        probability: 18,
+        expectedTime: "Tomorrow, 01:00 PM - 04:00 PM",
+        description: "Subdued solar radiation and cloud cover maintain moderate daytime temperatures below physiological stress thresholds.",
+        affectedCrops: ["None significantly impacted"],
+        mitigation: "Standard daylight operations may continue safely.",
+        metrics: {
+          "Peak Temp": "32°C",
+          "Heat Index": "36°C",
+          "VPD Index": "1.1 kPa"
+        }
+      },
+      {
+        id: "drought",
+        category: "Drought / Dry Spell",
+        riskLevel: "LOW",
+        severity: "None (Adequate moisture)",
+        probability: 5,
+        expectedTime: "Next 10 Days",
+        description: "Abundant soil water reserves and ongoing precipitation guarantee sufficient moisture for the root zone.",
+        affectedCrops: ["None"],
+        mitigation: "Conserve excess runoff in farm ponds for potential post-monsoon dry spells.",
+        metrics: {
+          "Moisture Deficit": "0.0 mm",
+          "SPEI Index": "+1.8 (Wet)",
+          "Groundwater Depth": "2.4m"
+        }
+      },
+      {
+        id: "strong-wind",
+        category: "Strong Wind",
+        riskLevel: "MODERATE",
+        severity: "Moderate (Gusts up to 38 km/h)",
+        probability: 62,
+        expectedTime: "Tonight, 08:00 PM - 02:00 AM",
+        description: "Squally wind gusts accompanying thunderstorm cells may tilt tall standing crops and destabilize light nursery netting.",
+        affectedCrops: ["Jute", "Banana", "Tall Rice"],
+        mitigation: "Provide mechanical earthing-up and bamboo staking for banana trees and horticultural plants.",
+        metrics: {
+          "Sustained Speed": "24 km/h",
+          "Peak Gusts": "38 km/h",
+          "Direction": "South-Southeast"
+        }
+      },
+      {
+        id: "cold-stress",
+        category: "Cold Stress",
+        riskLevel: "LOW",
+        severity: "Minimal (Min 27°C)",
+        probability: 2,
+        expectedTime: "Overnight",
+        description: "Warm nocturnal tropical temperatures well above chilling injury baseline of 15°C.",
+        affectedCrops: ["None"],
+        mitigation: "No action needed.",
+        metrics: {
+          "Min Night Temp": "27°C",
+          "Dew Point": "25°C",
+          "Chilling Hours": "0"
+        }
+      }
+    ]
+  },
+  "p2": {
+    panchayatName: "Babnan (Polba)",
+    overallThreatLevel: "MODERATE",
+    threatScore: 54,
+    summary: "Scattered showers with intermittent cloud cover. Minor waterlogging risk in clay-heavy lowland plots.",
+    lastUpdated: "Today, 07:00 PM",
+    alerts: [
+      {
+        id: "alt-p2-1",
+        type: "Heavy Rainfall",
+        level: "MODERATE",
+        title: "Heavy Rainfall Alert",
+        headline: "Heavy rainfall expected in the next 24 hours.",
+        validUntil: "Tomorrow, 8:00 PM",
+        issuedAt: "Today, 06:15 PM",
+        affectedZones: ["Babnan North", "Dadpur Road Farmlands"],
+        bulletinText: "Passing rain bands expected to bring 12-20mm rainfall. Favorable for paddy tillering but avoid chemical spray.",
+        actions: [
+          "Delay pesticide and fertilizer application until skies clear",
+          "Check bund stability"
+        ],
+        acknowledged: false
+      }
+    ],
+    risks: [
+      {
+        id: "heavy-rainfall",
+        category: "Heavy Rainfall",
+        riskLevel: "MODERATE",
+        severity: "Moderate (12.0 mm/24h)",
+        probability: 58,
+        expectedTime: "Tomorrow Morning",
+        description: "Steady intermittent showers providing beneficial moisture without severe erosion hazards.",
+        affectedCrops: ["Vegetables"],
+        mitigation: "Delay foliar chemical treatments for 24 hours.",
+        metrics: {
+          "Accumulation Rate": "3.5 mm/h",
+          "Soil Moisture": "78% Field Capacity",
+          "Flash Runoff Risk": "Moderate"
+        }
+      },
+      {
+        id: "waterlogging",
+        category: "Waterlogging / Flood",
+        riskLevel: "MODERATE",
+        severity: "Mild (5-8 cm depth)",
+        probability: 44,
+        expectedTime: "Tomorrow Afternoon",
+        description: "Localized pooling in depression furrows. Drainage channels able to handle load if kept debris-free.",
+        affectedCrops: ["Chilli", "Tomato", "Pulses"],
+        mitigation: "Clear trash from main drainage outlet gates.",
+        metrics: {
+          "Infiltration Rate": "Moderate",
+          "Field Water Level": "+6 cm",
+          "Drainage Efficiency": "70%"
+        }
+      },
+      {
+        id: "heat-stress",
+        category: "Heat Stress",
+        riskLevel: "LOW",
+        severity: "Low (30°C max)",
+        probability: 12,
+        expectedTime: "Tomorrow, 12:00 PM - 03:00 PM",
+        description: "Overcast conditions provide shade and moderate plant transpiration.",
+        affectedCrops: ["None"],
+        mitigation: "Normal routine farm chores recommended.",
+        metrics: {
+          "Peak Temp": "30°C",
+          "Heat Index": "34°C",
+          "VPD Index": "0.9 kPa"
+        }
+      },
+      {
+        id: "drought",
+        category: "Drought / Dry Spell",
+        riskLevel: "LOW",
+        severity: "None",
+        probability: 8,
+        expectedTime: "Next 14 Days",
+        description: "Soil moisture levels remain optimal for vegetative tillering.",
+        affectedCrops: ["None"],
+        mitigation: "Maintain standard weir levels in paddy plots.",
+        metrics: {
+          "Moisture Deficit": "0.0 mm",
+          "SPEI Index": "+0.9 (Normal-Wet)",
+          "Groundwater Depth": "2.8m"
+        }
+      },
+      {
+        id: "strong-wind",
+        category: "Strong Wind",
+        riskLevel: "LOW",
+        severity: "Light (Gusts up to 22 km/h)",
+        probability: 25,
+        expectedTime: "Intermittent",
+        description: "Gentle to moderate breeze causing no structural or mechanical crop stress.",
+        affectedCrops: ["None"],
+        mitigation: "No precautions needed.",
+        metrics: {
+          "Sustained Speed": "14 km/h",
+          "Peak Gusts": "22 km/h",
+          "Direction": "South"
+        }
+      },
+      {
+        id: "cold-stress",
+        category: "Cold Stress",
+        riskLevel: "LOW",
+        severity: "Minimal (Min 28°C)",
+        probability: 1,
+        expectedTime: "Night",
+        description: "Tropical night temperature keeps crops within ideal metabolic thermal envelope.",
+        affectedCrops: ["None"],
+        mitigation: "No protective measures required.",
+        metrics: {
+          "Min Night Temp": "28°C",
+          "Dew Point": "24°C",
+          "Chilling Hours": "0"
+        }
+      }
+    ]
+  },
+  "p3": {
+    panchayatName: "Sugandhya",
+    overallThreatLevel: "CRITICAL",
+    threatScore: 89,
+    summary: "Severe Heat Stress and Dry Spell warning in effect. High temperature spike coupled with intense afternoon solar irradiance.",
+    lastUpdated: "Today, 07:15 PM",
+    alerts: [
+      {
+        id: "alt-p3-1",
+        type: "Heat Stress",
+        level: "CRITICAL",
+        title: "Severe Heat Stress Alert",
+        headline: "Dangerous heatwave conditions with Heat Index reaching 42°C+.",
+        validUntil: "Tomorrow, 8:00 PM",
+        issuedAt: "Today, 05:30 PM",
+        affectedZones: ["Sugandhya Agricultural Belt", "Polba Eastern Plateau", "Hooghly Uplands"],
+        bulletinText: "Maximum temperature forecast at 36-38°C with high solar insolation. Extreme thermal stress risk on flowering crops and field labor.",
+        actions: [
+          "Apply light and frequent sprinkler/drip irrigation during early morning (5-8 AM) and evening",
+          "Avoid direct field manual labor between 11:30 AM and 03:30 PM",
+          "Provide mulching around vegetable beds to retain soil moisture and reduce root heat"
+        ],
+        acknowledged: false
+      },
+      {
+        id: "alt-p3-2",
+        type: "Drought / Dry Spell",
+        level: "HIGH",
+        title: "Dry Spell Warning",
+        headline: "Zero rainfall expected for 5+ days with high evapotranspiration rate.",
+        validUntil: "In 3 Days, 06:00 PM",
+        issuedAt: "Today, 04:00 PM",
+        affectedZones: ["Unirrigated Upland Plots", "Sugandhya North"],
+        bulletinText: "Topsoil moisture dropping below 35% field capacity. Critical irrigation needed for flowering stage crops.",
+        actions: [
+          "Activate solar pumps for rotational tube-well irrigation",
+          "Apply organic straw mulch to conserve moisture"
+        ],
+        acknowledged: false
+      }
+    ],
+    risks: [
+      {
+        id: "heat-stress",
+        category: "Heat Stress",
+        riskLevel: "CRITICAL",
+        severity: "Extreme (36°C ambient, 42°C HI)",
+        probability: 95,
+        expectedTime: "Tomorrow, 11:00 AM - 04:30 PM",
+        description: "Severe atmospheric heating causing pollen sterility in flowering crops and accelerated leaf scorched margins.",
+        affectedCrops: ["Rice (Flowering)", "Vegetables", "Sesame", "Maize"],
+        mitigation: "Execute evening canopy micro-sprinkling; apply anti-transpirants or potassium nitrate spray.",
+        metrics: {
+          "Peak Temp": "36°C",
+          "Heat Index": "42.4°C",
+          "VPD Index": "3.8 kPa (Severe)"
+        }
+      },
+      {
+        id: "drought",
+        category: "Drought / Dry Spell",
+        riskLevel: "HIGH",
+        severity: "High (0.0mm rain, ET 6.2 mm/day)",
+        probability: 84,
+        expectedTime: "Next 5 - 7 Days",
+        description: "Rapid soil moisture depletion in the upper 15cm root zone. High wilting vulnerability in newly planted saplings.",
+        affectedCrops: ["Vegetables", "Young Jute", "Pulses"],
+        mitigation: "Apply straw mulching to conserve moisture; prioritize deficit irrigation on high-value patches.",
+        metrics: {
+          "Moisture Deficit": "-28.5 mm",
+          "SPEI Index": "-1.9 (Dry)",
+          "Soil Moisture": "32% Field Capacity"
+        }
+      },
+      {
+        id: "heavy-rainfall",
+        category: "Heavy Rainfall",
+        riskLevel: "LOW",
+        severity: "Nil (0.0 mm/24h)",
+        probability: 4,
+        expectedTime: "No Rain Expected",
+        description: "Clear skies and low atmospheric relative humidity suppress convective cloud development.",
+        affectedCrops: ["None"],
+        mitigation: "Ideal conditions for open-air grain drying and solarization.",
+        metrics: {
+          "Accumulation Rate": "0.0 mm/h",
+          "Soil Moisture": "Dry",
+          "Flash Runoff Risk": "Zero"
+        }
+      },
+      {
+        id: "waterlogging",
+        category: "Waterlogging / Flood",
+        riskLevel: "LOW",
+        severity: "None",
+        probability: 2,
+        expectedTime: "None",
+        description: "No flood danger. Fields dry and accessible for tractor tilling.",
+        affectedCrops: ["None"],
+        mitigation: "Ensure bunds are closed to retain any upcoming artificial irrigation water.",
+        metrics: {
+          "Infiltration Rate": "Very High",
+          "Field Water Level": "0 cm",
+          "Drainage Efficiency": "100%"
+        }
+      },
+      {
+        id: "strong-wind",
+        category: "Strong Wind",
+        riskLevel: "LOW",
+        severity: "Gentle (Gusts 14 km/h)",
+        probability: 15,
+        expectedTime: "Afternoon thermal breeze",
+        description: "Light wind velocity with low kinematic impact on crops.",
+        affectedCrops: ["None"],
+        mitigation: "Spraying of micronutrients can be safely scheduled in early morning.",
+        metrics: {
+          "Sustained Speed": "9 km/h",
+          "Peak Gusts": "14 km/h",
+          "Direction": "West-Northwest"
+        }
+      },
+      {
+        id: "cold-stress",
+        category: "Cold Stress",
+        riskLevel: "LOW",
+        severity: "None",
+        probability: 1,
+        expectedTime: "None",
+        description: "No cold shock potential.",
+        affectedCrops: ["None"],
+        mitigation: "No action required.",
+        metrics: {
+          "Min Night Temp": "29°C",
+          "Dew Point": "21°C",
+          "Chilling Hours": "0"
+        }
+      }
+    ]
+  },
+  "p5": {
+    panchayatName: "Rajhat (Polba)",
+    overallThreatLevel: "CRITICAL",
+    threatScore: 94,
+    summary: "Torrential Rainstorm, Extreme Flood Risk, and Squally Winds active. High danger of crop lodging and bund breaches.",
+    lastUpdated: "Today, 07:20 PM",
+    alerts: [
+      {
+        id: "alt-p5-1",
+        type: "Heavy Rainfall",
+        level: "CRITICAL",
+        title: "Heavy Rainfall Alert",
+        headline: "Heavy rainfall expected in the next 24 hours.",
+        validUntil: "Tomorrow, 8:00 PM",
+        issuedAt: "Today, 05:00 PM",
+        affectedZones: ["Rajhat Lowlands", "Behala River Catchment", "Polba South Belt"],
+        bulletinText: "Over 48mm of rainfall forecast in a compressed window. Severe surface inundation and topsoil wash-away expected on unbunded fields.",
+        actions: [
+          "Evacuate cattle and farm machinery from riverine flats",
+          "Create emergency spillways along field perimeters to prevent bund collapse",
+          "Do not enter waterlogged fields during lightning episodes"
+        ],
+        acknowledged: false
+      },
+      {
+        id: "alt-p5-2",
+        type: "Waterlogging / Flood",
+        level: "CRITICAL",
+        title: "Flash Waterlogging & Inundation Warning",
+        headline: "Flood water depth exceeding 20cm expected across low-lying paddy zones.",
+        validUntil: "Tomorrow, 10:00 PM",
+        issuedAt: "Today, 05:45 PM",
+        affectedZones: ["Polba-Dadpur Drainage Basin", "Rajhat Sector 1-4"],
+        bulletinText: "River backflow and saturated local canals will prevent fast natural drainage. Submergence beyond 48 hours will cause root rot in young rice.",
+        actions: [
+          "Deploy high-capacity diesel de-watering pumps",
+          "Clear aquatic weeds and plastic choke points at culverts"
+        ],
+        acknowledged: false
+      },
+      {
+        id: "alt-p5-3",
+        type: "Strong Wind",
+        level: "HIGH",
+        title: "High Wind & Squall Advisory",
+        headline: "Gusts reaching 46 km/h expected with squall lines.",
+        validUntil: "Tonight, 11:59 PM",
+        issuedAt: "Today, 06:00 PM",
+        affectedZones: ["Open Agricultural Plains", "Polba Ridge"],
+        bulletinText: "High wind sheer likely to cause mechanical lodging in mature jute and lodging-prone rice varieties.",
+        actions: [
+          "Tie together top foliage of tall jute plants in bunches of 4-5 to improve lodging resistance",
+          "Secure greenhouse polytunnels and shade netting"
+        ],
+        acknowledged: false
+      }
+    ],
+    risks: [
+      {
+        id: "heavy-rainfall",
+        category: "Heavy Rainfall",
+        riskLevel: "CRITICAL",
+        severity: "Extreme (48.2 mm/24h)",
+        probability: 96,
+        expectedTime: "Next 2 - 6 Hours",
+        description: "Cloudburst-grade downpours with intense rainfall rates exceeding 18 mm/hr. Severe splash erosion and nutrient leaching.",
+        affectedCrops: ["All standing crops", "Rice Seedlings", "Vegetables", "Jute"],
+        mitigation: "Maintain continuous drainage vigilance; halt all chemical and field operations.",
+        metrics: {
+          "Accumulation Rate": "18.2 mm/h",
+          "Soil Moisture": "100% Saturated",
+          "Flash Runoff Risk": "Extreme"
+        }
+      },
+      {
+        id: "waterlogging",
+        category: "Waterlogging / Flood",
+        riskLevel: "CRITICAL",
+        severity: "Severe (Depth 18-26 cm)",
+        probability: 92,
+        expectedTime: "Ongoing for 36 Hours",
+        description: "Prolonged submersion risk. Lowland plots will remain waterlogged without manual de-watering interventions.",
+        affectedCrops: ["Rice (Tillering)", "Vegetable Nurseries", "Banana"],
+        mitigation: "Mobilize cooperative tractor pumps; clear all canal culverts of choking debris.",
+        metrics: {
+          "Infiltration Rate": "Zero (Ponding)",
+          "Field Water Level": "+22 cm",
+          "Drainage Efficiency": "18%"
+        }
+      },
+      {
+        id: "strong-wind",
+        category: "Strong Wind",
+        riskLevel: "HIGH",
+        severity: "Severe (Gusts to 46 km/h)",
+        probability: 82,
+        expectedTime: "Tonight, 07:00 PM - 02:00 AM",
+        description: "Convective downdrafts producing strong crosswinds capable of lodging tall crop stands and tearing polyhouses.",
+        affectedCrops: ["Jute", "Sugarcane", "Banana", "Tree Crops"],
+        mitigation: "Support fruiting branches with bamboo props; reinforce polyhouse anchor ropes.",
+        metrics: {
+          "Sustained Speed": "34 km/h",
+          "Peak Gusts": "46 km/h",
+          "Direction": "South-West"
+        }
+      },
+      {
+        id: "heat-stress",
+        category: "Heat Stress",
+        riskLevel: "LOW",
+        severity: "Low (28°C max)",
+        probability: 4,
+        expectedTime: "None",
+        description: "Cooled by heavy rainfall and cloud shade. Thermal stress index is negligible.",
+        affectedCrops: ["None"],
+        mitigation: "No action required.",
+        metrics: {
+          "Peak Temp": "28°C",
+          "Heat Index": "30°C",
+          "VPD Index": "0.4 kPa"
+        }
+      },
+      {
+        id: "drought",
+        category: "Drought / Dry Spell",
+        riskLevel: "LOW",
+        severity: "None",
+        probability: 1,
+        expectedTime: "None",
+        description: "Excess precipitation ensures surplus water table recharge.",
+        affectedCrops: ["None"],
+        mitigation: "Focus on flood mitigation rather than water conservation.",
+        metrics: {
+          "Moisture Deficit": "0.0 mm",
+          "SPEI Index": "+2.6 (Extremely Wet)",
+          "Groundwater Depth": "1.2m"
+        }
+      },
+      {
+        id: "cold-stress",
+        category: "Cold Stress",
+        riskLevel: "LOW",
+        severity: "Low (Min 25°C)",
+        probability: 6,
+        expectedTime: "Night",
+        description: "No chilling hazard to warm-season tropical crops.",
+        affectedCrops: ["None"],
+        mitigation: "No action required.",
+        metrics: {
+          "Min Night Temp": "25°C",
+          "Dew Point": "24.5°C",
+          "Chilling Hours": "0"
+        }
+      }
+    ]
+  }
+}
+
+// Fallback generator for other panchayats (p4, p6, p7, p8)
+export const getRisksForPanchayat = (panchayatId, weatherData) => {
+  if (mockPanchayatRisks[panchayatId]) {
+    return mockPanchayatRisks[panchayatId]
+  }
+
+  const rain = parseFloat(weatherData?.rainfall || "15.0")
+  const temp = parseFloat(weatherData?.temp || "30")
+  const wind = parseFloat(weatherData?.wind || "18")
+  const cityName = weatherData?.city || "Local Panchayat"
+
+  const isRainCrit = rain >= 35
+  const isRainHigh = rain >= 20 && rain < 35
+  const isRainMed = rain >= 8 && rain < 20
+  const rainLevel = isRainCrit ? "CRITICAL" : isRainHigh ? "HIGH" : isRainMed ? "MODERATE" : "LOW"
+
+  const isHeatCrit = temp >= 35
+  const isHeatHigh = temp >= 33 && temp < 35
+  const isHeatMed = temp >= 31 && temp < 33
+  const heatLevel = isHeatCrit ? "CRITICAL" : isHeatHigh ? "HIGH" : isHeatMed ? "MODERATE" : "LOW"
+
+  const isFloodHigh = rain >= 20
+  const isFloodMed = rain >= 8 && rain < 20
+  const floodLevel = isRainCrit ? "CRITICAL" : isFloodHigh ? "HIGH" : isFloodMed ? "MODERATE" : "LOW"
+
+  const isWindHigh = wind >= 30
+  const isWindMed = wind >= 18 && wind < 30
+  const windLevel = isWindHigh ? "HIGH" : isWindMed ? "MODERATE" : "LOW"
+
+  const droughtLevel = rain < 2 && temp > 33 ? "HIGH" : rain < 5 ? "MODERATE" : "LOW"
+  const coldLevel = temp < 16 ? "HIGH" : temp < 20 ? "MODERATE" : "LOW"
+
+  const overallThreat = (isRainCrit || isHeatCrit) ? "CRITICAL" : (isRainHigh || isFloodHigh || isHeatHigh) ? "HIGH" : (isRainMed || isHeatMed || isWindMed) ? "MODERATE" : "LOW"
+  const threatScore = isRainCrit ? 92 : isRainHigh ? 78 : isHeatCrit ? 88 : isRainMed ? 58 : 34
+
+  const alerts = []
+  if (rainLevel === "CRITICAL" || rainLevel === "HIGH" || rainLevel === "MODERATE") {
+    alerts.push({
+      id: `alt-gen-rain-${panchayatId}`,
+      type: "Heavy Rainfall",
+      level: rainLevel,
+      title: "Heavy Rainfall Alert",
+      headline: `Heavy rainfall expected in the next 24 hours across ${cityName}.`,
+      validUntil: "Tomorrow, 8:00 PM",
+      issuedAt: "Today, 06:00 PM",
+      affectedZones: [`${cityName} Central`, `${cityName} Lowlands`, "Drainage Basin"],
+      bulletinText: `Forecast indicates intense precipitation spells (${rain}mm) over the next 24 hours. Saturated soil conditions necessitate immediate field attention.`,
+      actions: [
+        "Inspect and clear bund drainage channels",
+        "Delay fertilizer application until heavy showers subside",
+        "Move cut crops to dry covered shelters"
+      ],
+      acknowledged: false
+    })
+  }
+
+  if (heatLevel === "CRITICAL" || heatLevel === "HIGH") {
+    alerts.push({
+      id: `alt-gen-heat-${panchayatId}`,
+      type: "Heat Stress",
+      level: heatLevel,
+      title: "Heat Stress Alert",
+      headline: `High temperature spikes up to ${temp}°C anticipated.`,
+      validUntil: "Tomorrow, 8:00 PM",
+      issuedAt: "Today, 05:00 PM",
+      affectedZones: [`${cityName} Farmlands`, "Unshaded Plains"],
+      bulletinText: `Afternoon thermal index is elevated. High transpiration rates may stress non-irrigated vegetative canopies.`,
+      actions: [
+        "Apply frequent light irrigation during early morning hours",
+        "Provide mulch on vegetable beds to conserve moisture"
+      ],
+      acknowledged: false
+    })
+  }
+
+  return {
+    panchayatName: cityName,
+    overallThreatLevel: overallThreat,
+    threatScore,
+    summary: rain > 15 
+      ? `Active precipitation hazard for ${cityName}. Monitor localized waterlogging and bund integrity.` 
+      : temp > 33 
+      ? `High daytime temperatures. Maintain adequate irrigation intervals.` 
+      : `Weather conditions are relatively stable with manageable localized risk factors in ${cityName}.`,
+    lastUpdated: "Today, 07:00 PM",
+    alerts: alerts.length > 0 ? alerts : [
+      {
+        id: `alt-gen-def-${panchayatId}`,
+        type: "Heavy Rainfall",
+        level: "LOW",
+        title: "Normal Weather Advisory",
+        headline: "No severe weather hazards currently detected.",
+        validUntil: "Tomorrow, 8:00 PM",
+        issuedAt: "Today, 06:00 PM",
+        affectedZones: [cityName],
+        bulletinText: "Atmospheric and hydrologic indicators remain within standard seasonal ranges.",
+        actions: ["Continue regular farm scheduling and pest scouting."],
+        acknowledged: false
+      }
+    ],
+    risks: [
+      {
+        id: "heavy-rainfall",
+        category: "Heavy Rainfall",
+        riskLevel: rainLevel,
+        severity: `${rainLevel === 'CRITICAL' ? 'Extreme' : rainLevel === 'HIGH' ? 'Severe' : rainLevel === 'MODERATE' ? 'Moderate' : 'Low'} (${rain} mm/24h)`,
+        probability: rainLevel === 'CRITICAL' ? 94 : rainLevel === 'HIGH' ? 82 : rainLevel === 'MODERATE' ? 56 : 22,
+        expectedTime: rainLevel === 'CRITICAL' ? 'Next 3 - 6 Hours' : 'Tomorrow, 8:00 PM',
+        description: `Precipitation accumulation estimated at ${rain}mm. Runoff rates dependent on local field elevation and soil texture.`,
+        affectedCrops: ["Rice", "Vegetables", "Jute"],
+        mitigation: "Ensure unobstructed ditch flow; postpone foliar pesticide application.",
+        metrics: {
+          "Accumulation Rate": `${(rain / 6).toFixed(1)} mm/h`,
+          "Soil Moisture": rain > 20 ? "92% Saturation" : "75% Capacity",
+          "Flash Runoff Risk": rainLevel
+        }
+      },
+      {
+        id: "waterlogging",
+        category: "Waterlogging / Flood",
+        riskLevel: floodLevel,
+        severity: `${floodLevel === 'CRITICAL' ? 'Severe' : floodLevel === 'HIGH' ? 'High' : floodLevel === 'MODERATE' ? 'Moderate' : 'Low'} (Depth ${rain > 25 ? '15-22' : rain > 12 ? '8-14' : '2-6'} cm)`,
+        probability: floodLevel === 'CRITICAL' ? 90 : floodLevel === 'HIGH' ? 75 : floodLevel === 'MODERATE' ? 48 : 15,
+        expectedTime: "Next 12 - 24 Hours",
+        description: "Low-lying plots at risk of localized water ponding. Elevated beds and upland plots are safe.",
+        affectedCrops: ["Vegetables", "Pulses", "Root Crops"],
+        mitigation: "Clear outlet channels; prepare emergency pump drains if ponding exceeds 24 hrs.",
+        metrics: {
+          "Infiltration Rate": "Medium-Slow",
+          "Field Water Level": `+${rain > 20 ? '12' : '4'} cm`,
+          "Drainage Efficiency": rain > 20 ? "45%" : "80%"
+        }
+      },
+      {
+        id: "heat-stress",
+        category: "Heat Stress",
+        riskLevel: heatLevel,
+        severity: `${heatLevel === 'CRITICAL' ? 'Extreme' : heatLevel === 'HIGH' ? 'High' : heatLevel === 'MODERATE' ? 'Moderate' : 'Low'} (${temp}°C, HI ${temp + 4}°C)`,
+        probability: heatLevel === 'CRITICAL' ? 92 : heatLevel === 'HIGH' ? 70 : heatLevel === 'MODERATE' ? 40 : 15,
+        expectedTime: "Tomorrow, 12:00 PM - 04:00 PM",
+        description: `Daytime maximum temp hovering near ${temp}°C. Transpiration and canopy temperature must be monitored.`,
+        affectedCrops: ["Flowering stage crops", "Vegetables"],
+        mitigation: "Maintain root-zone moisture through evening irrigation; apply organic mulching.",
+        metrics: {
+          "Peak Temp": `${temp}°C`,
+          "Heat Index": `${temp + 4}°C`,
+          "VPD Index": temp > 33 ? "2.9 kPa" : "1.2 kPa"
+        }
+      },
+      {
+        id: "drought",
+        category: "Drought / Dry Spell",
+        riskLevel: droughtLevel,
+        severity: `${droughtLevel === 'HIGH' ? 'High Deficit' : droughtLevel === 'MODERATE' ? 'Moderate Dryness' : 'Adequate Moisture'}`,
+        probability: droughtLevel === 'HIGH' ? 78 : droughtLevel === 'MODERATE' ? 45 : 10,
+        expectedTime: "Next 7 - 10 Days",
+        description: rain < 5 
+          ? "Consecutive dry days depleting shallow soil moisture layers." 
+          : "Sufficient precipitation maintains good water availability in root zone.",
+        affectedCrops: ["Upland non-irrigated crops"],
+        mitigation: "Conserve pond storage; apply irrigation on priority seedbeds.",
+        metrics: {
+          "Moisture Deficit": rain < 5 ? "-18.0 mm" : "0.0 mm",
+          "SPEI Index": rain < 5 ? "-1.2" : "+1.4",
+          "Soil Moisture": rain < 5 ? "40%" : "85%"
+        }
+      },
+      {
+        id: "strong-wind",
+        category: "Strong Wind",
+        riskLevel: windLevel,
+        severity: `${windLevel === 'HIGH' ? 'Severe Gusts' : windLevel === 'MODERATE' ? 'Moderate Gusts' : 'Light Breeze'} (${wind} km/h)`,
+        probability: windLevel === 'HIGH' ? 80 : windLevel === 'MODERATE' ? 55 : 20,
+        expectedTime: "Tonight into Tomorrow Morning",
+        description: `Wind velocities around ${wind} km/h with localized gustiness during storm cloud passage.`,
+        affectedCrops: ["Tall standing crops", "Banana", "Jute"],
+        mitigation: "Prop vulnerable fruit trees; secure nursery shade nets.",
+        metrics: {
+          "Sustained Speed": `${wind} km/h`,
+          "Peak Gusts": `${Math.round(wind * 1.35)} km/h`,
+          "Direction": "South-Southeast"
+        }
+      },
+      {
+        id: "cold-stress",
+        category: "Cold Stress",
+        riskLevel: coldLevel,
+        severity: `${coldLevel === 'HIGH' ? 'Chilling Risk' : coldLevel === 'MODERATE' ? 'Cool Night' : 'Minimal'} (${Math.round(temp - 5)}°C min)`,
+        probability: coldLevel === 'HIGH' ? 75 : coldLevel === 'MODERATE' ? 35 : 4,
+        expectedTime: "Overnight",
+        description: "Nighttime temperatures remain within safe agronomic parameters for current crop rotation.",
+        affectedCrops: ["None"],
+        mitigation: "Standard seasonal management.",
+        metrics: {
+          "Min Night Temp": `${Math.round(temp - 5)}°C`,
+          "Dew Point": "22°C",
+          "Chilling Hours": "0"
+        }
+      }
+    ]
+  }
+}
