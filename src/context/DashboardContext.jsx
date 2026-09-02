@@ -11,7 +11,7 @@ export function DashboardProvider({ children }) {
   const [activeDistrict, setActiveDistrict] = useState("Hooghly")
   const [activeBlock, setActiveBlock] = useState("Polba-Dadpur")
   const [activePanchayat, setActivePanchayat] = useState("p1") // Amnan
-  
+
   const [activeCrop, setActiveCrop] = useState("Rice (Kharif)")
   const [activeGrowthStage, setActiveGrowthStage] = useState("Tillering")
 

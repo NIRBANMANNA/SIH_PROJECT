@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react'
 import { Icon } from './IconSprite'
 import { useDashboard } from '../context/DashboardContext'
 import { mockBlockWeather } from '../data/mockWeather'
+import LocationSelectorModal from './LocationSelectorModal'
 
 export default function Header({
   searchOpen,
@@ -11,10 +12,11 @@ export default function Header({
   notifications,
   setNotifications,
 }) {
-  const { 
-    activeBlock, 
-    handleBlockChange, 
-    blocksInDistrict, 
+  const [isLocationModalOpen, setIsLocationModalOpen] = useState(false)
+  const {
+    activeBlock,
+    handleBlockChange,
+    blocksInDistrict,
     activeDistrict,
     activePanchayat,
     handlePanchayatChange,
@@ -27,7 +29,7 @@ export default function Header({
 
   // Search list prioritizing Blocks, then Panchayats
   const allBlocks = Object.keys(mockBlockWeather)
-  
+
   const blockSuggestions = allBlocks.map(blk => ({
     id: blk,
     type: 'block',
@@ -40,10 +42,10 @@ export default function Header({
 
   const filteredItems = searchQuery.trim() === ''
     ? blockSuggestions
-    : blockSuggestions.filter(item => 
-        item.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-        item.region.toLowerCase().includes(searchQuery.toLowerCase())
-      )
+    : blockSuggestions.filter(item =>
+      item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.region.toLowerCase().includes(searchQuery.toLowerCase())
+    )
 
   const unreadCount = (notifications || []).filter(n => n.unread).length
 
@@ -120,11 +122,12 @@ export default function Header({
         aria-label="Quick actions"
         style={{ display: 'flex', alignItems: 'center', gap: 'calc(16 * var(--u))', position: 'relative' }}
       >
-        {/* Add location */}
+        {/* Add location (Opens 4-Tier Location Input Modal) */}
         <button
-          onClick={handleAddLocationClick}
+          onClick={() => setIsLocationModalOpen(true)}
           className="anim-tool1 rounded-2xl border-2 border-dashed border-white/80 bg-white/12 text-white backdrop-blur-md transition-all duration-300 hover:translate-x-[-3px] hover:translate-y-[-3px] hover:rounded-md hover:bg-white/22 hover:border-white hover:shadow-[3px_3px_0px_white] active:translate-x-[0px] active:translate-y-[0px] active:rounded-2xl active:shadow-none cursor-pointer flex items-center justify-center"
-          aria-label="Add location"
+          aria-label="Set prediction location"
+          title="Set State, District, Block, and Panchayat"
           style={{ width: 'calc(40 * var(--u))', height: 'calc(40 * var(--u))', flexShrink: 0 }}
         >
           <Icon id="i-plus" width="18" height="18" />
@@ -201,7 +204,7 @@ export default function Header({
           }}
         >
           {imgError ? (
-            <svg width="40" height="40" aria-hidden="true"><use href="#i-avatar"/></svg>
+            <svg width="40" height="40" aria-hidden="true"><use href="#i-avatar" /></svg>
           ) : (
             <img
               src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=160&h=160&fit=crop&crop=faces&q=80&auto=format"
@@ -371,6 +374,12 @@ export default function Header({
           </div>
         )}
       </div>
+
+      {/* Animated 4-Tier Location Input Modal (State > District > Block > Panchayat) */}
+      <LocationSelectorModal
+        isOpen={isLocationModalOpen}
+        onClose={() => setIsLocationModalOpen(false)}
+      />
     </header>
   )
 }
