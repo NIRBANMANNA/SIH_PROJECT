@@ -1,6 +1,6 @@
 import { Icon } from './IconSprite'
 import { useDashboard } from '../context/DashboardContext'
-import { getWeatherData } from '../data/mockWeather'
+import { getBlockWeatherData, getWeatherData } from '../data/mockWeather'
 
 // Shared glass card base style
 const cardBase = {
@@ -13,7 +13,7 @@ const cardBase = {
   transition: 'transform 0.2s, background 0.2s',
 }
 
-// Big card: Current active location weather
+// Big card: Current active block weather
 function BigCard({ cityData, tempUnit }) {
   if (!cityData) return null;
   const displayTemp = tempUnit === 'F' ? Math.round(cityData.temp * 9/5 + 32) : cityData.temp
@@ -26,14 +26,21 @@ function BigCard({ cityData, tempUnit }) {
         borderRadius: 'calc(26 * var(--u))',
         padding: 'calc(22 * var(--u)) calc(24 * var(--u))',
       }}
-      aria-label={`${cityData.city} weather`}
+      aria-label={`${cityData.city || cityData.block} weather`}
     >
-      <div
-        className="anim-place"
-        style={{ display: 'flex', alignItems: 'center', gap: 'calc(6 * var(--u))', fontSize: 'calc(13.5 * var(--u))', fontWeight: 500, color: 'rgba(255,255,255,.85)' }}
-      >
-        <Icon id="i-pin" width="13" height="13" style={{ opacity: 0.75 }} />
-        {cityData.city}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div
+          className="anim-place"
+          style={{ display: 'flex', alignItems: 'center', gap: 'calc(6 * var(--u))', fontSize: 'calc(13.5 * var(--u))', fontWeight: 600, color: 'rgba(255,255,255,.92)' }}
+        >
+          <Icon id="i-pin" width="13" height="13" style={{ opacity: 0.85, color: '#38bdf8' }} />
+          {cityData.block ? `${cityData.block} (Block)` : cityData.city}
+        </div>
+        {cityData.totalPanchayats && (
+          <span style={{ fontSize: 'calc(11 * var(--u))', padding: 'calc(3 * var(--u)) calc(8 * var(--u))', background: 'rgba(255,255,255,0.14)', borderRadius: 'calc(10 * var(--u))', color: 'rgba(255,255,255,0.85)' }}>
+            {cityData.totalPanchayats} Panchayats
+          </span>
+        )}
       </div>
 
       <div
@@ -55,7 +62,7 @@ function BigCard({ cityData, tempUnit }) {
         {[
           { icon: 'i-wind', text: cityData.wind, cls: 'anim-met1' },
           { icon: 'i-drop', text: cityData.humidity, cls: 'anim-met2' },
-          { icon: 'i-gust', text: cityData.gusts, cls: 'anim-met3' },
+          { icon: 'i-gust', text: cityData.rainfall || cityData.gusts, cls: 'anim-met3' },
         ].map(({ icon, text, cls }) => (
           <div
             key={icon}
@@ -72,14 +79,14 @@ function BigCard({ cityData, tempUnit }) {
 }
 
 // Row card: clickable smaller location card
-function RowCard({ animCls, region, city, condition, icon, temp, onClick }) {
+function RowCard({ animCls, region, city, condition, icon, temp, onClick, subBadge }) {
   return (
     <div
       className={`${animCls} sheen`}
       onClick={onClick}
       style={{
         ...cardBase,
-        height: 'calc(120 * var(--u))',
+        height: 'calc(118 * var(--u))',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
@@ -98,13 +105,20 @@ function RowCard({ animCls, region, city, condition, icon, temp, onClick }) {
       }}
     >
       <div>
-        <div style={{ fontSize: 'calc(11.5 * var(--u))', fontWeight: 500, color: 'rgba(255,255,255,.60)', letterSpacing: 'calc(.3 * var(--u))', textTransform: 'uppercase', marginBottom: 'calc(6 * var(--u))' }}>
-          {region}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 'calc(6 * var(--u))', marginBottom: 'calc(4 * var(--u))' }}>
+          <span style={{ fontSize: 'calc(11 * var(--u))', fontWeight: 600, color: 'rgba(255,255,255,.65)', letterSpacing: 'calc(.4 * var(--u))', textTransform: 'uppercase' }}>
+            {region}
+          </span>
+          {subBadge && (
+            <span style={{ fontSize: 'calc(10 * var(--u))', color: 'rgba(255,255,255,0.7)', background: 'rgba(255,255,255,0.12)', padding: 'calc(1 * var(--u)) calc(6 * var(--u))', borderRadius: 'calc(6 * var(--u))' }}>
+              {subBadge}
+            </span>
+          )}
         </div>
-        <div style={{ fontSize: 'calc(17 * var(--u))', fontWeight: 600, color: '#fff', marginBottom: 'calc(4 * var(--u))' }}>
+        <div style={{ fontSize: 'calc(17 * var(--u))', fontWeight: 600, color: '#fff', marginBottom: 'calc(3 * var(--u))' }}>
           {city}
         </div>
-        <div style={{ fontSize: 'calc(12.5 * var(--u))', fontWeight: 400, color: 'rgba(255,255,255,.70)' }}>
+        <div style={{ fontSize: 'calc(12 * var(--u))', fontWeight: 400, color: 'rgba(255,255,255,.78)' }}>
           {condition}
         </div>
       </div>
@@ -117,10 +131,17 @@ function RowCard({ animCls, region, city, condition, icon, temp, onClick }) {
 }
 
 export default function RightRail({ tempUnit = 'C', style }) {
-  const { activePanchayat, setActivePanchayat, panchayatsInBlock, weatherData: activeData } = useDashboard()
+  const { 
+    activeBlock, 
+    handleBlockChange, 
+    blocksInDistrict, 
+    blockWeatherData 
+  } = useDashboard()
 
-  // Find 3 inactive panchayats to render in rows
-  const inactivePanchayats = panchayatsInBlock.filter(p => p.id !== activePanchayat).slice(0, 3)
+  // Get other blocks in this district to render as interactive cards
+  const inactiveBlocks = (blocksInDistrict || ["Polba-Dadpur", "Chinsurah-Mogra", "Singur", "Haripal"])
+    .filter(b => b !== activeBlock)
+    .slice(0, 3)
 
   const formatTemp = (tempVal) => {
     const value = tempUnit === 'F' ? Math.round(tempVal * 9/5 + 32) : tempVal
@@ -131,7 +152,7 @@ export default function RightRail({ tempUnit = 'C', style }) {
 
   return (
     <aside
-      aria-label="Location weather cards"
+      aria-label="Block level weather cards"
       style={{
         position: 'absolute',
         right: 'calc(38 * var(--u))',
@@ -145,22 +166,23 @@ export default function RightRail({ tempUnit = 'C', style }) {
         ...style
       }}
     >
-      <BigCard cityData={activeData} tempUnit={tempUnit} />
+      <BigCard cityData={blockWeatherData} tempUnit={tempUnit} />
       
-      {inactivePanchayats.map((p, idx) => {
-        const data = getWeatherData(p.id)
+      {inactiveBlocks.map((blkName, idx) => {
+        const data = getBlockWeatherData(blkName)
         if (!data) return null;
         
         return (
           <RowCard
-            key={p.id}
+            key={blkName}
             animCls={rowAnimClasses[idx]}
             region={data.region}
-            city={data.city}
-            condition={data.condition}
+            city={`${blkName} Block`}
+            condition={`${data.condition} • ${data.rainfall}`}
             icon={data.conditionId}
             temp={formatTemp(data.temp)}
-            onClick={() => setActivePanchayat(p.id)}
+            subBadge={`${data.totalPanchayats} GPs`}
+            onClick={() => handleBlockChange(blkName)}
           />
         )
       })}

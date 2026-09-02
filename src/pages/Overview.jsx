@@ -3,10 +3,15 @@ import Hero from '../components/Hero'
 import Forecast from '../components/Forecast'
 import RightRail from '../components/RightRail'
 import { useDashboard } from '../context/DashboardContext'
-import { overviewLayoutStyle } from '../lib/styles'
 
 export default function Overview() {
-  const { weatherData, activePanchayat, setActivePanchayat } = useDashboard()
+  const { 
+    blockWeatherData, 
+    activeBlock, 
+    handleBlockChange, 
+    activeDistrict, 
+    activeState 
+  } = useDashboard()
 
   return (
     <div style={{
@@ -27,20 +32,18 @@ export default function Overview() {
         minWidth: 0,
       }}>
         <Hero
-          cityData={weatherData}
+          cityData={blockWeatherData}
+          chipText={`Block Weather • ${activeBlock} (${activeDistrict})`}
           tempUnit="C"
           style={{ position: 'relative', left: 'auto', top: 'auto', maxWidth: 'none', flexShrink: 0 }}
         />
         <Forecast
-          cityData={weatherData}
+          cityData={blockWeatherData}
           tempUnit="C"
           style={{ position: 'relative', left: 'auto', right: 'auto', bottom: 'auto', flexShrink: 0 }}
         />
       </div>
       <RightRail 
-        activeCity={activePanchayat} 
-        setActiveCity={setActivePanchayat} 
-        weatherData={{ [activePanchayat]: weatherData }} 
         tempUnit="C" 
         style={{ position: 'relative', right: 'auto', top: 'auto', bottom: 'auto', width: 'calc(310 * var(--u))', height: '100%' }}
       />

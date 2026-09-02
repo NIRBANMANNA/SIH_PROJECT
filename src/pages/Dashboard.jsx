@@ -8,11 +8,12 @@ function DashboardLayout() {
   const [searchOpen, setSearchOpen] = useState(false)
   const [notificationsOpen, setNotificationsOpen] = useState(false)
   const [notifications, setNotifications] = useState([
-    { id: 1, type: 'warning', text: 'Severe flood warning active for Hooghly coastal areas.', time: '10m ago', unread: true },
-    { id: 2, type: 'info', text: 'Rainstorm intensifies near Polba-Dadpur. Drive safely.', time: '45m ago', unread: true },
+    { id: 1, type: 'warning', text: 'Severe rainstorm alert active for Polba-Dadpur and surrounding blocks.', time: '10m ago', unread: true },
+    { id: 2, type: 'info', text: 'Monsoon cloudbursts monitored across Hooghly administrative blocks.', time: '45m ago', unread: true },
   ])
 
-  const { activePanchayat, setActivePanchayat, weatherData } = useDashboard()
+  const { blockWeatherData, weatherData } = useDashboard()
+  const activeBg = blockWeatherData?.background || weatherData?.background || 'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=1600&q=80'
 
   return (
     <div
@@ -21,7 +22,7 @@ function DashboardLayout() {
         inset: 0,
         overflow: 'hidden',
         backgroundColor: '#020d14',
-        backgroundImage: `url(${weatherData.background})`,
+        backgroundImage: `url(${activeBg})`,
         backgroundSize: 'cover',
         backgroundPosition: 'center 25%',
         backgroundRepeat: 'no-repeat',
@@ -46,15 +47,12 @@ function DashboardLayout() {
 
       <Sidebar />
       <Header
-        activeCity={activePanchayat}
-        setActiveCity={setActivePanchayat}
         searchOpen={searchOpen}
         setSearchOpen={setSearchOpen}
         notificationsOpen={notificationsOpen}
         setNotificationsOpen={setNotificationsOpen}
         notifications={notifications}
         setNotifications={setNotifications}
-        weatherData={{ [activePanchayat]: weatherData }}
       />
 
       <Outlet />

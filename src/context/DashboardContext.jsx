@@ -1,7 +1,7 @@
-import React, { createContext, useContext, useState, useEffect } from 'react'
-import { getWeatherData } from '../data/mockWeather'
-import { getPanchayatsForBlock } from '../data/mockPanchayats'
-import { mockCrops, mockGrowthStages } from '../data/mockAdvisory'
+import React, { createContext, useContext, useState } from 'react'
+import { getWeatherData, getBlockWeatherData, mockBlockWeather } from '../data/mockWeather'
+import { getPanchayatsForBlock, mockPanchayatDetails, mockBlocks } from '../data/mockPanchayats'
+import { mockGrowthStages } from '../data/mockAdvisory'
 
 const DashboardContext = createContext()
 
@@ -17,11 +17,36 @@ export function DashboardProvider({ children }) {
 
   // Derived Data
   const weatherData = getWeatherData(activePanchayat)
+  const blockWeatherData = getBlockWeatherData(activeBlock)
   const panchayatsInBlock = getPanchayatsForBlock(activeBlock)
+  const blocksInDistrict = (mockBlocks && mockBlocks[activeDistrict]) || ["Polba-Dadpur", "Chinsurah-Mogra", "Singur", "Haripal"]
 
   // Handlers to auto-update dependent fields
   const handlePanchayatChange = (pid) => {
     setActivePanchayat(pid)
+    const detail = mockPanchayatDetails[pid]
+    if (detail) {
+      if (detail.block && detail.block !== activeBlock) {
+        setActiveBlock(detail.block)
+      }
+      if (detail.district && detail.district !== activeDistrict) {
+        setActiveDistrict(detail.district)
+      }
+      if (detail.state && detail.state !== activeState) {
+        setActiveState(detail.state)
+      }
+    }
+  }
+
+  const handleBlockChange = (block) => {
+    setActiveBlock(block)
+    const list = getPanchayatsForBlock(block)
+    if (list && list.length > 0) {
+      const exists = list.some(p => p.id === activePanchayat)
+      if (!exists) {
+        setActivePanchayat(list[0].id)
+      }
+    }
   }
 
   const handleCropChange = (crop) => {
@@ -36,12 +61,16 @@ export function DashboardProvider({ children }) {
       value={{
         activeState, setActiveState,
         activeDistrict, setActiveDistrict,
-        activeBlock, setActiveBlock,
+        activeBlock, setActiveBlock, handleBlockChange,
         activePanchayat, setActivePanchayat, handlePanchayatChange,
         activeCrop, handleCropChange,
         activeGrowthStage, setActiveGrowthStage,
         weatherData,
-        panchayatsInBlock
+        blockWeatherData,
+        panchayatsInBlock,
+        blocksInDistrict,
+        mockBlocks,
+        mockBlockWeather
       }}
     >
       {children}

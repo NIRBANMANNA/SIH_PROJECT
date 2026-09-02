@@ -12,11 +12,16 @@ export default function RiskAlerts() {
   const { 
     weatherData, 
     activePanchayat, 
+    handlePanchayatChange,
     activeBlock, 
+    handleBlockChange,
     activeDistrict,
     activeCrop,
-    activeGrowthStage 
+    panchayatsInBlock,
+    mockBlocks
   } = useDashboard()
+
+  const blocksList = (mockBlocks && mockBlocks[activeDistrict]) || ["Polba-Dadpur", "Chinsurah-Mogra", "Singur", "Haripal"]
 
   // Dynamic risk calculation based on active Panchayat and Weather Telemetry
   const riskData = useMemo(() => {
@@ -221,6 +226,184 @@ export default function RiskAlerts() {
         </div>
       </div>
 
+      {/* ─── LOCATION & PANCHAYAT SELECTION HUB ─── */}
+      <div style={{
+        background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%)',
+        border: '1px solid rgba(255, 255, 255, 0.14)',
+        borderRadius: 'calc(16 * var(--u))',
+        padding: 'calc(14 * var(--u)) calc(18 * var(--u))',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 'calc(12 * var(--u))',
+        flexShrink: 0
+      }}>
+        {/* Row 1: Dropdown Selectors & Active Panchayat Live Snapshot */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 'calc(12 * var(--u))' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 'calc(14 * var(--u))', flexWrap: 'wrap' }}>
+            
+            {/* Block Selector */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 'calc(8 * var(--u))' }}>
+              <label style={{ 
+                fontSize: 'calc(11.5 * var(--u))', 
+                fontWeight: 700, 
+                color: 'rgba(255,255,255,0.6)', 
+                textTransform: 'uppercase', 
+                letterSpacing: 'calc(0.6 * var(--u))', 
+                display: 'flex', 
+                alignItems: 'center', 
+                gap: 'calc(4 * var(--u))' 
+              }}>
+                <Icon id="i-globe" width="13" height="13" style={{ color: '#38bdf8' }} />
+                Block
+              </label>
+              <select
+                value={activeBlock}
+                onChange={e => handleBlockChange(e.target.value)}
+                style={{
+                  padding: 'calc(7 * var(--u)) calc(12 * var(--u))',
+                  background: 'rgba(0, 0, 0, 0.45)',
+                  border: '1px solid rgba(255, 255, 255, 0.22)',
+                  borderRadius: 'calc(8 * var(--u))',
+                  color: '#fff',
+                  fontSize: 'calc(13 * var(--u))',
+                  fontWeight: 600,
+                  outline: 'none',
+                  cursor: 'pointer'
+                }}
+              >
+                {blocksList.map(b => (
+                  <option key={b} value={b} style={{ color: '#000', background: '#fff' }}>{b}</option>
+                ))}
+              </select>
+            </div>
+
+            {/* Panchayat Selector */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 'calc(8 * var(--u))' }}>
+              <label style={{ 
+                fontSize: 'calc(11.5 * var(--u))', 
+                fontWeight: 700, 
+                color: 'rgba(255,255,255,0.6)', 
+                textTransform: 'uppercase', 
+                letterSpacing: 'calc(0.6 * var(--u))', 
+                display: 'flex', 
+                alignItems: 'center', 
+                gap: 'calc(4 * var(--u))' 
+              }}>
+                <Icon id="i-pin" width="13" height="13" style={{ color: '#f59e0b' }} />
+                Panchayat Location
+              </label>
+              <select
+                value={activePanchayat}
+                onChange={e => handlePanchayatChange(e.target.value)}
+                style={{
+                  padding: 'calc(7 * var(--u)) calc(14 * var(--u))',
+                  background: 'rgba(0, 0, 0, 0.45)',
+                  border: '1px solid rgba(255, 255, 255, 0.22)',
+                  borderRadius: 'calc(8 * var(--u))',
+                  color: '#fff',
+                  fontSize: 'calc(13 * var(--u))',
+                  fontWeight: 600,
+                  outline: 'none',
+                  cursor: 'pointer',
+                  minWidth: 'calc(180 * var(--u))'
+                }}
+              >
+                {panchayatsInBlock.map(p => (
+                  <option key={p.id} value={p.id} style={{ color: '#000', background: '#fff' }}>
+                    {p.name} — {p.riskLevel} Risk ({p.rainfallStatus?.split('(')[0]?.trim() || p.rainfall + ' mm'})
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          {/* Real-time telemetry snapshot for current panchayat */}
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 'calc(10 * var(--u))',
+            fontSize: 'calc(12 * var(--u))',
+            color: 'rgba(255,255,255,0.9)',
+            background: 'rgba(255,255,255,0.06)',
+            padding: 'calc(6 * var(--u)) calc(14 * var(--u))',
+            borderRadius: 'calc(10 * var(--u))',
+            border: '1px solid rgba(255,255,255,0.1)'
+          }}>
+            <span style={{ display: 'flex', alignItems: 'center', gap: 'calc(4 * var(--u))' }}>
+              <Icon id="i-cloud" width="13" height="13" style={{ color: '#38bdf8' }} /> {weatherData.rainfall}
+            </span>
+            <span style={{ opacity: 0.35 }}>•</span>
+            <span style={{ display: 'flex', alignItems: 'center', gap: 'calc(4 * var(--u))' }}>
+              <Icon id="i-sun" width="13" height="13" style={{ color: '#fca5a5' }} /> {weatherData.temp}°C
+            </span>
+            <span style={{ opacity: 0.35 }}>•</span>
+            <span style={{ display: 'flex', alignItems: 'center', gap: 'calc(4 * var(--u))' }}>
+              <Icon id="i-drop" width="13" height="13" style={{ color: '#60a5fa' }} /> {weatherData.humidity}
+            </span>
+            <span style={{ opacity: 0.35 }}>•</span>
+            <span style={{ display: 'flex', alignItems: 'center', gap: 'calc(4 * var(--u))' }}>
+              <Icon id="i-wind" width="13" height="13" style={{ color: '#c084fc' }} /> {weatherData.wind}
+            </span>
+          </div>
+        </div>
+
+        {/* Row 2: One-click Quick Switch Panchayat Pills */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 'calc(8 * var(--u))', flexWrap: 'wrap' }}>
+          <span style={{ fontSize: 'calc(11 * var(--u))', color: 'rgba(255,255,255,0.5)', textTransform: 'uppercase', letterSpacing: 'calc(0.6 * var(--u))', fontWeight: 600 }}>
+            Quick Switch ({activeBlock}):
+          </span>
+          {panchayatsInBlock.map(p => {
+            const isSelected = p.id === activePanchayat
+            const pTheme = riskLevelColors[p.riskLevel?.toUpperCase()] || riskLevelColors.MODERATE
+            return (
+              <button
+                key={p.id}
+                onClick={() => handlePanchayatChange(p.id)}
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: 'calc(6 * var(--u))',
+                  padding: 'calc(5 * var(--u)) calc(12 * var(--u))',
+                  borderRadius: 'calc(20 * var(--u))',
+                  border: isSelected ? `1.5px solid ${pTheme.solidBorder}` : '1px solid rgba(255,255,255,0.12)',
+                  background: isSelected ? pTheme.bg : 'rgba(255,255,255,0.05)',
+                  color: isSelected ? '#fff' : 'rgba(255,255,255,0.7)',
+                  fontSize: 'calc(12 * var(--u))',
+                  fontWeight: isSelected ? 700 : 500,
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease',
+                  boxShadow: isSelected ? `0 0 calc(12 * var(--u)) ${pTheme.glow}` : 'none'
+                }}
+                onMouseEnter={e => {
+                  if (!isSelected) {
+                    e.currentTarget.style.background = 'rgba(255,255,255,0.12)'
+                    e.currentTarget.style.color = '#fff'
+                  }
+                }}
+                onMouseLeave={e => {
+                  if (!isSelected) {
+                    e.currentTarget.style.background = 'rgba(255,255,255,0.05)'
+                    e.currentTarget.style.color = 'rgba(255,255,255,0.7)'
+                  }
+                }}
+              >
+                <span style={{
+                  width: 'calc(6 * var(--u))',
+                  height: 'calc(6 * var(--u))',
+                  borderRadius: '50%',
+                  background: pTheme.solidBorder,
+                  boxShadow: `0 0 calc(6 * var(--u)) ${pTheme.solidBorder}`
+                }} />
+                <span>{p.name}</span>
+                <span style={{ fontSize: 'calc(10.5 * var(--u))', opacity: 0.8, fontWeight: 600 }}>
+                  {p.riskLevel}
+                </span>
+              </button>
+            )
+          })}
+        </div>
+      </div>
+
       {/* Top 4 KPI Summary Strip */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(calc(210 * var(--u)), 1fr))', gap: 'calc(14 * var(--u))', flexShrink: 0 }}>
         
@@ -308,37 +491,6 @@ export default function RiskAlerts() {
           </div>
           <div style={{ fontSize: 'calc(11.5 * var(--u))', color: '#93c5fd', marginTop: 'calc(8 * var(--u))' }}>
             Probability: <strong>{riskData.risks[0]?.probability}%</strong>
-          </div>
-        </div>
-
-        {/* KPI 4: Crop Threat Evaluation */}
-        <div style={{
-          background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0.02) 100%)',
-          border: '1px solid rgba(255, 255, 255, 0.1)',
-          borderRadius: 'calc(16 * var(--u))',
-          padding: 'calc(14 * var(--u)) calc(18 * var(--u))',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'space-between'
-        }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span style={{ fontSize: 'calc(11.5 * var(--u))', color: 'rgba(255,255,255,0.6)', textTransform: 'uppercase', letterSpacing: 'calc(0.8 * var(--u))' }}>
-              Current Crop Advisory
-            </span>
-            <Icon id="i-drop" width="16" height="16" style={{ color: '#86efac' }} />
-          </div>
-          <div style={{ marginTop: 'calc(6 * var(--u))' }}>
-            <div style={{ fontSize: 'calc(15 * var(--u))', fontWeight: 700, color: '#86efac' }}>
-              {activeCrop} ({activeGrowthStage})
-            </div>
-            <div style={{ fontSize: 'calc(11.5 * var(--u))', color: 'rgba(255,255,255,0.7)', marginTop: 'calc(2 * var(--u))' }}>
-              {riskData.overallThreatLevel === 'CRITICAL' || riskData.overallThreatLevel === 'HIGH' 
-                ? 'Protective drainage / canopy shielding needed' 
-                : 'Favorable physiological growth conditions'}
-            </div>
-          </div>
-          <div style={{ fontSize: 'calc(11.5 * var(--u))', color: 'rgba(255,255,255,0.5)', marginTop: 'calc(8 * var(--u))' }}>
-            Target: Hooghly Agro-Zone
           </div>
         </div>
 
@@ -769,7 +921,7 @@ export default function RiskAlerts() {
                       animation: 'riseIn 0.2s ease-out'
                     }}>
                       <div style={{ fontWeight: 600, color: lvlStyle.text, marginBottom: 'calc(4 * var(--u))' }}>
-                        Field Advisory for {activeCrop}:
+                        Field Advisory for {activeCrop || 'Target Crop'}:
                       </div>
                       <div>{risk.mitigation}</div>
                       {risk.affectedCrops && (

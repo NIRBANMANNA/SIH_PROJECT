@@ -1,28 +1,51 @@
 import { useState, useRef, useEffect } from 'react'
 import { Icon } from './IconSprite'
+import { useDashboard } from '../context/DashboardContext'
+import { mockBlockWeather } from '../data/mockWeather'
 
 export default function Header({
-  activeCity,
-  setActiveCity,
   searchOpen,
   setSearchOpen,
   notificationsOpen,
   setNotificationsOpen,
   notifications,
   setNotifications,
-  weatherData
 }) {
+  const { 
+    activeBlock, 
+    handleBlockChange, 
+    blocksInDistrict, 
+    activeDistrict,
+    activePanchayat,
+    handlePanchayatChange,
+    panchayatsInBlock
+  } = useDashboard()
+
   const [imgError, setImgError] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const searchInputRef = useRef(null)
 
-  // Filter cities for search dropdown
-  const cities = Object.keys(weatherData)
-  const filteredSearch = searchQuery.trim() === ''
-    ? cities.slice(0, 4) // Show standard 4 cities as quick suggestions
-    : cities.filter(city => city.toLowerCase().includes(searchQuery.toLowerCase()))
+  // Search list prioritizing Blocks, then Panchayats
+  const allBlocks = Object.keys(mockBlockWeather)
+  
+  const blockSuggestions = allBlocks.map(blk => ({
+    id: blk,
+    type: 'block',
+    name: `${blk} Block`,
+    region: `${mockBlockWeather[blk]?.district || activeDistrict}, West Bengal`,
+    temp: `${mockBlockWeather[blk]?.temp || 31}°C`,
+    rainfall: mockBlockWeather[blk]?.rainfall || '20mm',
+    active: activeBlock === blk
+  }))
 
-  const unreadCount = notifications.filter(n => n.unread).length
+  const filteredItems = searchQuery.trim() === ''
+    ? blockSuggestions
+    : blockSuggestions.filter(item => 
+        item.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+        item.region.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+
+  const unreadCount = (notifications || []).filter(n => n.unread).length
 
   // Focus input when search panel opens
   useEffect(() => {
@@ -32,11 +55,11 @@ export default function Header({
   }, [searchOpen])
 
   const handleMarkAllRead = () => {
-    setNotifications(prev => prev.map(n => ({ ...n, unread: false })))
+    setNotifications?.(prev => prev.map(n => ({ ...n, unread: false })))
   }
 
   const handleNotificationClick = (id) => {
-    setNotifications(prev => prev.map(n => n.id === id ? { ...n, unread: false } : n))
+    setNotifications?.(prev => prev.map(n => n.id === id ? { ...n, unread: false } : n))
   }
 
   const handleAddLocationClick = () => {
@@ -57,8 +80,8 @@ export default function Header({
         justifyContent: 'space-between',
       }}
     >
-      {/* Left: greeting */}
-      <div style={{ display: 'flex', alignItems: 'baseline', gap: 'calc(6 * var(--u))' }}>
+      {/* Left: greeting with active block context */}
+      <div style={{ display: 'flex', alignItems: 'baseline', gap: 'calc(8 * var(--u))' }}>
         <div
           className="anim-hello"
           style={{ fontSize: 'calc(18 * var(--u))', fontWeight: 400, color: 'rgba(255,255,255,.93)', lineHeight: 1 }}
@@ -70,6 +93,24 @@ export default function Header({
           style={{ fontSize: 'calc(19.5 * var(--u))', fontWeight: 700, letterSpacing: 'calc(-.35 * var(--u))', color: '#fff', lineHeight: 1 }}
         >
           Nirban Manna
+        </div>
+        <div
+          style={{
+            marginLeft: 'calc(12 * var(--u))',
+            padding: 'calc(4 * var(--u)) calc(10 * var(--u))',
+            background: 'rgba(255,255,255,0.14)',
+            backdropFilter: 'blur(calc(12 * var(--u)))',
+            borderRadius: 'calc(12 * var(--u))',
+            fontSize: 'calc(12 * var(--u))',
+            color: '#7dd3fc',
+            fontWeight: 600,
+            display: 'flex',
+            alignItems: 'center',
+            gap: 'calc(5 * var(--u))'
+          }}
+        >
+          <Icon id="i-pin" width="12" height="12" />
+          {activeBlock} Block • {activeDistrict}
         </div>
       </div>
 
@@ -173,14 +214,14 @@ export default function Header({
           )}
         </div>
 
-        {/* ─── Search Auto-complete Dropdown ─── */}
+        {/* ─── Search Auto-complete Dropdown (Blocks) ─── */}
         {searchOpen && (
           <div
             style={{
               position: 'absolute',
               top: 'calc(62 * var(--u))',
               right: 'calc(120 * var(--u))',
-              width: 'calc(280 * var(--u))',
+              width: 'calc(300 * var(--u))',
               background: 'linear-gradient(180deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.18) 100%)',
               backdropFilter: 'blur(calc(20 * var(--u))) saturate(115%)',
               WebkitBackdropFilter: 'blur(calc(20 * var(--u))) saturate(115%)',
@@ -197,7 +238,7 @@ export default function Header({
             <input
               ref={searchInputRef}
               type="text"
-              placeholder="Search location..."
+              placeholder="Search administrative block..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               style={{
@@ -211,20 +252,23 @@ export default function Header({
                 outline: 'none'
               }}
             />
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 'calc(2 * var(--u))', maxHeight: 'calc(180 * var(--u))', overflowY: 'auto' }}>
-              {filteredSearch.length > 0 ? (
-                filteredSearch.map(city => (
+            <div style={{ fontSize: 'calc(11 * var(--u))', fontWeight: 600, color: 'rgba(255,255,255,0.6)', textTransform: 'uppercase', letterSpacing: 'calc(.5 * var(--u))', paddingLeft: 'calc(4 * var(--u))' }}>
+              Blocks in Network
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 'calc(3 * var(--u))', maxHeight: 'calc(200 * var(--u))', overflowY: 'auto' }}>
+              {filteredItems.length > 0 ? (
+                filteredItems.map(item => (
                   <button
-                    key={city}
+                    key={item.id}
                     onClick={() => {
-                      setActiveCity(city)
+                      handleBlockChange(item.id)
                       setSearchOpen(false)
                       setSearchQuery('')
                     }}
                     style={{
                       width: '100%',
-                      padding: 'calc(7 * var(--u)) calc(10 * var(--u))',
-                      background: activeCity === city ? 'rgba(255,255,255,0.18)' : 'transparent',
+                      padding: 'calc(8 * var(--u)) calc(10 * var(--u))',
+                      background: item.active ? 'rgba(255,255,255,0.22)' : 'transparent',
                       border: 'none',
                       borderRadius: 'calc(8 * var(--u))',
                       color: '#fff',
@@ -236,16 +280,22 @@ export default function Header({
                       alignItems: 'center',
                       transition: 'background 0.2s'
                     }}
-                    onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.12)'}
-                    onMouseLeave={e => e.currentTarget.style.background = activeCity === city ? 'rgba(255,255,255,0.18)' : 'transparent'}
+                    onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.14)'}
+                    onMouseLeave={e => e.currentTarget.style.background = item.active ? 'rgba(255,255,255,0.22)' : 'transparent'}
                   >
-                    <span>{city}</span>
-                    <span style={{ fontSize: 'calc(11 * var(--u))', opacity: 0.5 }}>{weatherData[city].region}</span>
+                    <div>
+                      <div style={{ fontWeight: item.active ? 600 : 500 }}>{item.name}</div>
+                      <div style={{ fontSize: 'calc(11 * var(--u))', opacity: 0.6 }}>{item.region}</div>
+                    </div>
+                    <div style={{ textAlign: 'right' }}>
+                      <div style={{ fontWeight: 600 }}>{item.temp}</div>
+                      <div style={{ fontSize: 'calc(10.5 * var(--u))', color: '#93c5fd' }}>{item.rainfall}</div>
+                    </div>
                   </button>
                 ))
               ) : (
                 <div style={{ padding: 'calc(10 * var(--u))', fontSize: 'calc(12 * var(--u))', opacity: 0.5, textAlign: 'center' }}>
-                  No matching locations
+                  No matching blocks found
                 </div>
               )}
             </div>
@@ -292,7 +342,7 @@ export default function Header({
               )}
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 'calc(8 * var(--u))', maxHeight: 'calc(220 * var(--u))', overflowY: 'auto' }}>
-              {notifications.map(n => (
+              {(notifications || []).map(n => (
                 <div
                   key={n.id}
                   onClick={() => handleNotificationClick(n.id)}

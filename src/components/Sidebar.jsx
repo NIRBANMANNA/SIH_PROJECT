@@ -18,7 +18,15 @@ export default function Sidebar() {
   const location = useLocation()
   
   // Find index of active tab for the sliding pip animation
-  const activeIndex = navItems.findIndex(item => location.pathname.includes(item.path))
+  const getActiveIndex = () => {
+    const p = location.pathname.toLowerCase()
+    if (p.includes('cropadvisory') || p.includes('crop-advisory') || p.includes('/advisory')) {
+      return navItems.findIndex(item => item.path === '/dashboard/cropadvisory')
+    }
+    return navItems.findIndex(item => p.includes(item.path.toLowerCase()))
+  }
+
+  const activeIndex = getActiveIndex()
 
   return (
     <nav
@@ -42,21 +50,23 @@ export default function Sidebar() {
         borderRadius: 'calc(26 * var(--u))',
       }}
     >
-      {/* Active sliding pip */}
+      {/* Active sliding illuminated bar */}
       {activeIndex !== -1 && (
         <div
           aria-hidden="true"
           style={{
             position: 'absolute',
-            left: 'calc(-2 * var(--u))',
-            // Gap is 30, icon is 23 -> 53. Initial offset 115.
-            top: `calc((${116 + 53 * activeIndex}) * var(--u))`,
-            width: 'calc(5 * var(--u))',
-            height: 'calc(29 * var(--u))',
-            borderRadius: 'calc(3 * var(--u))',
-            background: '#fff',
-            boxShadow: '0 0 calc(10 * var(--u)) rgba(255,255,255,.55)',
-            transition: 'top 0.35s cubic-bezier(0.16, 1, 0.3, 1)',
+            left: 0,
+            // Top padding (22) + Logo (40) + Nav marginTop (45) = 107. Item center is 107 + 53*i + 11.5 = 118.5 + 53*i.
+            // Half-height of 26px bar is 13. Top = 118.5 - 13 + 53*i = 105.5 + 53*i.
+            top: `calc((${105.5 + 53 * activeIndex}) * var(--u))`,
+            width: 'calc(4.5 * var(--u))',
+            height: 'calc(26 * var(--u))',
+            borderTopRightRadius: 'calc(4 * var(--u))',
+            borderBottomRightRadius: 'calc(4 * var(--u))',
+            background: '#ffffff',
+            boxShadow: '0 0 calc(12 * var(--u)) rgba(255,255,255,0.95), 0 0 calc(4 * var(--u)) #ffffff',
+            transition: 'top 0.32s cubic-bezier(0.16, 1, 0.3, 1)',
           }}
         />
       )}
@@ -90,7 +100,7 @@ export default function Sidebar() {
         }}
       >
         {navItems.map((item, i) => {
-          const isActive = location.pathname.includes(item.path)
+          const isActive = i === activeIndex
           return (
             <Link
               to={item.path}
@@ -105,12 +115,20 @@ export default function Sidebar() {
                 width: 'calc(23 * var(--u))',
                 height: 'calc(23 * var(--u))',
                 opacity: isActive ? 1 : 0.55,
-                transition: 'opacity .2s, transform .2s',
+                transform: isActive ? 'scale(1.08)' : 'scale(1)',
+                filter: isActive ? 'drop-shadow(0 0 calc(6 * var(--u)) rgba(255,255,255,0.65))' : 'none',
+                transition: 'opacity .2s, transform .2s, filter .2s',
                 color: '#fff',
                 textDecoration: 'none'
               }}
-              onMouseEnter={e => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.transform = 'translateY(calc(-1 * var(--u)))'; }}
-              onMouseLeave={e => { e.currentTarget.style.opacity = isActive ? '1' : '0.55'; e.currentTarget.style.transform = 'translateY(0)'; }}
+              onMouseEnter={e => { 
+                e.currentTarget.style.opacity = '1'; 
+                e.currentTarget.style.transform = isActive ? 'scale(1.12)' : 'translateY(calc(-1 * var(--u)))'; 
+              }}
+              onMouseLeave={e => { 
+                e.currentTarget.style.opacity = isActive ? '1' : '0.55'; 
+                e.currentTarget.style.transform = isActive ? 'scale(1.08)' : 'scale(1)'; 
+              }}
             >
               <Icon id={item.id} width="23" height="23" />
             </Link>

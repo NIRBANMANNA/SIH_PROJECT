@@ -12,6 +12,7 @@ export const mockBlocks = {
 }
 
 export const mockPanchayatDetails = {
+  // ─── POLBA-DADPUR BLOCK (p1 - p6) ───
   "p1": {
     id: "p1",
     name: "Amnan",
@@ -252,7 +253,8 @@ export const mockPanchayatDetails = {
       ]
     }
   },
-  // Chinsurah-Mogra Panchayats
+
+  // ─── CHINSURAH-MOGRA BLOCK (p7 - p10) ───
   "p7": {
     id: "p7",
     name: "Bandel",
@@ -330,6 +332,478 @@ export const mockPanchayatDetails = {
         "Delay chemical sprays until moisture dries on crop foliage."
       ]
     }
+  },
+  "p9": {
+    id: "p9",
+    name: "Mogra",
+    block: "Chinsurah-Mogra",
+    district: "Hooghly",
+    state: "West Bengal",
+    lat: 22.980,
+    lng: 88.375,
+    center: [420, 210],
+    path: "M 320,110 C 450,90 560,120 600,190 C 620,280 570,360 480,380 C 370,390 280,340 260,260 C 250,180 290,130 320,110 Z",
+    rainfall: 16.2,
+    rainfallStatus: "Showers (16.2 mm)",
+    rainProb: 70,
+    temp: 31.4,
+    feelsLike: 35.8,
+    tempTrend: "+0.6°C/hr",
+    humidity: 78,
+    dewPoint: 24.8,
+    soilMoisture: "76% (Adequate)",
+    windSpeed: 18,
+    windDirection: "SE (140°)",
+    windGust: 26,
+    riskLevel: "Moderate",
+    riskScore: 50,
+    riskColor: "#eab308",
+    riskFactors: ["Moderate cloudiness", "Foliar humidity"],
+    cropRisk: {
+      crop: "Vegetables & Jute",
+      stage: "Vegetative",
+      level: "Moderate Risk",
+      levelColor: "#eab308",
+      alertTitle: "Foliar Moisture Management",
+      summary: "Intermittent showers replenishing soil. Ensure drainage furrows remain clear.",
+      actions: [
+        "Clear drainage furrows around vegetable patches.",
+        "Avoid spraying pesticides during overcast periods."
+      ]
+    }
+  },
+  "p10": {
+    id: "p10",
+    name: "Digsui-Hoera",
+    block: "Chinsurah-Mogra",
+    district: "Hooghly",
+    state: "West Bengal",
+    lat: 22.960,
+    lng: 88.355,
+    center: [510, 390],
+    path: "M 380,240 C 490,200 610,230 650,310 C 670,400 600,500 500,520 C 390,530 310,460 290,380 C 280,300 340,250 380,240 Z",
+    rainfall: 22.0,
+    rainfallStatus: "Heavy Showers (22.0 mm)",
+    rainProb: 80,
+    temp: 29.5,
+    feelsLike: 33.8,
+    tempTrend: "+0.2°C/hr",
+    humidity: 84,
+    dewPoint: 25.2,
+    soilMoisture: "86% (High)",
+    windSpeed: 20,
+    windDirection: "S (180°)",
+    windGust: 30,
+    riskLevel: "High",
+    riskScore: 68,
+    riskColor: "#f97316",
+    riskFactors: ["Runoff pooling in furrows", "Blight susceptibility"],
+    cropRisk: {
+      crop: "Rice (Kharif)",
+      stage: "Tillering Stage",
+      level: "High Risk",
+      levelColor: "#f97316",
+      alertTitle: "Drainage Vigilance",
+      summary: "High water intake in low elevation plots. Regulate field water levels.",
+      actions: [
+        "Maintain maximum 5 cm standing water depth.",
+        "Inspect for sheath blight lesions."
+      ]
+    }
+  },
+
+  // ─── SINGUR BLOCK (p11 - p15) ───
+  "p11": {
+    id: "p11",
+    name: "Balarambati",
+    block: "Singur",
+    district: "Hooghly",
+    state: "West Bengal",
+    lat: 22.815,
+    lng: 88.240,
+    center: [220, 240],
+    path: "M 100,140 C 220,110 340,130 380,210 C 400,300 350,400 270,420 C 180,440 90,380 70,300 C 60,210 80,160 100,140 Z",
+    rainfall: 14.8,
+    rainfallStatus: "Moderate Rain (14.8 mm)",
+    rainProb: 68,
+    temp: 31.2,
+    feelsLike: 35.0,
+    tempTrend: "+0.4°C/hr",
+    humidity: 76,
+    dewPoint: 24.2,
+    soilMoisture: "74% (Optimal)",
+    windSpeed: 15,
+    windDirection: "SW (220°)",
+    windGust: 24,
+    riskLevel: "Moderate",
+    riskScore: 46,
+    riskColor: "#eab308",
+    riskFactors: ["Alluvial soil moisture retention", "Weed emergence"],
+    cropRisk: {
+      crop: "Potato & Vegetables",
+      stage: "Vegetative",
+      level: "Moderate Risk",
+      levelColor: "#eab308",
+      alertTitle: "Alluvial Soil Moisture Favorable",
+      summary: "Moisture conditions ideal for vegetable roots. Keep furrows weeded.",
+      actions: [
+        "Carry out light intercultural weeding.",
+        "Ensure no water pools in low ridges."
+      ]
+    }
+  },
+  "p12": {
+    id: "p12",
+    name: "Singur-I",
+    block: "Singur",
+    district: "Hooghly",
+    state: "West Bengal",
+    lat: 22.810,
+    lng: 88.230,
+    center: [440, 220],
+    path: "M 320,130 C 440,100 560,120 600,200 C 620,290 570,390 480,410 C 380,430 290,370 270,290 C 260,200 290,150 320,130 Z",
+    rainfall: 11.5,
+    rainfallStatus: "Light-Moderate Rain (11.5 mm)",
+    rainProb: 62,
+    temp: 31.8,
+    feelsLike: 35.6,
+    tempTrend: "+0.5°C/hr",
+    humidity: 74,
+    dewPoint: 24.0,
+    soilMoisture: "70% (Good)",
+    windSpeed: 14,
+    windDirection: "SSW (205°)",
+    windGust: 22,
+    riskLevel: "Low",
+    riskScore: 32,
+    riskColor: "#22c55e",
+    riskFactors: ["Optimal growth conditions", "Nominal wind"],
+    cropRisk: {
+      crop: "Rice & Potato",
+      stage: "Tillering",
+      level: "Low Risk",
+      levelColor: "#22c55e",
+      alertTitle: "Optimal Field Conditions",
+      summary: "Balanced moisture and warmth supporting high photosynthetic rate.",
+      actions: [
+        "Proceed with scheduled fertilizer split dose.",
+        "Conduct routine pest scouting."
+      ]
+    }
+  },
+  "p13": {
+    id: "p13",
+    name: "Singur-II",
+    block: "Singur",
+    district: "Hooghly",
+    state: "West Bengal",
+    lat: 22.805,
+    lng: 88.225,
+    center: [260, 430],
+    path: "M 150,290 C 270,260 380,280 420,360 C 440,450 380,550 290,570 C 190,590 110,520 90,440 C 80,360 120,310 150,290 Z",
+    rainfall: 9.0,
+    rainfallStatus: "Scattered Showers (9.0 mm)",
+    rainProb: 55,
+    temp: 32.2,
+    feelsLike: 36.2,
+    tempTrend: "+0.8°C/hr",
+    humidity: 71,
+    dewPoint: 23.8,
+    soilMoisture: "66% (Normal)",
+    windSpeed: 13,
+    windDirection: "S (185°)",
+    windGust: 20,
+    riskLevel: "Low",
+    riskScore: 28,
+    riskColor: "#22c55e",
+    riskFactors: ["Favorable sunlight", "Mild humidity"],
+    cropRisk: {
+      crop: "Vegetables & Pulses",
+      stage: "Vegetative Growth",
+      level: "Low Risk",
+      levelColor: "#22c55e",
+      alertTitle: "Normal Agricultural Operations",
+      summary: "Fair weather supporting vigorous growth across all crop plots.",
+      actions: [
+        "Continue planned farm work and hoeing.",
+        "Maintain clean bund boundaries."
+      ]
+    }
+  },
+  "p14": {
+    id: "p14",
+    name: "Nasibpur",
+    block: "Singur",
+    district: "Hooghly",
+    state: "West Bengal",
+    lat: 22.825,
+    lng: 88.255,
+    center: [520, 380],
+    path: "M 390,260 C 510,230 620,250 660,330 C 680,420 620,520 530,540 C 430,560 340,490 320,410 C 310,330 360,280 390,260 Z",
+    rainfall: 18.0,
+    rainfallStatus: "Moderate Showers (18.0 mm)",
+    rainProb: 75,
+    temp: 30.8,
+    feelsLike: 35.0,
+    tempTrend: "+0.3°C/hr",
+    humidity: 79,
+    dewPoint: 24.6,
+    soilMoisture: "80% (High)",
+    windSpeed: 17,
+    windDirection: "SSW (215°)",
+    windGust: 27,
+    riskLevel: "Moderate",
+    riskScore: 52,
+    riskColor: "#eab308",
+    riskFactors: ["Elevated humidity", "Slow infiltration"],
+    cropRisk: {
+      crop: "Rice (Kharif)",
+      stage: "Tillering Stage",
+      level: "Moderate Risk",
+      levelColor: "#eab308",
+      alertTitle: "Soil Moisture High",
+      summary: "Adequate rain accumulated. Ensure water outflow trenches are functional.",
+      actions: [
+        "Maintain 3-5 cm water depth in paddy.",
+        "Delay pesticide sprays until foliage dries."
+      ]
+    }
+  },
+  "p15": {
+    id: "p15",
+    name: "Kamarkundu",
+    block: "Singur",
+    district: "Hooghly",
+    state: "West Bengal",
+    lat: 22.835,
+    lng: 88.210,
+    center: [380, 520],
+    path: "M 240,390 C 360,360 480,380 520,460 C 540,550 470,640 380,660 C 280,680 190,620 170,540 C 160,450 210,400 240,390 Z",
+    rainfall: 13.5,
+    rainfallStatus: "Moderate Rain (13.5 mm)",
+    rainProb: 65,
+    temp: 31.0,
+    feelsLike: 35.2,
+    tempTrend: "+0.4°C/hr",
+    humidity: 75,
+    dewPoint: 24.0,
+    soilMoisture: "72% (Optimal)",
+    windSpeed: 16,
+    windDirection: "SW (225°)",
+    windGust: 25,
+    riskLevel: "Low",
+    riskScore: 35,
+    riskColor: "#22c55e",
+    riskFactors: ["Good soil drainage", "Normal conditions"],
+    cropRisk: {
+      crop: "Jute & Paddy",
+      stage: "Active Growth",
+      level: "Low Risk",
+      levelColor: "#22c55e",
+      alertTitle: "Balanced Agro-Climate",
+      summary: "Comfortable parameters with favorable soil percolation.",
+      actions: [
+        "Harvest rainwater in ponds.",
+        "Apply standard fertilizer doses."
+      ]
+    }
+  },
+
+  // ─── HARIPAL BLOCK (p16 - p20) ───
+  "p16": {
+    id: "p16",
+    name: "Haripal",
+    block: "Haripal",
+    district: "Hooghly",
+    state: "West Bengal",
+    lat: 22.830,
+    lng: 88.115,
+    center: [210, 230],
+    path: "M 90,130 C 210,100 330,120 370,200 C 390,290 340,390 260,410 C 170,430 80,370 60,290 C 50,200 70,150 90,130 Z",
+    rainfall: 26.5,
+    rainfallStatus: "Heavy Rain (26.5 mm)",
+    rainProb: 82,
+    temp: 30.0,
+    feelsLike: 34.5,
+    tempTrend: "+0.2°C/hr",
+    humidity: 85,
+    dewPoint: 25.5,
+    soilMoisture: "88% (Saturated)",
+    windSpeed: 22,
+    windDirection: "S (175°)",
+    windGust: 32,
+    riskLevel: "High",
+    riskScore: 70,
+    riskColor: "#f97316",
+    riskFactors: ["Clay loam waterlogging", "Stem borer risk"],
+    cropRisk: {
+      crop: "Rice & Jute",
+      stage: "Tillering Stage",
+      level: "High Risk",
+      levelColor: "#f97316",
+      alertTitle: "Excess Water Outflow Required",
+      summary: "Significant shower accumulation across canal catchment.",
+      actions: [
+        "Clear main farm gate outlets immediately.",
+        "Postpone chemical fertilizer application."
+      ]
+    }
+  },
+  "p17": {
+    id: "p17",
+    name: "Kaiba",
+    block: "Haripal",
+    district: "Hooghly",
+    state: "West Bengal",
+    lat: 22.845,
+    lng: 88.130,
+    center: [430, 210],
+    path: "M 310,120 C 430,90 550,110 590,190 C 610,280 560,380 470,400 C 370,420 280,360 260,280 C 250,190 280,140 310,120 Z",
+    rainfall: 22.0,
+    rainfallStatus: "Heavy Rain (22.0 mm)",
+    rainProb: 78,
+    temp: 30.4,
+    feelsLike: 34.8,
+    tempTrend: "+0.3°C/hr",
+    humidity: 83,
+    dewPoint: 25.1,
+    soilMoisture: "84% (High)",
+    windSpeed: 20,
+    windDirection: "SSW (200°)",
+    windGust: 29,
+    riskLevel: "Moderate",
+    riskScore: 58,
+    riskColor: "#eab308",
+    riskFactors: ["High air humidity", "Pest incidence"],
+    cropRisk: {
+      crop: "Vegetables & Rice",
+      stage: "Vegetative Growth",
+      level: "Moderate Risk",
+      levelColor: "#eab308",
+      alertTitle: "Fungal Spore Risk",
+      summary: "Humid conditions warrant vigilance for leaf spots.",
+      actions: [
+        "Keep bio-fungicides on standby.",
+        "Regulate field water height."
+      ]
+    }
+  },
+  "p18": {
+    id: "p18",
+    name: "Ilipur",
+    block: "Haripal",
+    district: "Hooghly",
+    state: "West Bengal",
+    lat: 22.820,
+    lng: 88.105,
+    center: [250, 420],
+    path: "M 140,280 C 260,250 370,270 410,350 C 430,440 370,540 280,560 C 180,580 100,510 80,430 C 70,350 110,300 140,280 Z",
+    rainfall: 17.5,
+    rainfallStatus: "Moderate Showers (17.5 mm)",
+    rainProb: 72,
+    temp: 31.0,
+    feelsLike: 35.2,
+    tempTrend: "+0.5°C/hr",
+    humidity: 78,
+    dewPoint: 24.5,
+    soilMoisture: "76% (Adequate)",
+    windSpeed: 17,
+    windDirection: "S (180°)",
+    windGust: 26,
+    riskLevel: "Moderate",
+    riskScore: 48,
+    riskColor: "#eab308",
+    riskFactors: ["Intermittent rain", "Mild weed growth"],
+    cropRisk: {
+      crop: "Rice (Kharif)",
+      stage: "Tillering Stage",
+      level: "Moderate Risk",
+      levelColor: "#eab308",
+      alertTitle: "Moisture Replenishment",
+      summary: "Showers assisting root establishment.",
+      actions: [
+        "Ensure field bunds hold 4 cm water.",
+        "Scout for yellow stem borers."
+      ]
+    }
+  },
+  "p19": {
+    id: "p19",
+    name: "Bhandarhati",
+    block: "Haripal",
+    district: "Hooghly",
+    state: "West Bengal",
+    lat: 22.860,
+    lng: 88.140,
+    center: [510, 370],
+    path: "M 380,250 C 500,220 610,240 650,320 C 670,410 610,510 520,530 C 420,550 330,480 310,400 C 300,320 350,270 380,250 Z",
+    rainfall: 31.0,
+    rainfallStatus: "Heavy Rain (31.0 mm)",
+    rainProb: 86,
+    temp: 29.2,
+    feelsLike: 33.5,
+    tempTrend: "-0.2°C/hr",
+    humidity: 89,
+    dewPoint: 26.0,
+    soilMoisture: "91% (Saturated)",
+    windSpeed: 23,
+    windDirection: "SSE (160°)",
+    windGust: 35,
+    riskLevel: "High",
+    riskScore: 74,
+    riskColor: "#f97316",
+    riskFactors: ["Low terrace waterlogging", "Nutrient leaching"],
+    cropRisk: {
+      crop: "Rice & Vegetables",
+      stage: "Tillering",
+      level: "High Risk",
+      levelColor: "#f97316",
+      alertTitle: "Lowland Water Stagnation",
+      summary: "Heavy rainfall causing accumulation in low plots.",
+      actions: [
+        "Open boundary drainage ditches.",
+        "Suspend all spray and top-dressing activities."
+      ]
+    }
+  },
+  "p20": {
+    id: "p20",
+    name: "Dwarhatta",
+    block: "Haripal",
+    district: "Hooghly",
+    state: "West Bengal",
+    lat: 22.800,
+    lng: 88.095,
+    center: [370, 510],
+    path: "M 230,380 C 350,350 470,370 510,450 C 530,540 460,630 370,650 C 270,670 180,610 160,530 C 150,440 200,390 230,380 Z",
+    rainfall: 15.0,
+    rainfallStatus: "Moderate Rain (15.0 mm)",
+    rainProb: 68,
+    temp: 31.5,
+    feelsLike: 35.8,
+    tempTrend: "+0.4°C/hr",
+    humidity: 77,
+    dewPoint: 24.6,
+    soilMoisture: "75% (Optimal)",
+    windSpeed: 16,
+    windDirection: "SW (215°)",
+    windGust: 24,
+    riskLevel: "Low",
+    riskScore: 36,
+    riskColor: "#22c55e",
+    riskFactors: ["Stable temperature", "Controlled moisture"],
+    cropRisk: {
+      crop: "Jute & Potato",
+      stage: "Vegetative",
+      level: "Low Risk",
+      levelColor: "#22c55e",
+      alertTitle: "Optimal Crop Growth",
+      summary: "Favorable parameters for crop tillering and fiber development.",
+      actions: [
+        "Proceed with scheduled fertilizer applications.",
+        "Keep drainage gates unblocked."
+      ]
+    }
   }
 }
 
@@ -344,15 +818,23 @@ export const mockPanchayats = {
   ],
   "Chinsurah-Mogra": [
     mockPanchayatDetails["p7"],
-    mockPanchayatDetails["p8"]
+    mockPanchayatDetails["p8"],
+    mockPanchayatDetails["p9"],
+    mockPanchayatDetails["p10"]
   ],
   "Singur": [
-    mockPanchayatDetails["p1"],
-    mockPanchayatDetails["p4"]
+    mockPanchayatDetails["p11"],
+    mockPanchayatDetails["p12"],
+    mockPanchayatDetails["p13"],
+    mockPanchayatDetails["p14"],
+    mockPanchayatDetails["p15"]
   ],
   "Haripal": [
-    mockPanchayatDetails["p2"],
-    mockPanchayatDetails["p3"]
+    mockPanchayatDetails["p16"],
+    mockPanchayatDetails["p17"],
+    mockPanchayatDetails["p18"],
+    mockPanchayatDetails["p19"],
+    mockPanchayatDetails["p20"]
   ]
 }
 

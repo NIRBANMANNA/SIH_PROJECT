@@ -1,10 +1,11 @@
-export default function Hero({ cityData, tempUnit, style }) {
+export default function Hero({ cityData, tempUnit, chipText, style }) {
   // Format temperature in description details if Fahrenheit is active
-  let detailText = cityData.detail
+  let detailText = cityData?.detail || ''
   if (tempUnit === 'F') {
-    // Dynamically convert 50°F to equivalent if Celsius was base or keep it
     detailText = detailText.replace('50°F', '50°F').replace('10°C', '50°F')
   }
+
+  const badgeTitle = chipText || (cityData?.block ? `Block Forecast • ${cityData.block}` : 'Weather Forecast')
 
   return (
     <section
@@ -31,14 +32,15 @@ export default function Hero({ cityData, tempUnit, style }) {
           backdropFilter: 'blur(calc(16 * var(--u))) saturate(115%)',
           WebkitBackdropFilter: 'blur(calc(16 * var(--u))) saturate(115%)',
           fontSize: 'calc(13 * var(--u))',
-          fontWeight: 500,
+          fontWeight: 600,
           letterSpacing: 'calc(.2 * var(--u))',
           color: 'rgba(255,255,255,.95)',
           position: 'relative',
           overflow: 'hidden',
+          boxShadow: '0 calc(2 * var(--u)) calc(8 * var(--u)) rgba(0,0,0,0.1)'
         }}
       >
-        Weather Forecast
+        {badgeTitle}
       </div>
 
       {/* H1 with mask-reveal lines */}
@@ -56,7 +58,7 @@ export default function Hero({ cityData, tempUnit, style }) {
         }}
       >
         <span style={{ overflow: 'hidden', display: 'block' }}>
-          <span className="anim-h1l1" style={{ display: 'block' }}>{cityData.condition}</span>
+          <span className="anim-h1l1" style={{ display: 'block' }}>{cityData?.condition}</span>
         </span>
       </h1>
 
