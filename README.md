@@ -52,7 +52,7 @@ graph LR
 
 ## 🛠️ Tech Stack
 
-- **Frontend Core:** React 19, JavaScript (ESNext)
+- **Frontend Core:** React 19, JavaScript (ES6)
 - **Build & Tooling:** Vite 8, Oxlint
 - **Styling & Aesthetics:** Pure Glassmorphism Design System, Tailwind CSS v4, High-DPI font rendering (`-webkit-font-smoothing: antialiased`), Fluid responsive units (`calc(... * var(--u))`)
 - **Animation & Transitions:** CSS Keyframe Animations (`modalPopUp`, `shimmerLine`, `pulseGlow`), Framer Motion
