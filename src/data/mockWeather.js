@@ -1,3 +1,5 @@
+import { getPanchayatsForBlock, mockBlocks, mockPanchayatDetails, getPanchayatDetail } from './mockPanchayats'
+
 export const mockWeather = {
   // ─── POLBA-DADPUR (p1 - p6) ───
   "p1": {
@@ -668,7 +670,63 @@ export const mockWeather = {
   }
 }
 
-export const getWeatherData = (panchayatId) => mockWeather[panchayatId] || mockWeather["p1"]
+export const getWeatherData = (panchayatId) => {
+  if (mockWeather[panchayatId]) return mockWeather[panchayatId]
+
+  // Lookup in mockPanchayatDetails or dynamically generated panchayats
+  const p = (mockPanchayatDetails && mockPanchayatDetails[panchayatId]) || getPanchayatDetail(panchayatId)
+  if (p) {
+    const rain = p.rainfall != null ? p.rainfall : 20.0
+    const temp = p.temp != null ? Math.round(p.temp) : 31
+    const hum = p.humidity != null ? p.humidity : 80
+    const wind = p.windSpeed != null ? p.windSpeed : 18
+    const gust = p.windGust != null ? p.windGust : Math.round(wind * 1.4)
+    const condition = rain >= 30 ? "Heavy Rain" : rain >= 15 ? "Moderate Rain" : rain >= 5 ? "Passing Showers" : "Partly Cloudy"
+    const conditionId = rain >= 25 ? "i-cloud" : rain >= 10 ? "i-hail" : "i-cloud2"
+
+    const generated = {
+      city: `${p.name} (${p.block})`,
+      region: `${p.state || 'West Bengal'}, ${p.district || 'Hooghly'}`,
+      temp: temp,
+      condition: condition,
+      conditionId: conditionId,
+      detail: p.rainfallStatus ? `${p.rainfallStatus}. ${p.riskFactors?.join(', ') || 'Localized microclimate telemetry active.'}` : `Current precipitation ${rain}mm. Optimal crop monitoring conditions.`,
+      wind: `${wind} km/h`,
+      humidity: `${hum}%`,
+      gusts: `${gust} km/h`,
+      rainfall: `${rain}mm`,
+      background: rain >= 25 
+        ? 'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=1600&q=80'
+        : rain >= 12
+        ? 'https://images.unsplash.com/photo-1483702721041-b23de737a886?w=1600&q=80'
+        : 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1600&q=80',
+      temps: [
+        { val: `${temp}°`, icon: conditionId, cls: 'anim-temp1', rain: `${(rain * 0.4).toFixed(1)}` },
+        { val: `${temp}°`, icon: conditionId, cls: 'anim-temp2', rain: `${(rain * 0.7).toFixed(1)}` },
+        { val: `${temp - 1}°`, icon: 'i-cloud', cls: 'anim-temp3', rain: `${rain}` },
+        { val: `${temp - 2}°`, icon: 'i-cloud', cls: 'anim-temp4', rain: `${(rain * 0.8).toFixed(1)}` },
+        { val: `${temp - 2}°`, icon: 'i-cloud', cls: 'anim-temp5', rain: `${(rain * 0.5).toFixed(1)}` },
+        { val: `${temp - 3}°`, icon: 'i-cloud', cls: 'anim-temp6', rain: `${(rain * 0.2).toFixed(1)}` },
+        { val: `${temp - 4}°`, icon: 'i-cloud', cls: 'anim-temp7', rain: `${(rain * 0.1).toFixed(1)}` },
+      ],
+      days: [
+        { label: 'Sunday', cls: 'anim-day1', temp: `${temp + 1}°` },
+        { label: 'Monday', cls: 'anim-day2', temp: `${temp}°` },
+        { label: 'Tuesday', cls: 'anim-day3', temp: `${temp - 1}°` },
+        { label: 'Wednesday', cls: 'anim-day4', temp: `${temp}°`, active: true },
+        { label: 'Thursday', cls: 'anim-day5', temp: `${temp + 2}°` },
+        { label: 'Friday', cls: 'anim-day6', temp: `${temp + 3}°` },
+        { label: 'Saturday', cls: 'anim-day7', temp: `${temp + 2}°` },
+      ],
+      wavePath: "M0,75 C30,75 50,62 80,60 C110,58 135,72 165,75 C195,78 220,55 255,52 C290,50 315,65 350,68 C385,72 410,50 445,46 C480,42 505,60 540,62 C575,65 600,44 635,42 C670,40 700,60 735,65 C770,70 805,60 835,58",
+      rainWavePath: "M0,185 C100,125 200,65 300,85 C400,125 500,155 600,185 C700,215 800,225 835,225"
+    }
+    mockWeather[panchayatId] = generated
+    return generated
+  }
+
+  return mockWeather["p1"]
+}
 
 // ─── BLOCK-LEVEL AGGREGATED WEATHER DATA ───
 export const mockBlockWeather = {
@@ -902,4 +960,146 @@ export const mockBlockWeather = {
   }
 }
 
-export const getBlockWeatherData = (blockName) => mockBlockWeather[blockName] || mockBlockWeather["Polba-Dadpur"]
+// ─── Dynamic Block Weather Generator for Any West Bengal Block ──────────────
+export function generateBlockWeatherData(blockName, districtHint, liveApiResult) {
+  const cleanName = (blockName || "Polba-Dadpur").trim()
+
+  // Resolve district
+  let district = districtHint
+  if (!district || district === "West Bengal") {
+    for (const [dist, blkList] of Object.entries(mockBlocks || {})) {
+      if (blkList.some(b => b.toLowerCase() === cleanName.toLowerCase())) {
+        district = dist
+        break
+      }
+    }
+  }
+  if (!district || district === "West Bengal") {
+    district = cleanName.toLowerCase().includes("tamluk") || cleanName.toLowerCase().includes("haldia") || cleanName.toLowerCase().includes("mahishadal") || cleanName.toLowerCase().includes("contai") || cleanName.toLowerCase().includes("nandigram")
+      ? "PurbaMedinipur"
+      : cleanName.toLowerCase().includes("polba") || cleanName.toLowerCase().includes("singur") || cleanName.toLowerCase().includes("haripal") || cleanName.toLowerCase().includes("mogra")
+      ? "Hooghly"
+      : "West Bengal"
+  }
+
+  const panchayats = getPanchayatsForBlock(cleanName)
+  const totalGPs = (panchayats && panchayats.length > 0) ? panchayats.length : 5
+
+  // Compute actual aggregate weather statistics from this block's panchayats
+  let totalRain = panchayats.reduce((s, p) => s + (p.rainfall || 0), 0)
+  let avgRain = +(totalRain / totalGPs).toFixed(1)
+  let avgTemp = Math.round(panchayats.reduce((s, p) => s + (p.temp || 30), 0) / totalGPs)
+  let avgHum = Math.round(panchayats.reduce((s, p) => s + (p.humidity || 80), 0) / totalGPs)
+  let avgWind = Math.round(panchayats.reduce((s, p) => s + (p.windSpeed || 18), 0) / totalGPs)
+  let avgGust = Math.round(panchayats.reduce((s, p) => s + (p.windGust || 28), 0) / totalGPs)
+
+  // Overlay live prediction API data if available from WRF model
+  if (liveApiResult) {
+    if (liveApiResult.tp?.avg != null && !isNaN(liveApiResult.tp.avg)) {
+      avgRain = +Number(liveApiResult.tp.avg).toFixed(1)
+    }
+    if (liveApiResult.t2m?.avg != null && !isNaN(liveApiResult.t2m.avg)) {
+      avgTemp = Math.round(Number(liveApiResult.t2m.avg))
+    }
+    if (liveApiResult.rh?.avg != null && !isNaN(liveApiResult.rh.avg)) {
+      avgHum = Math.round(Number(liveApiResult.rh.avg))
+    }
+    if (liveApiResult.ws?.avg != null && !isNaN(liveApiResult.ws.avg)) {
+      avgWind = Math.round(Number(liveApiResult.ws.avg))
+      avgGust = avgWind + 10
+    }
+  }
+
+  // Weather condition
+  let condition = "Moderate Showers"
+  let conditionId = "i-cloud"
+  if (avgRain >= 28) {
+    condition = "Heavy Rain & Showers"
+    conditionId = "i-hail"
+  } else if (avgRain >= 14) {
+    condition = "Moderate Showers"
+    conditionId = "i-cloud"
+  } else if (avgRain >= 5) {
+    condition = "Scattered Rain"
+    conditionId = "i-cloud"
+  } else {
+    condition = "Partly Cloudy"
+    conditionId = "i-cloud2"
+  }
+
+  const detail = `Regional meteorological system active over ${cleanName} block. Average precipitation of ${avgRain} mm across ${totalGPs} Gram Panchayats with localized microclimate telemetry active.`
+
+  const temps = [
+    { val: `${avgTemp}°`, icon: conditionId, cls: 'anim-temp1', rain: `${(avgRain * 0.55).toFixed(1)}` },
+    { val: `${avgTemp}°`, icon: conditionId, cls: 'anim-temp2', rain: `${(avgRain * 0.85).toFixed(1)}` },
+    { val: `${avgTemp - 1}°`, icon: conditionId, cls: 'anim-temp3', rain: `${avgRain.toFixed(1)}` },
+    { val: `${avgTemp - 2}°`, icon: conditionId, cls: 'anim-temp4', rain: `${(avgRain * 0.75).toFixed(1)}` },
+    { val: `${avgTemp - 2}°`, icon: conditionId, cls: 'anim-temp5', rain: `${(avgRain * 0.45).toFixed(1)}` },
+    { val: `${avgTemp - 3}°`, icon: 'i-cloud', cls: 'anim-temp6', rain: `${(avgRain * 0.25).toFixed(1)}` },
+    { val: `${avgTemp - 4}°`, icon: 'i-cloud', cls: 'anim-temp7', rain: `${(avgRain * 0.1).toFixed(1)}` },
+  ]
+
+  const days = [
+    { label: 'Sunday', cls: 'anim-day1', temp: `${avgTemp + 1}°` },
+    { label: 'Monday', cls: 'anim-day2', temp: `${avgTemp}°` },
+    { label: 'Tuesday', cls: 'anim-day3', temp: `${avgTemp - 1}°` },
+    { label: 'Wednesday', cls: 'anim-day4', temp: `${avgTemp}°`, active: true },
+    { label: 'Thursday', cls: 'anim-day5', temp: `${avgTemp + 2}°` },
+    { label: 'Friday', cls: 'anim-day6', temp: `${avgTemp + 3}°` },
+    { label: 'Saturday', cls: 'anim-day7', temp: `${avgTemp + 2}°` },
+  ]
+
+  const threatLevel = avgRain >= 28 ? "High" : avgRain >= 14 ? "Moderate" : "Low"
+
+  // Select realistic background image
+  const background = avgRain >= 25 
+    ? 'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=1600&q=80'
+    : avgRain >= 12
+    ? 'https://images.unsplash.com/photo-1483702721041-b23de737a886?w=1600&q=80'
+    : 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1600&q=80'
+
+  const generated = {
+    block: cleanName,
+    district,
+    city: `${cleanName} (Block)`,
+    region: `${district}, West Bengal`,
+    temp: avgTemp,
+    condition,
+    conditionId,
+    detail,
+    wind: `${avgWind} km/h`,
+    humidity: `${avgHum}%`,
+    gusts: `${avgGust} km/h`,
+    rainfall: `${avgRain}mm`,
+    background,
+    temps,
+    days,
+    wavePath: "M0,75 C30,75 50,62 80,60 C110,58 135,72 165,75 C195,78 220,55 255,52 C290,50 315,65 350,68 C385,72 410,50 445,46 C480,42 505,60 540,62 C575,65 600,44 635,42 C670,40 700,60 735,65 C770,70 805,60 835,58",
+    rainWavePath: "M0,185 C100,125 200,65 300,85 C400,125 500,155 600,185 C700,215 800,225 835,225",
+    totalPanchayats: totalGPs,
+    threatLevel,
+    primaryCrops: ["Rice (Kharif)", "Vegetables", "Seasonal crops"]
+  }
+
+  mockBlockWeather[cleanName] = generated
+  return generated
+}
+
+export const getBlockWeatherData = (blockName, districtHint, liveApiResult) => {
+  if (!blockName) blockName = "Polba-Dadpur"
+  const cleanName = blockName.trim()
+
+  // Exact match in static dictionary (only if not customized and no live overrides)
+  if (mockBlockWeather[cleanName] && !liveApiResult && (!districtHint || mockBlockWeather[cleanName].district === districtHint)) {
+    return mockBlockWeather[cleanName]
+  }
+
+  // Case-insensitive lookup
+  const foundKey = Object.keys(mockBlockWeather).find(k => k.toLowerCase() === cleanName.toLowerCase())
+  if (foundKey && !liveApiResult && (!districtHint || mockBlockWeather[foundKey].district === districtHint)) {
+    return mockBlockWeather[foundKey]
+  }
+
+  // Dynamically generate authentic weather data for this block!
+  return generateBlockWeatherData(cleanName, districtHint, liveApiResult)
+}

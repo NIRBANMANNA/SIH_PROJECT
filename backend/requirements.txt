@@ -1,0 +1,12 @@
+fastapi
+uvicorn[standard]
+numpy
+onnxruntime
+torch
+pytorch-lightning
+xarray
+rioxarray
+geopandas
+shapely
+netCDF4
+onnxscript

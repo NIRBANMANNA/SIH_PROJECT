@@ -1,0 +1,42 @@
+services:
+  frontend:
+    build:
+      context: ..
+      dockerfile: SIH_PROJECT/Dockerfile.frontend
+    image: aurora-sih-frontend:latest
+    ports:
+      - "5173:5173"
+    environment:
+      VITE_API_URL: http://api:8000
+
+  api:
+    build:
+      context: ..
+      dockerfile: SIH_PROJECT/backend/Dockerfile
+    image: aurora-sih-backend:latest
+    ports:
+      - "8000:8000"
+    environment:
+      AURORA_LR_PATH: /app/data/raw/wrf_9km/merged.nc
+      AURORA_HR_PATH: /app/data/raw/imd_3km/merged.nc
+    volumes:
+      - ../checkpoints:/app/checkpoints
+      - ../data:/app/data
+
+  train:
+    build:
+      context: ..
+      dockerfile: SIH_PROJECT/backend/Dockerfile
+    image: aurora-sih-backend:latest
+    profiles:
+      - train
+    command: ["python", "-m", "training.train"]
+    environment:
+      AURORA_LR_PATH: /app/data/raw/wrf_9km/merged.nc
+      AURORA_HR_PATH: /app/data/raw/imd_3km/merged.nc
+      AURORA_MAX_EPOCHS: "1"
+      AURORA_BATCH_SIZE: "2"
+      AURORA_NUM_WORKERS: "0"
+    volumes:
+      - ../checkpoints:/app/checkpoints
+      - ../data:/app/data

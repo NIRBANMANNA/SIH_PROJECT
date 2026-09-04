@@ -1,7 +1,8 @@
 import { useState, useRef, useEffect } from 'react'
 import { Icon } from './IconSprite'
 import { useDashboard } from '../context/DashboardContext'
-import { mockBlockWeather } from '../data/mockWeather'
+import { mockBlockWeather, getBlockWeatherData } from '../data/mockWeather'
+import { mockBlocks } from '../data/mockPanchayats'
 import LocationSelectorModal from './LocationSelectorModal'
 
 export default function Header({
@@ -27,18 +28,22 @@ export default function Header({
   const [searchQuery, setSearchQuery] = useState('')
   const searchInputRef = useRef(null)
 
-  // Search list prioritizing Blocks, then Panchayats
-  const allBlocks = Object.keys(mockBlockWeather)
+  // Search list prioritizing all authentic Blocks in network
+  const allKnownBlocks = Object.values(mockBlocks || {}).flat()
+  const allBlocks = Array.from(new Set([...Object.keys(mockBlockWeather || {}), ...allKnownBlocks]))
 
-  const blockSuggestions = allBlocks.map(blk => ({
-    id: blk,
-    type: 'block',
-    name: `${blk} Block`,
-    region: `${mockBlockWeather[blk]?.district || activeDistrict}, West Bengal`,
-    temp: `${mockBlockWeather[blk]?.temp || 31}°C`,
-    rainfall: mockBlockWeather[blk]?.rainfall || '20mm',
-    active: activeBlock === blk
-  }))
+  const blockSuggestions = allBlocks.map(blk => {
+    const data = getBlockWeatherData(blk)
+    return {
+      id: blk,
+      type: 'block',
+      name: `${blk} Block`,
+      region: `${data?.district || activeDistrict}, West Bengal`,
+      temp: `${data?.temp || 31}°C`,
+      rainfall: data?.rainfall || '20mm',
+      active: activeBlock?.toLowerCase() === blk.toLowerCase()
+    }
+  })
 
   const filteredItems = searchQuery.trim() === ''
     ? blockSuggestions

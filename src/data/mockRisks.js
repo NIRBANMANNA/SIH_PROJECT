@@ -1,3 +1,5 @@
+import { mockPanchayatDetails, getPanchayatDetail } from './mockPanchayats'
+
 export const riskCategoryConfig = {
   "heavy-rainfall": {
     id: "heavy-rainfall",
@@ -664,203 +666,243 @@ export const mockPanchayatRisks = {
 
 // Fallback generator for other panchayats (p4, p6, p7, p8)
 export const getRisksForPanchayat = (panchayatId, weatherData) => {
+  // If static entry exists AND matches panchayatId
   if (mockPanchayatRisks[panchayatId]) {
     return mockPanchayatRisks[panchayatId]
   }
 
-  const rain = parseFloat(weatherData?.rainfall || "15.0")
-  const temp = parseFloat(weatherData?.temp || "30")
-  const wind = parseFloat(weatherData?.wind || "18")
-  const cityName = weatherData?.city || "Local Panchayat"
+  const p = (mockPanchayatDetails && mockPanchayatDetails[panchayatId]) || getPanchayatDetail(panchayatId)
+  const rain = p?.rainfall != null ? p.rainfall : parseFloat(weatherData?.rainfall || "15.0")
+  const temp = p?.temp != null ? Math.round(p.temp) : parseFloat(weatherData?.temp || "30")
+  const wind = p?.windSpeed != null ? p.windSpeed : parseFloat(weatherData?.wind || "18")
+  const gust = p?.windGust != null ? p.windGust : Math.round(wind * 1.35)
+  const hum = p?.humidity != null ? p.humidity : parseInt(weatherData?.humidity || "80")
+  const pName = p?.name || weatherData?.city?.split('(')[0]?.trim() || "Panchayat"
+  const blockName = p?.block || "Block"
+  const cityName = `${pName} (${blockName})`
 
-  const isRainCrit = rain >= 35
-  const isRainHigh = rain >= 20 && rain < 35
-  const isRainMed = rain >= 8 && rain < 20
+  // Assess level thresholds
+  const isRainCrit = rain >= 36
+  const isRainHigh = rain >= 22 && rain < 36
+  const isRainMed = rain >= 10 && rain < 22
   const rainLevel = isRainCrit ? "CRITICAL" : isRainHigh ? "HIGH" : isRainMed ? "MODERATE" : "LOW"
 
-  const isHeatCrit = temp >= 35
-  const isHeatHigh = temp >= 33 && temp < 35
+  const isHeatCrit = temp >= 36
+  const isHeatHigh = temp >= 33 && temp < 36
   const isHeatMed = temp >= 31 && temp < 33
   const heatLevel = isHeatCrit ? "CRITICAL" : isHeatHigh ? "HIGH" : isHeatMed ? "MODERATE" : "LOW"
 
-  const isFloodHigh = rain >= 20
-  const isFloodMed = rain >= 8 && rain < 20
+  const isFloodHigh = rain >= 24
+  const isFloodMed = rain >= 12 && rain < 24
   const floodLevel = isRainCrit ? "CRITICAL" : isFloodHigh ? "HIGH" : isFloodMed ? "MODERATE" : "LOW"
 
-  const isWindHigh = wind >= 30
-  const isWindMed = wind >= 18 && wind < 30
+  const isWindHigh = wind >= 28 || gust >= 38
+  const isWindMed = wind >= 18 && wind < 28
   const windLevel = isWindHigh ? "HIGH" : isWindMed ? "MODERATE" : "LOW"
 
   const droughtLevel = rain < 2 && temp > 33 ? "HIGH" : rain < 5 ? "MODERATE" : "LOW"
   const coldLevel = temp < 16 ? "HIGH" : temp < 20 ? "MODERATE" : "LOW"
 
-  const overallThreat = (isRainCrit || isHeatCrit) ? "CRITICAL" : (isRainHigh || isFloodHigh || isHeatHigh) ? "HIGH" : (isRainMed || isHeatMed || isWindMed) ? "MODERATE" : "LOW"
-  const threatScore = isRainCrit ? 92 : isRainHigh ? 78 : isHeatCrit ? 88 : isRainMed ? 58 : 34
+  const overallThreat = p?.riskLevel ? p.riskLevel.toUpperCase() : ((isRainCrit || isHeatCrit) ? "CRITICAL" : (isRainHigh || isFloodHigh || isHeatHigh) ? "HIGH" : (isRainMed || isHeatMed || isWindMed) ? "MODERATE" : "LOW")
+  const threatScore = p?.riskScore ? p.riskScore : (isRainCrit ? 92 : isRainHigh ? 78 : isHeatCrit ? 88 : isRainMed ? 58 : 34)
 
+  // Build alerts
   const alerts = []
   if (rainLevel === "CRITICAL" || rainLevel === "HIGH" || rainLevel === "MODERATE") {
     alerts.push({
-      id: `alt-gen-rain-${panchayatId}`,
+      id: `alt-rain-${panchayatId}`,
       type: "Heavy Rainfall",
       level: rainLevel,
-      title: "Heavy Rainfall Alert",
-      headline: `Heavy rainfall expected in the next 24 hours across ${cityName}.`,
+      title: rainLevel === "CRITICAL" ? "Severe Downpour & Flash Flood Warning" : "Heavy Rainfall Alert",
+      headline: `${rainLevel === "CRITICAL" ? "Severe torrential precipitation" : "Heavy rainfall"} expected in the next 24 hours (${rain} mm).`,
       validUntil: "Tomorrow, 8:00 PM",
       issuedAt: "Today, 06:00 PM",
-      affectedZones: [`${cityName} Central`, `${cityName} Lowlands`, "Drainage Basin"],
-      bulletinText: `Forecast indicates intense precipitation spells (${rain}mm) over the next 24 hours. Saturated soil conditions necessitate immediate field attention.`,
-      actions: [
-        "Inspect and clear bund drainage channels",
-        "Delay fertilizer application until heavy showers subside",
-        "Move cut crops to dry covered shelters"
+      affectedZones: [`${pName} Lowland Plots`, `${pName} Drainage Confluence`, `${blockName} Sector`],
+      bulletinText: p?.cropRisk?.summary || `Precipitation accumulation forecast at ${rain}mm. Saturated topsoil in ${pName} increases risk of water stagnation in low-lying crop fields.`,
+      actions: p?.cropRisk?.actions || [
+        "Open peripheral field drainage outlets immediately",
+        "Postpone pesticide application and fertilizer top-dressing",
+        "Elevate cut produce and seedlings to dry platforms"
       ],
       acknowledged: false
     })
   }
 
-  if (heatLevel === "CRITICAL" || heatLevel === "HIGH") {
+  if (floodLevel === "CRITICAL" || floodLevel === "HIGH") {
     alerts.push({
-      id: `alt-gen-heat-${panchayatId}`,
-      type: "Heat Stress",
-      level: heatLevel,
-      title: "Heat Stress Alert",
-      headline: `High temperature spikes up to ${temp}°C anticipated.`,
-      validUntil: "Tomorrow, 8:00 PM",
-      issuedAt: "Today, 05:00 PM",
-      affectedZones: [`${cityName} Farmlands`, "Unshaded Plains"],
-      bulletinText: `Afternoon thermal index is elevated. High transpiration rates may stress non-irrigated vegetative canopies.`,
+      id: `alt-flood-${panchayatId}`,
+      type: "Waterlogging / Flood",
+      level: floodLevel,
+      title: "Field Waterlogging Advisory",
+      headline: `Standing water risk in lower depression plots across ${pName}.`,
+      validUntil: "Tomorrow, 11:30 PM",
+      issuedAt: "Today, 05:30 PM",
+      affectedZones: [`${pName} Low-elevation Beds`, "Canal Runoff Zone"],
+      bulletinText: `Slow runoff rates and high saturation (${hum}%) may result in water depth exceeding 12-18 cm in depression plots.`,
       actions: [
-        "Apply frequent light irrigation during early morning hours",
-        "Provide mulch on vegetable beds to conserve moisture"
+        "Check bund height and clear weed blockages from outlet drains",
+        "Keep mobile suction pumps on standby for water-sensitive crops"
       ],
       acknowledged: false
     })
   }
+
+  if (windLevel === "HIGH") {
+    alerts.push({
+      id: `alt-wind-${panchayatId}`,
+      type: "Strong Wind",
+      level: "HIGH",
+      title: "Squally Wind Gust Alert",
+      headline: `Wind gusts up to ${gust} km/h expected during convective passage.`,
+      validUntil: "Tonight, 11:00 PM",
+      issuedAt: "Today, 04:30 PM",
+      affectedZones: [`${pName} Farmland Borders`, "Unsheltered Open Plains"],
+      bulletinText: `Gusty convective winds (${gust} km/h) may cause lodging in tall standing crops (Banana, Jute, mature paddy).`,
+      actions: [
+        "Provide mechanical earthing up and bamboo propping for fruit trees",
+        "Secure shade netting and nursery polyhouses"
+      ],
+      acknowledged: false
+    })
+  }
+
+  if (alerts.length === 0) {
+    alerts.push({
+      id: `alt-clear-${panchayatId}`,
+      type: "Weather Advisory",
+      level: "LOW",
+      title: "Favorable Field Conditions",
+      headline: `Weather parameters within normal seasonal thresholds for ${pName}.`,
+      validUntil: "Tomorrow, 8:00 PM",
+      issuedAt: "Today, 06:00 PM",
+      affectedZones: [`${pName} Agricultural Area`],
+      bulletinText: `Stable hydrometeorological indicators (${rain}mm rain, ${temp}°C). No extreme microclimate threat active.`,
+      actions: [
+        "Regular field operations, weeding, and fertilizer scheduling may proceed.",
+        "Maintain routine pest and disease surveillance."
+      ],
+      acknowledged: false
+    })
+  }
+
+  const risks = [
+    {
+      id: "heavy-rainfall",
+      category: "Heavy Rainfall",
+      riskLevel: rainLevel,
+      severity: `${rainLevel === 'CRITICAL' ? 'Torrential' : rainLevel === 'HIGH' ? 'Severe' : rainLevel === 'MODERATE' ? 'Moderate' : 'Light'} (${rain} mm/24h)`,
+      probability: rainLevel === 'CRITICAL' ? 94 : rainLevel === 'HIGH' ? 84 : rainLevel === 'MODERATE' ? 58 : 20,
+      expectedTime: rainLevel === 'CRITICAL' ? 'Next 2 - 4 Hours' : rainLevel === 'HIGH' ? 'Next 6 - 12 Hours' : 'Tomorrow',
+      description: `Monsoon convective cloud clusters delivering estimated ${rain}mm precipitation over ${pName}.`,
+      affectedCrops: ["Rice (Tillering)", "Vegetables", "Jute"],
+      mitigation: "Ensure unobstructed ditch flow; postpone foliar pesticide application.",
+      metrics: {
+        "Accumulation Rate": `${(rain / 5.5).toFixed(1)} mm/h`,
+        "Soil Moisture": rain > 25 ? "92% Saturation" : "74% Capacity",
+        "Flash Runoff Risk": rainLevel
+      }
+    },
+    {
+      id: "waterlogging",
+      category: "Waterlogging / Flood",
+      riskLevel: floodLevel,
+      severity: `${floodLevel === 'CRITICAL' ? 'Severe' : floodLevel === 'HIGH' ? 'High' : floodLevel === 'MODERATE' ? 'Moderate' : 'Low'} (Depth ${rain > 25 ? '14-20' : rain > 12 ? '6-12' : '2-4'} cm)`,
+      probability: floodLevel === 'CRITICAL' ? 90 : floodLevel === 'HIGH' ? 76 : floodLevel === 'MODERATE' ? 46 : 14,
+      expectedTime: "Next 12 - 24 Hours",
+      description: `Low-lying plots in ${pName} face localized ponding risk due to sustained precipitation and slow soil infiltration.`,
+      affectedCrops: ["Vegetables", "Sesame", "Young Seedlings"],
+      mitigation: "Dig transverse drainage channels; facilitate gravitational water runoff.",
+      metrics: {
+        "Infiltration Rate": "Slow (Clay-Loam)",
+        "Field Water Level": `+${rain > 22 ? '14' : '4'} cm`,
+        "Drainage Efficiency": rain > 22 ? "42%" : "82%"
+      }
+    },
+    {
+      id: "heat-stress",
+      category: "Heat Stress",
+      riskLevel: heatLevel,
+      severity: `${heatLevel === 'CRITICAL' ? 'Extreme' : heatLevel === 'HIGH' ? 'High' : heatLevel === 'MODERATE' ? 'Moderate' : 'Low'} (${temp}°C, HI ${temp + 4}°C)`,
+      probability: heatLevel === 'CRITICAL' ? 92 : heatLevel === 'HIGH' ? 70 : heatLevel === 'MODERATE' ? 38 : 12,
+      expectedTime: "Tomorrow, 12:00 PM - 03:30 PM",
+      description: `Daytime maximum temperatures hovering near ${temp}°C in ${pName}. High solar insolation during cloud breaks.`,
+      affectedCrops: ["Flowering stage crops", "Vegetables"],
+      mitigation: "Maintain root-zone moisture through evening irrigation; apply organic mulching.",
+      metrics: {
+        "Peak Temp": `${temp}°C`,
+        "Heat Index": `${temp + 4}°C`,
+        "VPD Index": temp > 33 ? "2.8 kPa" : "1.2 kPa"
+      }
+    },
+    {
+      id: "drought",
+      category: "Drought / Dry Spell",
+      riskLevel: droughtLevel,
+      severity: `${droughtLevel === 'HIGH' ? 'Severe Deficit' : droughtLevel === 'MODERATE' ? 'Moderate Dryness' : 'Adequate Moisture'}`,
+      probability: droughtLevel === 'HIGH' ? 76 : droughtLevel === 'MODERATE' ? 42 : 8,
+      expectedTime: "Next 7 - 10 Days",
+      description: rain < 5 ? `Consecutive dry spell depleting shallow moisture in ${pName}.` : `Abundant soil moisture from recent ${rain}mm precipitation.`,
+      affectedCrops: ["Non-irrigated upland crops"],
+      mitigation: "Conserve pond water; schedule supplemental irrigation on priority beds.",
+      metrics: {
+        "Moisture Deficit": rain < 5 ? "-16.0 mm" : "0.0 mm",
+        "SPEI Index": rain < 5 ? "-1.2" : "+1.6",
+        "Soil Moisture": rain < 5 ? "38%" : "88%"
+      }
+    },
+    {
+      id: "strong-wind",
+      category: "Strong Wind",
+      riskLevel: windLevel,
+      severity: `${windLevel === 'HIGH' ? 'Severe Gusts' : windLevel === 'MODERATE' ? 'Moderate Gusts' : 'Light Breeze'} (${wind} km/h, Gusts ${gust} km/h)`,
+      probability: windLevel === 'HIGH' ? 82 : windLevel === 'MODERATE' ? 54 : 18,
+      expectedTime: "Tonight, 08:00 PM - 02:00 AM",
+      description: `Wind velocities around ${wind} km/h with localized gustiness up to ${gust} km/h during storm passage.`,
+      affectedCrops: ["Tall Rice", "Banana", "Jute"],
+      mitigation: "Provide bamboo propping for fruit plants; secure light polyhouse structures.",
+      metrics: {
+        "Sustained Speed": `${wind} km/h`,
+        "Peak Gusts": `${gust} km/h`,
+        "Direction": "SSW (210°)"
+      }
+    },
+    {
+      id: "cold-stress",
+      category: "Cold Stress",
+      riskLevel: coldLevel,
+      severity: `${coldLevel === 'HIGH' ? 'Chilling Risk' : coldLevel === 'MODERATE' ? 'Cool Night' : 'Minimal'} (${Math.max(12, temp - 6)}°C min)`,
+      probability: coldLevel === 'HIGH' ? 70 : coldLevel === 'MODERATE' ? 30 : 2,
+      expectedTime: "Overnight",
+      description: `Nocturnal temperature around ${Math.max(12, temp - 6)}°C is safe for current seasonal crop stages in ${pName}.`,
+      affectedCrops: ["None"],
+      mitigation: "Standard seasonal agronomic care.",
+      metrics: {
+        "Min Night Temp": `${Math.max(12, temp - 6)}°C`,
+        "Dew Point": "24°C",
+        "Chilling Hours": "0"
+      }
+    }
+  ]
+
+  // Sort risks so dominant threat is first
+  const scoreMap = { CRITICAL: 4, HIGH: 3, MODERATE: 2, LOW: 1 }
+  risks.sort((a, b) => {
+    const diff = (scoreMap[b.riskLevel] || 0) - (scoreMap[a.riskLevel] || 0)
+    if (diff !== 0) return diff
+    return (b.probability || 0) - (a.probability || 0)
+  })
 
   return {
     panchayatName: cityName,
     overallThreatLevel: overallThreat,
     threatScore,
-    summary: rain > 15 
-      ? `Active precipitation hazard for ${cityName}. Monitor localized waterlogging and bund integrity.` 
-      : temp > 33 
-      ? `High daytime temperatures. Maintain adequate irrigation intervals.` 
-      : `Weather conditions are relatively stable with manageable localized risk factors in ${cityName}.`,
-    lastUpdated: "Today, 07:00 PM",
-    alerts: alerts.length > 0 ? alerts : [
-      {
-        id: `alt-gen-def-${panchayatId}`,
-        type: "Heavy Rainfall",
-        level: "LOW",
-        title: "Normal Weather Advisory",
-        headline: "No severe weather hazards currently detected.",
-        validUntil: "Tomorrow, 8:00 PM",
-        issuedAt: "Today, 06:00 PM",
-        affectedZones: [cityName],
-        bulletinText: "Atmospheric and hydrologic indicators remain within standard seasonal ranges.",
-        actions: ["Continue regular farm scheduling and pest scouting."],
-        acknowledged: false
-      }
-    ],
-    risks: [
-      {
-        id: "heavy-rainfall",
-        category: "Heavy Rainfall",
-        riskLevel: rainLevel,
-        severity: `${rainLevel === 'CRITICAL' ? 'Extreme' : rainLevel === 'HIGH' ? 'Severe' : rainLevel === 'MODERATE' ? 'Moderate' : 'Low'} (${rain} mm/24h)`,
-        probability: rainLevel === 'CRITICAL' ? 94 : rainLevel === 'HIGH' ? 82 : rainLevel === 'MODERATE' ? 56 : 22,
-        expectedTime: rainLevel === 'CRITICAL' ? 'Next 3 - 6 Hours' : 'Tomorrow, 8:00 PM',
-        description: `Precipitation accumulation estimated at ${rain}mm. Runoff rates dependent on local field elevation and soil texture.`,
-        affectedCrops: ["Rice", "Vegetables", "Jute"],
-        mitigation: "Ensure unobstructed ditch flow; postpone foliar pesticide application.",
-        metrics: {
-          "Accumulation Rate": `${(rain / 6).toFixed(1)} mm/h`,
-          "Soil Moisture": rain > 20 ? "92% Saturation" : "75% Capacity",
-          "Flash Runoff Risk": rainLevel
-        }
-      },
-      {
-        id: "waterlogging",
-        category: "Waterlogging / Flood",
-        riskLevel: floodLevel,
-        severity: `${floodLevel === 'CRITICAL' ? 'Severe' : floodLevel === 'HIGH' ? 'High' : floodLevel === 'MODERATE' ? 'Moderate' : 'Low'} (Depth ${rain > 25 ? '15-22' : rain > 12 ? '8-14' : '2-6'} cm)`,
-        probability: floodLevel === 'CRITICAL' ? 90 : floodLevel === 'HIGH' ? 75 : floodLevel === 'MODERATE' ? 48 : 15,
-        expectedTime: "Next 12 - 24 Hours",
-        description: "Low-lying plots at risk of localized water ponding. Elevated beds and upland plots are safe.",
-        affectedCrops: ["Vegetables", "Pulses", "Root Crops"],
-        mitigation: "Clear outlet channels; prepare emergency pump drains if ponding exceeds 24 hrs.",
-        metrics: {
-          "Infiltration Rate": "Medium-Slow",
-          "Field Water Level": `+${rain > 20 ? '12' : '4'} cm`,
-          "Drainage Efficiency": rain > 20 ? "45%" : "80%"
-        }
-      },
-      {
-        id: "heat-stress",
-        category: "Heat Stress",
-        riskLevel: heatLevel,
-        severity: `${heatLevel === 'CRITICAL' ? 'Extreme' : heatLevel === 'HIGH' ? 'High' : heatLevel === 'MODERATE' ? 'Moderate' : 'Low'} (${temp}°C, HI ${temp + 4}°C)`,
-        probability: heatLevel === 'CRITICAL' ? 92 : heatLevel === 'HIGH' ? 70 : heatLevel === 'MODERATE' ? 40 : 15,
-        expectedTime: "Tomorrow, 12:00 PM - 04:00 PM",
-        description: `Daytime maximum temp hovering near ${temp}°C. Transpiration and canopy temperature must be monitored.`,
-        affectedCrops: ["Flowering stage crops", "Vegetables"],
-        mitigation: "Maintain root-zone moisture through evening irrigation; apply organic mulching.",
-        metrics: {
-          "Peak Temp": `${temp}°C`,
-          "Heat Index": `${temp + 4}°C`,
-          "VPD Index": temp > 33 ? "2.9 kPa" : "1.2 kPa"
-        }
-      },
-      {
-        id: "drought",
-        category: "Drought / Dry Spell",
-        riskLevel: droughtLevel,
-        severity: `${droughtLevel === 'HIGH' ? 'High Deficit' : droughtLevel === 'MODERATE' ? 'Moderate Dryness' : 'Adequate Moisture'}`,
-        probability: droughtLevel === 'HIGH' ? 78 : droughtLevel === 'MODERATE' ? 45 : 10,
-        expectedTime: "Next 7 - 10 Days",
-        description: rain < 5 
-          ? "Consecutive dry days depleting shallow soil moisture layers." 
-          : "Sufficient precipitation maintains good water availability in root zone.",
-        affectedCrops: ["Upland non-irrigated crops"],
-        mitigation: "Conserve pond storage; apply irrigation on priority seedbeds.",
-        metrics: {
-          "Moisture Deficit": rain < 5 ? "-18.0 mm" : "0.0 mm",
-          "SPEI Index": rain < 5 ? "-1.2" : "+1.4",
-          "Soil Moisture": rain < 5 ? "40%" : "85%"
-        }
-      },
-      {
-        id: "strong-wind",
-        category: "Strong Wind",
-        riskLevel: windLevel,
-        severity: `${windLevel === 'HIGH' ? 'Severe Gusts' : windLevel === 'MODERATE' ? 'Moderate Gusts' : 'Light Breeze'} (${wind} km/h)`,
-        probability: windLevel === 'HIGH' ? 80 : windLevel === 'MODERATE' ? 55 : 20,
-        expectedTime: "Tonight into Tomorrow Morning",
-        description: `Wind velocities around ${wind} km/h with localized gustiness during storm cloud passage.`,
-        affectedCrops: ["Tall standing crops", "Banana", "Jute"],
-        mitigation: "Prop vulnerable fruit trees; secure nursery shade nets.",
-        metrics: {
-          "Sustained Speed": `${wind} km/h`,
-          "Peak Gusts": `${Math.round(wind * 1.35)} km/h`,
-          "Direction": "South-Southeast"
-        }
-      },
-      {
-        id: "cold-stress",
-        category: "Cold Stress",
-        riskLevel: coldLevel,
-        severity: `${coldLevel === 'HIGH' ? 'Chilling Risk' : coldLevel === 'MODERATE' ? 'Cool Night' : 'Minimal'} (${Math.round(temp - 5)}°C min)`,
-        probability: coldLevel === 'HIGH' ? 75 : coldLevel === 'MODERATE' ? 35 : 4,
-        expectedTime: "Overnight",
-        description: "Nighttime temperatures remain within safe agronomic parameters for current crop rotation.",
-        affectedCrops: ["None"],
-        mitigation: "Standard seasonal management.",
-        metrics: {
-          "Min Night Temp": `${Math.round(temp - 5)}°C`,
-          "Dew Point": "22°C",
-          "Chilling Hours": "0"
-        }
-      }
-    ]
+    summary: rain > 20 
+      ? `Active precipitation & waterlogging hazard for ${pName}. Inspect bund drainage outlets immediately.`
+      : temp > 33
+      ? `Elevated thermal stress index in ${pName}. Maintain root-zone moisture.`
+      : `Microclimate conditions within manageable seasonal parameters for ${pName}.`,
+    lastUpdated: "Today, 07:15 PM",
+    alerts,
+    risks
   }
 }

@@ -1,7 +1,8 @@
-import React, { createContext, useContext, useState } from 'react'
+import React, { createContext, useContext, useState, useCallback } from 'react'
 import { getWeatherData, getBlockWeatherData, mockBlockWeather } from '../data/mockWeather'
 import { getPanchayatsForBlock, mockPanchayatDetails, mockBlocks } from '../data/mockPanchayats'
 import { mockGrowthStages } from '../data/mockAdvisory'
+import { fetchDownscaledForecast } from '../lib/api'
 
 const DashboardContext = createContext()
 
@@ -15,11 +16,88 @@ export function DashboardProvider({ children }) {
   const [activeCrop, setActiveCrop] = useState("Rice (Kharif)")
   const [activeGrowthStage, setActiveGrowthStage] = useState("Tillering")
 
-  // Derived Data
+  // Live API state — shared across all pages
+  const [liveApiResult, setLiveApiResult] = useState(null)
+  const [liveApiLoading, setLiveApiLoading] = useState(false)
+  const [liveApiError, setLiveApiError] = useState(null)
+
+  const setCustomLocation = useCallback((newState, newDistrict, newBlock, newPanchayat) => {
+    if (newState) setActiveState(newState)
+    if (newDistrict) setActiveDistrict(newDistrict)
+    if (newBlock) setActiveBlock(newBlock)
+    if (newPanchayat) setActivePanchayat(newPanchayat)
+  }, [])
+
+  const runPrediction = useCallback(async (block, panchayat, date) => {
+    setLiveApiLoading(true)
+    setLiveApiError(null)
+    const targetBlock = block || activeBlock
+    const targetPanchayat = panchayat || activePanchayat
+    const targetDate = date || new Date().toISOString().slice(0, 10)
+
+    try {
+      const data = await fetchDownscaledForecast(targetBlock, targetPanchayat, targetDate)
+      setLiveApiResult(data)
+      if (block && block !== activeBlock) setActiveBlock(block)
+      if (panchayat && panchayat !== activePanchayat) setActivePanchayat(panchayat)
+      return data
+    } catch (err) {
+      setLiveApiError(err?.message || 'Prediction failed')
+      throw err
+    } finally {
+      setLiveApiLoading(false)
+    }
+  }, [activeBlock, activePanchayat])
+
+  const setLocationAndPredict = useCallback(async ({ state, district, block, panchayat, date }) => {
+    if (state) setActiveState(state)
+
+    let resolvedDistrict = district
+    if (!resolvedDistrict || resolvedDistrict === "West Bengal") {
+      for (const [dist, blkList] of Object.entries(mockBlocks || {})) {
+        if (blkList.some(b => b.toLowerCase() === (block || '').trim().toLowerCase())) {
+          resolvedDistrict = dist
+          break
+        }
+      }
+    }
+    if (!resolvedDistrict || resolvedDistrict === "West Bengal") {
+      const bLower = (block || '').toLowerCase()
+      if (bLower.includes("tamluk") || bLower.includes("haldia") || bLower.includes("mahishadal") || bLower.includes("contai") || bLower.includes("nandigram")) {
+        resolvedDistrict = "PurbaMedinipur"
+      }
+    }
+    if (resolvedDistrict) setActiveDistrict(resolvedDistrict)
+
+    if (block) {
+      const cleanBlock = block.trim()
+      setActiveBlock(cleanBlock)
+      const list = getPanchayatsForBlock(cleanBlock)
+      if (list && list.length > 0) {
+        if (!panchayat || !list.some(p => p.id === panchayat)) {
+          setActivePanchayat(list[0].id)
+        } else {
+          setActivePanchayat(panchayat)
+        }
+      }
+    } else if (panchayat) {
+      setActivePanchayat(panchayat)
+    }
+
+    const targetDate = date || new Date().toISOString().slice(0, 10)
+    return await runPrediction(block || activeBlock, panchayat || activePanchayat, targetDate)
+  }, [activeBlock, activePanchayat, runPrediction])
+
   const weatherData = getWeatherData(activePanchayat)
-  const blockWeatherData = getBlockWeatherData(activeBlock)
+  const blockWeatherData = getBlockWeatherData(activeBlock, activeDistrict, liveApiResult)
   const panchayatsInBlock = getPanchayatsForBlock(activeBlock)
-  const blocksInDistrict = (mockBlocks && mockBlocks[activeDistrict]) || ["Polba-Dadpur", "Chinsurah-Mogra", "Singur", "Haripal"]
+
+  // Find blocks for activeDistrict
+  const foundDistKey = Object.keys(mockBlocks || {}).find(k => k.toLowerCase() === (activeDistrict || '').toLowerCase())
+  const blocksInDistrict = (foundDistKey && mockBlocks[foundDistKey]) || 
+    (activeBlock && (activeBlock.toLowerCase().includes("tamluk") || activeBlock.toLowerCase().includes("haldia") || activeBlock.toLowerCase().includes("mahishadal") || activeBlock.toLowerCase().includes("contai") || activeBlock.toLowerCase().includes("nandigram"))
+      ? ["Mahishadal", "Tamluk", "Haldia", "Nandigram-I", "Contai-I"]
+      : ["Polba-Dadpur", "Chinsurah-Mogra", "Singur", "Haripal"])
 
   // Handlers to auto-update dependent fields
   const handlePanchayatChange = (pid) => {
@@ -39,13 +117,33 @@ export function DashboardProvider({ children }) {
   }
 
   const handleBlockChange = (block) => {
-    setActiveBlock(block)
-    const list = getPanchayatsForBlock(block)
-    if (list && list.length > 0) {
-      const exists = list.some(p => p.id === activePanchayat)
-      if (!exists) {
-        setActivePanchayat(list[0].id)
+    if (!block) return
+    const cleanBlock = block.trim()
+    setActiveBlock(cleanBlock)
+
+    // Auto-detect and update district if this block belongs to a mapped district
+    let foundDistrict = null
+    for (const [dist, blkList] of Object.entries(mockBlocks || {})) {
+      if (blkList.some(b => b.toLowerCase() === cleanBlock.toLowerCase())) {
+        foundDistrict = dist
+        break
       }
+    }
+    if (!foundDistrict) {
+      const bLower = cleanBlock.toLowerCase()
+      if (bLower.includes("tamluk") || bLower.includes("haldia") || bLower.includes("mahishadal") || bLower.includes("contai") || bLower.includes("nandigram")) {
+        foundDistrict = "PurbaMedinipur"
+      } else if (bLower.includes("polba") || bLower.includes("singur") || bLower.includes("haripal") || bLower.includes("mogra")) {
+        foundDistrict = "Hooghly"
+      }
+    }
+    if (foundDistrict) {
+      setActiveDistrict(foundDistrict)
+    }
+
+    const list = getPanchayatsForBlock(cleanBlock)
+    if (list && list.length > 0) {
+      setActivePanchayat(list[0].id)
     }
   }
 
@@ -63,6 +161,8 @@ export function DashboardProvider({ children }) {
         activeDistrict, setActiveDistrict,
         activeBlock, setActiveBlock, handleBlockChange,
         activePanchayat, setActivePanchayat, handlePanchayatChange,
+        setCustomLocation,
+        setLocationAndPredict,
         activeCrop, handleCropChange,
         activeGrowthStage, setActiveGrowthStage,
         weatherData,
@@ -70,7 +170,12 @@ export function DashboardProvider({ children }) {
         panchayatsInBlock,
         blocksInDistrict,
         mockBlocks,
-        mockBlockWeather
+        mockBlockWeather,
+        // Live Aurora ML API
+        liveApiResult,
+        liveApiLoading,
+        liveApiError,
+        runPrediction,
       }}
     >
       {children}

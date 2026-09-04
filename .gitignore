@@ -25,3 +25,25 @@ dist-ssr
 
 # Large files
 public/215347.mp4
+
+# Python & Environment
+__pycache__/
+*.py[cod]
+*$py.class
+*.env.local
+.env
+venv/
+.venv/
+
+# Large ML weights & datasets (use Git LFS or external cloud storage)
+*.ckpt
+*.pt
+*.pth
+*.onnx
+*.nc
+*.grib*
+checkpoints/
+data/
+lightning_logs/
+
+
