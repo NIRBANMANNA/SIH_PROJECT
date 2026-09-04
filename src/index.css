@@ -53,27 +53,7 @@
 path.dynamic-flow-line,
 .dynamic-flow-line {
   stroke-dasharray: 8 10 !important;
-  animation: dynamicFlowDash 1s linear infinite;
-  -webkit-animation: dynamicFlowDash 1s linear infinite;
   will-change: stroke-dashoffset;
-}
-
-@keyframes dynamicFlowDash {
-  0% {
-    stroke-dashoffset: 36px;
-  }
-  100% {
-    stroke-dashoffset: 0px;
-  }
-}
-
-@-webkit-keyframes dynamicFlowDash {
-  0% {
-    stroke-dashoffset: 36px;
-  }
-  100% {
-    stroke-dashoffset: 0px;
-  }
 }
 
 .dynamic-vector-arrow,

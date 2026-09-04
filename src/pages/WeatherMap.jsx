@@ -199,7 +199,7 @@ function LeafletMap({
     }
   }, [tileType])
 
-  // Bulletproof animation driver: continuously shifts SVG stroke-dashoffset at 30 FPS across all browsers
+  // Bulletproof animation driver: directly shifts SVG stroke-dashoffset at 40 FPS on the DOM
   useEffect(() => {
     if (!showFlowStreamlines) return
 
@@ -208,12 +208,14 @@ function LeafletMap({
     let lastTime = performance.now()
 
     const animate = (now) => {
-      if (now - lastTime >= 32) {
+      if (now - lastTime >= 24) {
         lastTime = now
-        offset = (offset + 1.2) % 36
-        const paths = document.querySelectorAll('path.dynamic-flow-line')
+        offset -= 1.2
+        if (offset <= -360) offset = 0
+
+        const paths = document.querySelectorAll('.dynamic-flow-line')
         for (let i = 0; i < paths.length; i++) {
-          paths[i].setAttribute('stroke-dashoffset', offset.toFixed(1))
+          paths[i].style.setProperty('stroke-dashoffset', `${offset.toFixed(1)}px`, 'important')
         }
       }
       frameId = requestAnimationFrame(animate)
