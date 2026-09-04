@@ -135,12 +135,13 @@ export default function RightRail({ tempUnit = 'C', style }) {
     activeBlock, 
     handleBlockChange, 
     blocksInDistrict, 
-    blockWeatherData 
+    blockWeatherData,
+    activeDistrict
   } = useDashboard()
 
   // Get other blocks in this district to render as interactive cards
-  const inactiveBlocks = (blocksInDistrict || ["Polba-Dadpur", "Chinsurah-Mogra", "Singur", "Haripal"])
-    .filter(b => b !== activeBlock)
+  const inactiveBlocks = (blocksInDistrict || [])
+    .filter(b => b.toLowerCase() !== (activeBlock || '').toLowerCase())
     .slice(0, 3)
 
   const formatTemp = (tempVal) => {
@@ -169,7 +170,7 @@ export default function RightRail({ tempUnit = 'C', style }) {
       <BigCard cityData={blockWeatherData} tempUnit={tempUnit} />
       
       {inactiveBlocks.map((blkName, idx) => {
-        const data = getBlockWeatherData(blkName)
+        const data = getBlockWeatherData(blkName, activeDistrict)
         if (!data) return null;
         
         return (

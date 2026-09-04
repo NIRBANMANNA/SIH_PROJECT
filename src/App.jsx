@@ -15,6 +15,7 @@ import HistoricalTrends from './pages/HistoricalTrends'
 import Accuracy from './pages/Accuracy'
 import Reports from './pages/Reports'
 import Settings from './pages/Settings'
+import ModelConsole from './pages/ModelConsole'
 
 export default function App() {
   return (
@@ -30,6 +31,7 @@ export default function App() {
           <Route path="overview" element={<Overview />} />
           <Route path="map" element={<WeatherMap />} />
           <Route path="forecast" element={<ForecastDownscaled />} />
+          <Route path="console" element={<ModelConsole />} />
           <Route path="alerts" element={<RiskAlerts />} />
           <Route path="cropadvisory" element={<CropAdvisory />} />
           <Route path="crop-advisory" element={<CropAdvisory />} />

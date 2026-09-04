@@ -5,6 +5,7 @@ const navItems = [
   { id: 'i-grid',  label: 'Overview',          path: '/dashboard/overview' },
   { id: 'i-globe', label: 'Weather Map',       path: '/dashboard/map' },
   { id: 'i-wind',  label: 'Forecast',          path: '/dashboard/forecast' },
+  { id: 'i-send',  label: 'Model Console',     path: '/dashboard/console' },
   { id: 'i-bell',  label: 'Risk & Alerts',     path: '/dashboard/alerts' },
   { id: 'i-drop',  label: 'Crop Advisory',     path: '/dashboard/cropadvisory' },
   { id: 'i-cal',   label: 'Historical Trends', path: '/dashboard/historical' },

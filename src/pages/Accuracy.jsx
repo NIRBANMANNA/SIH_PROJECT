@@ -1,19 +1,41 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { tabViewBaseStyle } from '../lib/styles'
 import { useDashboard } from '../context/DashboardContext'
 import { Icon } from '../components/IconSprite'
+import { fetchAccuracyMetrics } from '../lib/api'
 
 export default function Accuracy() {
   const { activePanchayat, weatherData } = useDashboard()
-
-  // Mock accuracy metrics for the demo
-  const metrics = {
+  const [metrics, setMetrics] = useState({
     mae: '1.2 °C',
     rmse: '1.5 °C',
     r2: '0.92',
     rainfallMae: '2.5 mm',
     rainfallRmse: '3.1 mm'
-  }
+  })
+
+  useEffect(() => {
+    let alive = true
+
+    fetchAccuracyMetrics()
+      .then((data) => {
+        if (!alive || !data) return
+        setMetrics({
+          mae: `${data.t2m?.mae ?? metrics.mae}`,
+          rmse: `${data.t2m?.rmse ?? metrics.rmse}`,
+          r2: `${data.t2m?.r2 ?? metrics.r2}`,
+          rainfallMae: `${data.tp?.mae ?? metrics.rainfallMae}`,
+          rainfallRmse: `${data.tp?.rmse ?? metrics.rainfallRmse}`,
+        })
+      })
+      .catch(() => {
+        // Keep the local fallback values when the API is unavailable.
+      })
+
+    return () => {
+      alive = false
+    }
+  }, [])
 
   return (
     <div style={tabViewBaseStyle}>

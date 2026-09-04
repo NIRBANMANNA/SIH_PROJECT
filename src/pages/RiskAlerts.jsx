@@ -16,17 +16,41 @@ export default function RiskAlerts() {
     activeBlock, 
     handleBlockChange,
     activeDistrict,
+    activeState,
     activeCrop,
+    activeGrowthStage,
     panchayatsInBlock,
+    blocksInDistrict,
     mockBlocks
   } = useDashboard()
 
-  const blocksList = (mockBlocks && mockBlocks[activeDistrict]) || ["Polba-Dadpur", "Chinsurah-Mogra", "Singur", "Haripal"]
+  const blocksList = useMemo(() => {
+    const list = [...(blocksInDistrict || [])]
+    if (activeBlock && !list.includes(activeBlock)) {
+      list.unshift(activeBlock)
+    }
+    return list.length > 0 ? list : ["Polba-Dadpur", "Chinsurah-Mogra", "Singur", "Haripal"]
+  }, [blocksInDistrict, activeBlock])
+
+  const currentPanchayat = useMemo(() => {
+    return panchayatsInBlock.find(p => p.id === activePanchayat) || panchayatsInBlock[0]
+  }, [panchayatsInBlock, activePanchayat])
 
   // Dynamic risk calculation based on active Panchayat and Weather Telemetry
   const riskData = useMemo(() => {
     return getRisksForPanchayat(activePanchayat, weatherData)
   }, [activePanchayat, weatherData])
+
+  const dominantHazard = useMemo(() => {
+    if (!riskData?.risks || riskData.risks.length === 0) return null
+    const scoreMap = { CRITICAL: 4, HIGH: 3, MODERATE: 2, LOW: 1 }
+    const sorted = [...riskData.risks].sort((a, b) => {
+      const diff = (scoreMap[b.riskLevel] || 0) - (scoreMap[a.riskLevel] || 0)
+      if (diff !== 0) return diff
+      return (b.probability || 0) - (a.probability || 0)
+    })
+    return sorted[0]
+  }, [riskData.risks])
 
   // UI state
   const [levelFilter, setLevelFilter] = useState('ALL')
@@ -73,7 +97,7 @@ export default function RiskAlerts() {
     setIsRefreshing(true)
     setTimeout(() => {
       setIsRefreshing(false)
-      showToast("Real-time sensor telemetry and hazard forecasts updated successfully.")
+      showToast(`Real-time sensor telemetry and hazard forecasts for ${currentPanchayat?.name || activeBlock} updated successfully.`)
     }, 600)
   }
 
@@ -95,7 +119,7 @@ export default function RiskAlerts() {
     setTimeout(() => {
       setIsBroadcasting(false)
       setBroadcastModalOpen(false)
-      showToast(`Agromet Bulletin successfully broadcast to 1,420 registered farmers via ${broadcastChannel} (${broadcastLanguage})!`)
+      showToast(`Agromet Bulletin successfully broadcast to 1,420 registered farmers in ${currentPanchayat?.name || activeBlock} via ${broadcastChannel} (${broadcastLanguage})!`)
     }, 1200)
   }
 
@@ -163,7 +187,7 @@ export default function RiskAlerts() {
             </span>
           </div>
           <p style={{ fontSize: 'calc(13.5 * var(--u))', color: 'rgba(255,255,255,0.75)', marginTop: 'calc(6 * var(--u))', margin: 'calc(4 * var(--u)) 0 0 0' }}>
-            High-resolution multi-hazard vulnerability assessment for <strong style={{ color: '#fff' }}>{weatherData.city}</strong> ({activeDistrict}, {activeBlock}).
+            High-resolution multi-hazard vulnerability assessment for <strong style={{ color: '#fff' }}>{currentPanchayat?.name || weatherData.city}</strong> ({activeBlock} Block, {activeDistrict}).
           </p>
         </div>
 
@@ -483,14 +507,14 @@ export default function RiskAlerts() {
           </div>
           <div style={{ marginTop: 'calc(6 * var(--u))' }}>
             <div style={{ fontSize: 'calc(17 * var(--u))', fontWeight: 700, color: '#fff', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-              {riskData.risks[0]?.category || 'Atmospheric Balance'}
+              {dominantHazard?.category || 'Atmospheric Balance'}
             </div>
             <div style={{ fontSize: 'calc(12 * var(--u))', color: 'rgba(255,255,255,0.7)', marginTop: 'calc(2 * var(--u))' }}>
-              {riskData.risks[0]?.severity || 'Normal Parameters'}
+              {dominantHazard?.severity || 'Normal Parameters'}
             </div>
           </div>
           <div style={{ fontSize: 'calc(11.5 * var(--u))', color: '#93c5fd', marginTop: 'calc(8 * var(--u))' }}>
-            Probability: <strong>{riskData.risks[0]?.probability}%</strong>
+            Probability: <strong>{dominantHazard?.probability || 0}%</strong>
           </div>
         </div>
 
@@ -977,7 +1001,7 @@ export default function RiskAlerts() {
                     Agromet Emergency Broadcast
                   </h3>
                   <p style={{ fontSize: 'calc(12 * var(--u))', color: 'rgba(255,255,255,0.6)', margin: 'calc(2 * var(--u)) 0 0 0' }}>
-                    Disseminating instant advisory to farmers in {weatherData.city}
+                    Disseminating instant advisory to farmers in {currentPanchayat?.name || activeBlock} ({activeDistrict})
                   </p>
                 </div>
               </div>
@@ -1006,7 +1030,7 @@ export default function RiskAlerts() {
                 </div>
               </div>
               <span style={{ fontSize: 'calc(12 * var(--u))', background: '#2563eb', color: '#fff', padding: 'calc(4 * var(--u)) calc(10 * var(--u))', borderRadius: 'calc(20 * var(--u))', fontWeight: 600 }}>
-                {weatherData.city}
+                {currentPanchayat?.name || activeBlock}
               </span>
             </div>
 
@@ -1077,15 +1101,15 @@ export default function RiskAlerts() {
               }}>
                 {broadcastLanguage === 'Bengali' ? (
                   <>
-                    ⚠️ <strong>{weatherData.city} কৃষি আবহাওয়া সতর্কতা:</strong> আগামী ২৪ ঘণ্টার মধ্যে ভারী বৃষ্টির সম্ভাবনা ({riskData.risks[0]?.severity})। ধান ও সবজি জমিতে অতিরিক্ত জল নিষ্কাশনের ব্যবস্থা রাখুন। সার ও কীটনাশক স্প্রে স্থগিত রাখুন। বৈধতা: আগামীকাল রাত ৮:০০ টা পর্যন্ত।
+                    ⚠️ <strong>{currentPanchayat?.name || activeBlock} কৃষি আবহাওয়া সতর্কতা:</strong> আগামী ২৪ ঘণ্টার মধ্যে {dominantHazard?.category || 'আবহাওয়া'} সংক্রান্ত সমস্যা ({dominantHazard?.severity || 'ভারী বৃষ্টি'})। {activeCrop || 'ফসল'} জমিতে অতিরিক্ত জল নিষ্কাশনের ব্যবস্থা রাখুন। সার ও কীটনাশক স্প্রে সতর্কতার সাথে পরিচালনা করুন।
                   </>
                 ) : broadcastLanguage === 'Hindi' ? (
                   <>
-                    ⚠️ <strong>{weatherData.city} कृषि मौसम चेतावनी:</strong> अगले 24 घंटों में भारी वर्षा ({riskData.risks[0]?.severity}) की संभावना। खेतों में जल निकासी की व्यवस्था करें। उर्वरक और कीटनाशक छिड़काव स्थगित रखें। वैधता: कल रात 8:00 बजे तक।
+                    ⚠️ <strong>{currentPanchayat?.name || activeBlock} कृषि मौसम चेतावनी:</strong> अगले 24 घंटों में {dominantHazard?.category || 'मौसम'} चेतावनी ({dominantHazard?.severity || 'भारी वर्षा'}) की संभावना। {activeCrop || 'फसल'} के खेतों में जल निकासी की व्यवस्था करें। कीटनाशक छिड़काव स्थगित रखें।
                   </>
                 ) : (
                   <>
-                    ⚠️ <strong>{weatherData.city} AGROMET ALERT:</strong> Heavy Rainfall expected in the next 24 hours ({riskData.risks[0]?.severity}). Open field drainage outlets immediately. Postpone chemical pesticide spraying. Valid until: Tomorrow, 8:00 PM.
+                    ⚠️ <strong>{currentPanchayat?.name || activeBlock} AGROMET ALERT:</strong> {dominantHazard?.category || 'Weather hazard'} warning in effect ({dominantHazard?.severity || 'Moderate to heavy conditions'}). Inspect field drainage for {activeCrop || 'crops'}. Postpone chemical spraying until winds and showers stabilize.
                   </>
                 )}
               </div>

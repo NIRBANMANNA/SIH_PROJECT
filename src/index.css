@@ -1,6 +1,80 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
+@import "leaflet/dist/leaflet.css";
+
+/* ─── Leaflet overrides ──────────────────────────────────── */
+.leaflet-aurora-tooltip {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+.leaflet-aurora-tooltip::before { display: none !important; }
+.leaflet-container {
+  font-family: inherit;
+  background: #0f172a;
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 100% !important;
+  flex: 1 1 auto;
+}
+.leaflet-control-attribution {
+  background: rgba(15,23,42,0.8) !important;
+  color: rgba(255,255,255,0.4) !important;
+  font-size: 10px !important;
+}
+.leaflet-control-attribution a { color: rgba(56,189,248,0.8) !important; }
+.leaflet-control-zoom a {
+  background: rgba(15,23,42,0.9) !important;
+  color: #fff !important;
+  border-color: rgba(255,255,255,0.15) !important;
+}
+.leaflet-control-zoom a:hover {
+  background: rgba(56,189,248,0.2) !important;
+}
+
+/* Clean theme styling for map tile pane (Google Maps Dark inversion & transparent background) */
+.map-theme-dark .leaflet-tile-pane {
+  filter: invert(92%) hue-rotate(180deg) brightness(85%) contrast(92%);
+  background: transparent !important;
+}
+
+.map-theme-light .leaflet-tile-pane {
+  filter: none !important;
+  background: transparent !important;
+}
+
+.leaflet-tile {
+  transition: opacity 0.15s ease;
+}
+
+/* ─── Dynamic Atmospheric Vectors & Streamlines ────────────── */
+.dynamic-flow-line {
+  stroke-dasharray: 8 8 !important;
+  animation: dynamicFlowDash 1.2s linear infinite !important;
+}
+
+@keyframes dynamicFlowDash {
+  from {
+    stroke-dashoffset: 32;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.dynamic-vector-arrow,
+.aws-pin-icon-wrapper,
+.vec-speed-pill {
+  background: transparent !important;
+  border: none !important;
+}
+
+.dynamic-vector-arrow,
+.vec-speed-pill {
+  pointer-events: none !important;
+}
 
 @custom-variant dark (&:is(.dark *));
 

@@ -1,31 +1,68 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { Icon } from './IconSprite'
+import { useDashboard } from '../context/DashboardContext'
 
 export default function LocationSelectorModal({ isOpen, onClose }) {
-  // 4 pure user input fields with defaults from the prompt example
-  const [state, setState] = useState('West Bengal')
-  const [district, setDistrict] = useState('Nadia')
-  const [block, setBlock] = useState('Krishnanagar-I')
-  const [panchayat, setPanchayat] = useState('XYZ Panchayat')
+  const navigate = useNavigate()
+  const {
+    activeState,
+    activeDistrict,
+    activeBlock,
+    activePanchayat,
+    setLocationAndPredict
+  } = useDashboard()
+
+  // 4 user input fields with defaults from active context
+  const [state, setState] = useState(activeState || 'West Bengal')
+  const [district, setDistrict] = useState(activeDistrict || 'PurbaMedinipur')
+  const [block, setBlock] = useState(activeBlock || 'Mahishadal')
+  const [panchayat, setPanchayat] = useState(activePanchayat || 'champi')
 
   const [isProcessing, setIsProcessing] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
 
+  // Sync with context whenever modal opens
+  useEffect(() => {
+    if (isOpen) {
+      if (activeState) setState(activeState)
+      if (activeDistrict) setDistrict(activeDistrict)
+      if (activeBlock) setBlock(activeBlock)
+      if (activePanchayat) setPanchayat(activePanchayat)
+    }
+  }, [isOpen, activeState, activeDistrict, activeBlock, activePanchayat])
+
   if (!isOpen) return null
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     setIsProcessing(true)
-    
-    // Simulate high-speed downscaling telemetry calculation
-    setTimeout(() => {
-      setIsProcessing(false)
+
+    try {
+      // Execute the downscaling prediction for this specific location
+      await setLocationAndPredict({
+        state,
+        district,
+        block,
+        panchayat,
+        date: new Date().toISOString().slice(0, 10)
+      })
+
       setIsSubmitted(true)
       setTimeout(() => {
         setIsSubmitted(false)
         onClose()
-      }, 1200)
-    }, 800)
+      }, 500)
+    } catch (err) {
+      console.error("Downscaling prediction error:", err)
+      setIsSubmitted(true)
+      setTimeout(() => {
+        setIsSubmitted(false)
+        onClose()
+      }, 500)
+    } finally {
+      setIsProcessing(false)
+    }
   }
 
   const inputGroupStyle = {
@@ -219,12 +256,18 @@ export default function LocationSelectorModal({ isOpen, onClose }) {
             <input
               type="text"
               className="loc-glass-input"
+              list="wb-states-list"
               placeholder="e.g. West Bengal"
               value={state}
               onChange={e => setState(e.target.value)}
               style={inputStyle}
               required
             />
+            <datalist id="wb-states-list">
+              <option value="West Bengal" />
+              <option value="Odisha" />
+              <option value="Bihar" />
+            </datalist>
           </div>
 
           {/* 2. DISTRICT */}
@@ -235,12 +278,25 @@ export default function LocationSelectorModal({ isOpen, onClose }) {
             <input
               type="text"
               className="loc-glass-input"
-              placeholder="e.g. Nadia"
+              list="wb-districts-list"
+              placeholder="e.g. PurbaMedinipur, Hooghly, Nadia"
               value={district}
               onChange={e => setDistrict(e.target.value)}
               style={inputStyle}
               required
             />
+            <datalist id="wb-districts-list">
+              <option value="PurbaMedinipur" />
+              <option value="Hooghly" />
+              <option value="Nadia" />
+              <option value="Burdwan" />
+              <option value="Howrah" />
+              <option value="North 24 Parganas" />
+              <option value="South 24 Parganas" />
+              <option value="Bankura" />
+              <option value="Murshidabad" />
+              <option value="Malda" />
+            </datalist>
           </div>
 
           {/* 3. BLOCK */}
@@ -251,12 +307,25 @@ export default function LocationSelectorModal({ isOpen, onClose }) {
             <input
               type="text"
               className="loc-glass-input"
-              placeholder="e.g. Krishnanagar-I"
+              list="wb-blocks-list"
+              placeholder="e.g. Mahishadal, Polba-Dadpur, Singur"
               value={block}
               onChange={e => setBlock(e.target.value)}
               style={inputStyle}
               required
             />
+            <datalist id="wb-blocks-list">
+              <option value="Mahishadal" />
+              <option value="Tamluk" />
+              <option value="Haldia" />
+              <option value="Nandigram-I" />
+              <option value="Polba-Dadpur" />
+              <option value="Chinsurah-Mogra" />
+              <option value="Singur" />
+              <option value="Haripal" />
+              <option value="Krishnanagar-I" />
+              <option value="Burdwan-I" />
+            </datalist>
           </div>
 
           {/* 4. PANCHAYAT */}
