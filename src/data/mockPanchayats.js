@@ -1159,3 +1159,38 @@ export const getPanchayatsForBlock = (block) => {
 
 export const getPanchayatDetail = (pid) => mockPanchayatDetails[pid] || mockPanchayatDetails["p1"]
 
+export const getDistrictForBlock = (block) => {
+  if (!block) return "PurbaMedinipur"
+  const b = block.trim().toLowerCase()
+  for (const [dist, blkList] of Object.entries(mockBlocks || {})) {
+    if (blkList.some(item => item.toLowerCase() === b)) {
+      return dist
+    }
+  }
+  if (b.includes("tamluk") || b.includes("haldia") || b.includes("mahishadal") || b.includes("contai") || b.includes("nandigram")) {
+    return "PurbaMedinipur"
+  }
+  if (b.includes("polba") || b.includes("singur") || b.includes("haripal") || b.includes("chinsurah") || b.includes("mogra")) {
+    return "Hooghly"
+  }
+  if (b.includes("burdwan") || b.includes("kalna")) {
+    return "Burdwan"
+  }
+  if (b.includes("krishnanagar") || b.includes("ranaghat") || b.includes("santipur")) {
+    return "Nadia"
+  }
+  if (b.includes("uluberia") || b.includes("bally")) {
+    return "Howrah"
+  }
+  if (b.includes("bankura") || b.includes("bishnupur")) {
+    return "Bankura"
+  }
+  if (b.includes("barasat") || b.includes("habra") || b.includes("basirhat")) {
+    return "North 24 Parganas"
+  }
+  if (b.includes("baruipur") || b.includes("canning") || b.includes("diamond")) {
+    return "South 24 Parganas"
+  }
+  return "PurbaMedinipur"
+}
+

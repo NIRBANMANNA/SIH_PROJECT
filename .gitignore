@@ -43,7 +43,8 @@ venv/
 *.nc
 *.grib*
 checkpoints/
-data/
+/data/
+ml_pipeline/data/
 lightning_logs/
 
 

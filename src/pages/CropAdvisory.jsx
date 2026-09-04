@@ -23,6 +23,8 @@ export default function CropAdvisory() {
     activeGrowthStage, 
     setActiveGrowthStage,
     panchayatsInBlock,
+    blocksInDistrict,
+    activeDistrict,
     mockBlocks
   } = useDashboard()
 
@@ -49,11 +51,13 @@ export default function CropAdvisory() {
   // Current Panchayat Details
   const currentPanchayat = mockPanchayatDetails[activePanchayat] || {
     name: weatherData.city.split(' ')[0],
-    block: "Polba-Dadpur",
-    district: "Hooghly"
+    block: activeBlock || "Tamluk",
+    district: activeDistrict || "PurbaMedinipur"
   }
 
-  const blocksList = (mockBlocks && mockBlocks[currentPanchayat.district || "Hooghly"]) || ["Polba-Dadpur", "Chinsurah-Mogra", "Singur", "Haripal"]
+  const blocksList = (blocksInDistrict && blocksInDistrict.length > 0)
+    ? blocksInDistrict
+    : (mockBlocks && mockBlocks[activeDistrict || "PurbaMedinipur"]) || ["Mahishadal", "Tamluk", "Haldia", "Nandigram-I", "Contai-I"]
 
   // Selected crop metadata
   const currentCropMeta = useMemo(() => {

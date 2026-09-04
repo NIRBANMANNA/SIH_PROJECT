@@ -20,7 +20,7 @@ import {
   BarChart2
 } from 'lucide-react'
 import { MapContainer, TileLayer, CircleMarker, Circle, Tooltip, GeoJSON, useMap, Polyline, Marker } from 'react-leaflet'
-import { getPanchayatsForBlock, getPanchayatDetail, mockBlocks } from '../data/mockPanchayats'
+import { getPanchayatsForBlock, getPanchayatDetail, mockBlocks, getDistrictForBlock } from '../data/mockPanchayats'
 
 // ─── Leaflet fix: default icon images (needed when bundled with Vite) ───────
 import L from 'leaflet'
@@ -692,8 +692,21 @@ export default function WeatherMap() {
     activeDistrict, 
     activeState, 
     activePanchayat, 
-    handlePanchayatChange 
+    handlePanchayatChange,
+    blocksInDistrict
   } = useDashboard()
+
+  const effectiveDistrict = useMemo(() => {
+    if (activeDistrict && activeDistrict !== "West Bengal" && mockBlocks[activeDistrict]) {
+      return activeDistrict
+    }
+    return getDistrictForBlock(activeBlock)
+  }, [activeDistrict, activeBlock])
+
+  const districtBlocks = useMemo(() => {
+    if (blocksInDistrict && blocksInDistrict.length > 0) return blocksInDistrict
+    return mockBlocks[effectiveDistrict] || ["Mahishadal", "Tamluk", "Haldia", "Nandigram-I", "Contai-I"]
+  }, [blocksInDistrict, effectiveDistrict])
 
   const [activeLayerId, setActiveLayerId] = useState('rainfall')
   const [hoveredPanchayatId, setHoveredPanchayatId] = useState(null)
@@ -850,7 +863,7 @@ export default function WeatherMap() {
               <Activity size={12} /> Live Geospatial Telemetry
             </span>
             <span style={{ fontSize: 'calc(12 * var(--u))', color: 'rgba(255,255,255,0.6)' }}>
-              {activeState} • {activeDistrict} • <b>{activeBlock} Block</b>
+              {activeState} • {effectiveDistrict} • <b>{activeBlock} Block</b>
             </span>
           </div>
           <h1 style={{ 
@@ -876,7 +889,7 @@ export default function WeatherMap() {
             padding: 'calc(3 * var(--u))',
             gap: 'calc(2 * var(--u))'
           }}>
-            {(mockBlocks[activeDistrict] || ["Polba-Dadpur", "Chinsurah-Mogra"]).map(blk => (
+            {districtBlocks.map(blk => (
               <button
                 key={blk}
                 onClick={() => handleBlockChange(blk)}
@@ -1165,7 +1178,7 @@ export default function WeatherMap() {
             boxShadow: '0 4px 12px rgba(0,0,0,0.3)'
           }}>
             <MapPin size={13} style={{ color: '#0284c7' }} />
-            West Bengal · {activeDistrict || 'PurbaMedinipur'} · {activeBlock} Block
+            West Bengal · {effectiveDistrict} · {activeBlock} Block
           </div>
 
           {/* Map View Switcher: Google Map / Satellite / Dark Mode (Top-Right) */}
