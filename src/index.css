@@ -50,17 +50,29 @@
 }
 
 /* ─── Dynamic Atmospheric Vectors & Streamlines ────────────── */
+path.dynamic-flow-line,
 .dynamic-flow-line {
-  stroke-dasharray: 8 8 !important;
-  animation: dynamicFlowDash 1.2s linear infinite !important;
+  stroke-dasharray: 8 10 !important;
+  animation: dynamicFlowDash 1s linear infinite;
+  -webkit-animation: dynamicFlowDash 1s linear infinite;
+  will-change: stroke-dashoffset;
 }
 
 @keyframes dynamicFlowDash {
-  from {
-    stroke-dashoffset: 32;
+  0% {
+    stroke-dashoffset: 36px;
   }
-  to {
-    stroke-dashoffset: 0;
+  100% {
+    stroke-dashoffset: 0px;
+  }
+}
+
+@-webkit-keyframes dynamicFlowDash {
+  0% {
+    stroke-dashoffset: 36px;
+  }
+  100% {
+    stroke-dashoffset: 0px;
   }
 }
 
@@ -541,7 +553,7 @@ html {
 /* ─── Reduced motion ───────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
 
-  *,
+  *:not(.dynamic-flow-line):not(path.dynamic-flow-line),
   *::before,
   *::after {
     animation: none !important;

@@ -199,6 +199,30 @@ function LeafletMap({
     }
   }, [tileType])
 
+  // Bulletproof animation driver: continuously shifts SVG stroke-dashoffset at 30 FPS across all browsers
+  useEffect(() => {
+    if (!showFlowStreamlines) return
+
+    let offset = 0
+    let frameId
+    let lastTime = performance.now()
+
+    const animate = (now) => {
+      if (now - lastTime >= 32) {
+        lastTime = now
+        offset = (offset + 1.2) % 36
+        const paths = document.querySelectorAll('path.dynamic-flow-line')
+        for (let i = 0; i < paths.length; i++) {
+          paths[i].setAttribute('stroke-dashoffset', offset.toFixed(1))
+        }
+      }
+      frameId = requestAnimationFrame(animate)
+    }
+
+    frameId = requestAnimationFrame(animate)
+    return () => cancelAnimationFrame(frameId)
+  }, [showFlowStreamlines, panchayats])
+
   return (
     <MapContainer
       center={center}
@@ -256,6 +280,7 @@ function LeafletMap({
               positions={[vec.start, vec.end]}
               pathOptions={{
                 className: 'dynamic-flow-line',
+                dashArray: '8, 10',
                 color: '#c084fc',
                 weight: 2.5,
                 opacity: 0.9
@@ -270,6 +295,7 @@ function LeafletMap({
               ]}
               pathOptions={{
                 className: 'dynamic-flow-line',
+                dashArray: '6, 8',
                 color: '#e879f9',
                 weight: 1.5,
                 opacity: 0.65
@@ -282,6 +308,7 @@ function LeafletMap({
               ]}
               pathOptions={{
                 className: 'dynamic-flow-line',
+                dashArray: '6, 8',
                 color: '#e879f9',
                 weight: 1.5,
                 opacity: 0.65
