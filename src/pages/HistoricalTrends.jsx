@@ -108,7 +108,7 @@ export default function HistoricalTrends() {
       </div>
 
       {/* Grid Layout for Charts */}
-      <div style={{ 
+      <div className="historical-charts-grid" style={{ 
         display: 'grid', 
         gridTemplateColumns: 'repeat(auto-fit, minmax(calc(440 * var(--u)), 1fr))', 
         gap: 'calc(24 * var(--u))', 

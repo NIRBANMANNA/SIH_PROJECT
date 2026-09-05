@@ -87,7 +87,7 @@ export default function ModelConsole() {
         </div>
       </div>
 
-      <form onSubmit={handleRun} style={{
+      <form className="responsive-grid-4col" onSubmit={handleRun} style={{
         display: 'grid',
         gridTemplateColumns: 'repeat(4, minmax(0, 1fr))',
         gap: 'calc(16 * var(--u))',
@@ -150,7 +150,7 @@ export default function ModelConsole() {
         </div>
       )}
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 0.8fr', gap: 'calc(16 * var(--u))' }}>
+      <div className="responsive-two-col-grid" style={{ display: 'grid', gridTemplateColumns: '1.2fr 0.8fr', gap: 'calc(16 * var(--u))' }}>
         <div style={{
           borderRadius: 'calc(18 * var(--u))',
           padding: 'calc(18 * var(--u))',

@@ -46,7 +46,7 @@ export default function Accuracy() {
         </p>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'calc(20 * var(--u))' }}>
+      <div className="responsive-two-col-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'calc(20 * var(--u))' }}>
         {/* Temperature Metrics */}
         <div style={{
           background: 'rgba(255,255,255,0.04)',

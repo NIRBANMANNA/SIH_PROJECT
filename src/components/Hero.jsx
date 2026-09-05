@@ -9,6 +9,7 @@ export default function Hero({ cityData, tempUnit, chipText, style }) {
 
   return (
     <section
+      className="hero-section"
       aria-label="Current weather"
       style={{
         position: 'absolute',
@@ -45,6 +46,7 @@ export default function Hero({ cityData, tempUnit, chipText, style }) {
 
       {/* H1 with mask-reveal lines */}
       <h1
+        className="hero-title"
         style={{
           fontFamily: "'Inter Tight', 'Inter', sans-serif",
           fontWeight: 500,

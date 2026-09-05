@@ -16,6 +16,7 @@ export default function Forecast({ cityData, tempUnit, style }) {
 
   return (
     <section
+      className="forecast-section"
       aria-label="Hourly forecast"
       style={{
         position: 'absolute',
@@ -27,11 +28,11 @@ export default function Forecast({ cityData, tempUnit, style }) {
       }}
     >
       {/* Temps row */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+      <div className="forecast-temps-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
         {cityData.temps.slice(0, 7).map(({ val, icon, cls, rain }, index) => (
           <div
             key={cls || index}
-            className={cls}
+            className={`forecast-temp-item ${cls}`}
             style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'calc(6 * var(--u))' }}
           >
             <span style={{ fontSize: 'calc(37 * var(--u))', fontWeight: 400, letterSpacing: 'calc(-.7 * var(--u))', color: '#fff', lineHeight: 1 }}>

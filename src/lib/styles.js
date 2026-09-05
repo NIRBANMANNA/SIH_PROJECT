@@ -1,9 +1,9 @@
 export const tabViewBaseStyle = {
   position: 'absolute',
-  left: 'calc(126 * var(--u))',
-  right: 'calc(37 * var(--u))',
-  top: 'calc(94 * var(--u))',
-  bottom: 'calc(26 * var(--u))',
+  left: 'var(--tab-left, calc(126 * var(--u)))',
+  right: 'var(--tab-right, calc(37 * var(--u)))',
+  top: 'var(--tab-top, calc(94 * var(--u)))',
+  bottom: 'var(--tab-bottom, calc(26 * var(--u)))',
   zIndex: 10,
   display: 'flex',
   flexDirection: 'column',
@@ -11,17 +11,18 @@ export const tabViewBaseStyle = {
   backdropFilter: 'blur(calc(12 * var(--u))) saturate(110%)',
   WebkitBackdropFilter: 'blur(calc(12 * var(--u))) saturate(110%)',
   border: '1px solid rgba(255,255,255,0.06)',
-  borderRadius: 'calc(26 * var(--u))',
-  padding: 'calc(26 * var(--u))',
-  overflowY: 'auto'
+  borderRadius: 'var(--tab-radius, calc(26 * var(--u)))',
+  padding: 'var(--tab-padding, calc(26 * var(--u)))',
+  overflowY: 'auto',
+  WebkitOverflowScrolling: 'touch',
 }
 
 export const overviewLayoutStyle = {
   position: 'absolute',
-  left: 'calc(126 * var(--u))',
-  right: 'calc(396 * var(--u))',
-  top: 'calc(136 * var(--u))',
-  bottom: 'calc(99 * var(--u))',
+  left: 'var(--tab-left, calc(126 * var(--u)))',
+  right: 'var(--tab-right, calc(396 * var(--u)))',
+  top: 'var(--tab-top, calc(136 * var(--u)))',
+  bottom: 'var(--tab-bottom, calc(99 * var(--u)))',
   zIndex: 10,
   display: 'flex',
   flexDirection: 'column',
@@ -29,3 +30,4 @@ export const overviewLayoutStyle = {
   gap: 'calc(20 * var(--u))',
   pointerEvents: 'none'
 }
+

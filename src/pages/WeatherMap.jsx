@@ -887,7 +887,10 @@ export default function WeatherMap() {
             border: '1px solid rgba(255,255,255,0.1)',
             borderRadius: 'calc(18 * var(--u))',
             padding: 'calc(3 * var(--u))',
-            gap: 'calc(2 * var(--u))'
+            gap: 'calc(2 * var(--u))',
+            maxWidth: '100%',
+            overflowX: 'auto',
+            WebkitOverflowScrolling: 'touch'
           }}>
             {districtBlocks.map(blk => (
               <button
@@ -983,7 +986,7 @@ export default function WeatherMap() {
         flexShrink: 0
       }}>
         {/* Layer Buttons */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 'calc(6 * var(--u))', flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 'calc(6 * var(--u))', flexWrap: 'nowrap', overflowX: 'auto', WebkitOverflowScrolling: 'touch', maxWidth: '100%', paddingBottom: '2px' }}>
           <div style={{ 
             display: 'flex', 
             alignItems: 'center', 

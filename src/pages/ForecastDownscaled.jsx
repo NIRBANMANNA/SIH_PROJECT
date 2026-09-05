@@ -121,7 +121,7 @@ export default function ForecastDownscaled() {
         </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'calc(24 * var(--u))', marginBottom: 'calc(20 * var(--u))', flexShrink: 0 }}>
+      <div className="responsive-two-col-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'calc(24 * var(--u))', marginBottom: 'calc(20 * var(--u))', flexShrink: 0 }}>
         {/* Low Res Block Level */}
         <div style={{
           background: 'rgba(255,255,255,0.04)',

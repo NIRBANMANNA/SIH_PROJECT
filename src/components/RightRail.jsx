@@ -153,6 +153,7 @@ export default function RightRail({ tempUnit = 'C', style }) {
 
   return (
     <aside
+      className="right-rail-aside"
       aria-label="Block level weather cards"
       style={{
         position: 'absolute',

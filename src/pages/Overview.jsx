@@ -14,23 +14,29 @@ export default function Overview() {
   } = useDashboard()
 
   return (
-    <div style={{
-      display: 'flex',
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      padding: 'calc(76 * var(--u)) calc(38 * var(--u)) calc(70 * var(--u)) calc(100 * var(--u))',
-      height: '100%',
-      boxSizing: 'border-box',
-      gap: 'calc(24 * var(--u))'
-    }}>
-      <div style={{
+    <div
+      className="overview-container"
+      style={{
         display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'flex-start',
-        gap: 'calc(30 * var(--u))',
-        flex: 1,
-        minWidth: 0,
-      }}>
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        padding: 'calc(76 * var(--u)) calc(38 * var(--u)) calc(70 * var(--u)) calc(100 * var(--u))',
+        height: '100%',
+        boxSizing: 'border-box',
+        gap: 'calc(24 * var(--u))'
+      }}
+    >
+      <div
+        className="overview-main-col"
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'flex-start',
+          gap: 'calc(30 * var(--u))',
+          flex: 1,
+          minWidth: 0,
+        }}
+      >
         <Hero
           cityData={blockWeatherData}
           chipText={`Block Weather • ${activeBlock} (${activeDistrict})`}

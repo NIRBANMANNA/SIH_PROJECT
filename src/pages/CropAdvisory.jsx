@@ -403,7 +403,7 @@ export default function CropAdvisory() {
         flexShrink: 0
       }}>
         {/* Row 1: Selectors & Live Telemetry */}
-        <div style={{
+        <div className="advisory-controls-grid" style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(4, minmax(calc(140 * var(--u)), 1fr)) minmax(calc(240 * var(--u)), 1.2fr)',
           gap: 'calc(14 * var(--u))',
@@ -823,7 +823,7 @@ export default function CropAdvisory() {
         )}
 
         {/* TOP ROW: WEATHER IMPACT & CROP RISK SUMMARY CARDS */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: 'calc(16 * var(--u))' }}>
+        <div className="responsive-two-col-grid" style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: 'calc(16 * var(--u))' }}>
           
           {/* 1. WEATHER IMPACT CARD */}
           <div style={{
@@ -957,7 +957,7 @@ export default function CropAdvisory() {
         </div>
 
         {/* ─── 4-CARD OPERATIONS SUITE (IRRIGATION, FERTILIZER, SPRAY, PEST SCOUTING) ─── */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(calc(200 * var(--u)), 1fr))', gap: 'calc(14 * var(--u))' }}>
+        <div className="responsive-grid-4col" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(calc(200 * var(--u)), 1fr))', gap: 'calc(14 * var(--u))' }}>
           
           {/* 1. Irrigation Card */}
           <div style={{
@@ -1117,7 +1117,7 @@ export default function CropAdvisory() {
         </div>
 
         {/* MIDDLE SECTION: RECOMMENDED ACTIONS vs ACTIONS TO AVOID (TWO-COLUMN DUAL CARD) */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'calc(16 * var(--u))' }}>
+        <div className="responsive-two-col-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'calc(16 * var(--u))' }}>
           
           {/* RECOMMENDED ACTIONS */}
           <div style={{

@@ -75,6 +75,7 @@ export default function Header({
 
   return (
     <header
+      className="dashboard-header"
       style={{
         position: 'absolute',
         top: 'calc(22 * var(--u))',
@@ -83,27 +84,28 @@ export default function Header({
         height: 'calc(52 * var(--u))',
         zIndex: 20,
         display: 'flex',
-        alignItems: 'flex-start',
+        alignItems: 'center',
         justifyContent: 'space-between',
       }}
     >
       {/* Left: greeting with active block context */}
-      <div style={{ display: 'flex', alignItems: 'baseline', gap: 'calc(8 * var(--u))' }}>
+      <div className="header-greeting-container" style={{ display: 'flex', alignItems: 'center', gap: 'calc(8 * var(--u))', flexWrap: 'nowrap' }}>
         <div
-          className="anim-hello"
+          className="header-greeting-text anim-hello"
           style={{ fontSize: 'calc(18 * var(--u))', fontWeight: 400, color: 'rgba(255,255,255,.93)', lineHeight: 1 }}
         >
           Welcome,
         </div>
         <div
-          className="anim-who"
-          style={{ fontSize: 'calc(19.5 * var(--u))', fontWeight: 700, letterSpacing: 'calc(-.35 * var(--u))', color: '#fff', lineHeight: 1 }}
+          className="header-greeting-name anim-who"
+          style={{ fontSize: 'calc(19.5 * var(--u))', fontWeight: 700, letterSpacing: 'calc(-.35 * var(--u))', color: '#fff', lineHeight: 1, whiteSpace: 'nowrap' }}
         >
           Nirban Manna
         </div>
         <div
+          className="header-location-badge"
           style={{
-            marginLeft: 'calc(12 * var(--u))',
+            marginLeft: 'calc(10 * var(--u))',
             padding: 'calc(4 * var(--u)) calc(10 * var(--u))',
             background: 'rgba(255,255,255,0.14)',
             backdropFilter: 'blur(calc(12 * var(--u)))',
@@ -113,11 +115,13 @@ export default function Header({
             fontWeight: 600,
             display: 'flex',
             alignItems: 'center',
-            gap: 'calc(5 * var(--u))'
+            gap: 'calc(5 * var(--u))',
+            whiteSpace: 'nowrap'
           }}
         >
           <Icon id="i-pin" width="12" height="12" />
-          {activeBlock} Block • {activeDistrict}
+          <span>{activeBlock} Block</span>
+          <span className="badge-subtext">• {activeDistrict}</span>
         </div>
       </div>
 
@@ -125,7 +129,7 @@ export default function Header({
       <div
         role="toolbar"
         aria-label="Quick actions"
-        style={{ display: 'flex', alignItems: 'center', gap: 'calc(16 * var(--u))', position: 'relative' }}
+        style={{ display: 'flex', alignItems: 'center', gap: 'calc(12 * var(--u))', position: 'relative' }}
       >
         {/* Add location (Opens 4-Tier Location Input Modal) */}
         <button
@@ -133,7 +137,7 @@ export default function Header({
           className="anim-tool1 rounded-2xl border-2 border-dashed border-white/80 bg-white/12 text-white backdrop-blur-md transition-all duration-300 hover:translate-x-[-3px] hover:translate-y-[-3px] hover:rounded-md hover:bg-white/22 hover:border-white hover:shadow-[3px_3px_0px_white] active:translate-x-[0px] active:translate-y-[0px] active:rounded-2xl active:shadow-none cursor-pointer flex items-center justify-center"
           aria-label="Set prediction location"
           title="Set State, District, Block, and Panchayat"
-          style={{ width: 'calc(40 * var(--u))', height: 'calc(40 * var(--u))', flexShrink: 0 }}
+          style={{ width: 'clamp(36px, calc(40 * var(--u)), 44px)', height: 'clamp(36px, calc(40 * var(--u)), 44px)', flexShrink: 0 }}
         >
           <Icon id="i-plus" width="18" height="18" />
         </button>
@@ -147,8 +151,8 @@ export default function Header({
           className="anim-tool2 rounded-2xl border-2 border-dashed border-white/80 bg-white/12 text-white backdrop-blur-md transition-all duration-300 hover:translate-x-[-3px] hover:translate-y-[-3px] hover:rounded-md hover:bg-white/22 hover:border-white hover:shadow-[3px_3px_0px_white] active:translate-x-[0px] active:translate-y-[0px] active:rounded-2xl active:shadow-none cursor-pointer flex items-center justify-center"
           aria-label="Search"
           style={{
-            width: 'calc(40 * var(--u))',
-            height: 'calc(40 * var(--u))',
+            width: 'clamp(36px, calc(40 * var(--u)), 44px)',
+            height: 'clamp(36px, calc(40 * var(--u)), 44px)',
             flexShrink: 0,
             background: searchOpen ? 'rgba(255,255,255,0.28)' : 'rgba(255,255,255,0.12)',
             borderColor: searchOpen ? '#fff' : 'rgba(255,255,255,0.80)'
@@ -166,8 +170,8 @@ export default function Header({
           className="anim-tool3 rounded-2xl border-2 border-dashed border-white/80 bg-white/12 text-white backdrop-blur-md transition-all duration-300 hover:translate-x-[-3px] hover:translate-y-[-3px] hover:rounded-md hover:bg-white/22 hover:border-white hover:shadow-[3px_3px_0px_white] active:translate-x-[0px] active:translate-y-[0px] active:rounded-2xl active:shadow-none cursor-pointer flex items-center justify-center relative"
           aria-label="Notifications"
           style={{
-            width: 'calc(40 * var(--u))',
-            height: 'calc(40 * var(--u))',
+            width: 'clamp(36px, calc(40 * var(--u)), 44px)',
+            height: 'clamp(36px, calc(40 * var(--u)), 44px)',
             flexShrink: 0,
             background: notificationsOpen ? 'rgba(255,255,255,0.28)' : 'rgba(255,255,255,0.12)',
             borderColor: notificationsOpen ? '#fff' : 'rgba(255,255,255,0.80)'
@@ -204,7 +208,8 @@ export default function Header({
           role="img"
           aria-label="Nirban Manna profile"
           style={{
-            width: 'calc(40 * var(--u))', height: 'calc(40 * var(--u))',
+            width: 'clamp(36px, calc(40 * var(--u)), 44px)',
+            height: 'clamp(36px, calc(40 * var(--u)), 44px)',
             borderRadius: '50%', overflow: 'hidden', flexShrink: 0,
           }}
         >
@@ -225,6 +230,7 @@ export default function Header({
         {/* ─── Search Auto-complete Dropdown (Blocks) ─── */}
         {searchOpen && (
           <div
+            className="header-dropdown-search"
             style={{
               position: 'absolute',
               top: 'calc(62 * var(--u))',
@@ -313,6 +319,7 @@ export default function Header({
         {/* ─── Notifications Dropdown ─── */}
         {notificationsOpen && (
           <div
+            className="header-dropdown-notifications"
             style={{
               position: 'absolute',
               top: 'calc(62 * var(--u))',

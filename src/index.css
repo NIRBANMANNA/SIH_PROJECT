@@ -111,6 +111,12 @@ path.dynamic-flow-line,
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+  --tab-left: calc(126 * var(--u));
+  --tab-right: calc(37 * var(--u));
+  --tab-top: calc(94 * var(--u));
+  --tab-bottom: calc(26 * var(--u));
+  --tab-padding: calc(26 * var(--u));
+  --tab-radius: calc(26 * var(--u));
 }
 
 @supports not (height: 100dvh) {
@@ -554,14 +560,149 @@ html {
   }
 }
 
-/* ─── Mobile ≤860px ─────────────────────────────────────── */
-@media (max-width: 860px) {
+/* ─── Mobile & Tablet Responsive Framework (≤900px) ───────────────── */
+.desktop-sidebar {
+  display: flex;
+}
+.mobile-bottom-nav {
+  display: none;
+}
+
+@media (max-width: 900px) {
   :root {
-    --u: min(100vw / 344, 1.52px);
+    --u: clamp(0.92px, 100vw / 390, 1.25px);
+    --tab-left: 10px;
+    --tab-right: 10px;
+    --tab-top: 66px;
+    --tab-bottom: 74px;
+    --tab-padding: 14px;
+    --tab-radius: 18px;
   }
 
   html, body, #root {
     overflow-x: hidden;
+  }
+
+  /* Hide Desktop Sidebar, Show Mobile Bottom Nav */
+  .desktop-sidebar {
+    display: none !important;
+  }
+  .mobile-bottom-nav {
+    display: flex !important;
+  }
+
+  /* Header adjustments */
+  .dashboard-header {
+    top: 10px !important;
+    left: 10px !important;
+    right: 10px !important;
+    height: 48px !important;
+    align-items: center !important;
+  }
+
+  .header-greeting-container {
+    gap: 6px !important;
+  }
+
+  .header-greeting-text {
+    font-size: 13px !important;
+  }
+
+  .header-greeting-name {
+    font-size: 15px !important;
+  }
+
+  .header-location-badge {
+    margin-left: 6px !important;
+    padding: 3px 8px !important;
+    font-size: 11px !important;
+  }
+
+  .header-dropdown-search,
+  .header-dropdown-notifications {
+    position: fixed !important;
+    top: 64px !important;
+    left: 10px !important;
+    right: 10px !important;
+    width: auto !important;
+    max-width: 480px !important;
+    margin: 0 auto !important;
+    z-index: 100 !important;
+  }
+
+  /* Overview Page */
+  .overview-container {
+    flex-direction: column !important;
+    padding: 66px 10px 84px 10px !important;
+    gap: 18px !important;
+    height: 100% !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  .overview-main-col {
+    width: 100% !important;
+    gap: 20px !important;
+  }
+
+  .hero-section {
+    position: relative !important;
+    left: auto !important;
+    top: auto !important;
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+
+  .hero-title {
+    font-size: clamp(28px, 7.5vw, 48px) !important;
+    line-height: 1.15 !important;
+  }
+
+  .forecast-section {
+    position: relative !important;
+    left: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+    width: 100% !important;
+  }
+
+  .forecast-temps-row {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    padding-bottom: 8px !important;
+    gap: 12px !important;
+  }
+
+  .forecast-temp-item {
+    min-width: 52px !important;
+    flex-shrink: 0 !important;
+  }
+
+  .right-rail-aside {
+    position: relative !important;
+    right: auto !important;
+    top: auto !important;
+    bottom: auto !important;
+    width: 100% !important;
+    height: auto !important;
+  }
+
+  /* Responsive Grids */
+  .responsive-two-col-grid,
+  .responsive-grid-2col {
+    grid-template-columns: 1fr !important;
+  }
+
+  .responsive-grid-4col {
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)) !important;
+  }
+
+  .historical-charts-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .advisory-controls-grid {
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)) !important;
   }
 
   /* Login / Register: hide brand panel + divider, center card */
@@ -576,13 +717,17 @@ html {
   /* Auth card: remove left offset introduced by brand panel */
   .auth-card {
     margin-left: 0 !important;
-    width: min(calc(440 * var(--u)), 92vw) !important;
+    width: min(calc(440 * var(--u)), 94vw) !important;
   }
 }
 
-@media (max-width: 420px) {
-  :root {
-    --u: calc(100vw / 344);
+@media (max-width: 480px) {
+  .header-greeting-text {
+    display: none !important;
+  }
+
+  .header-location-badge .badge-subtext {
+    display: none !important;
   }
 }
 

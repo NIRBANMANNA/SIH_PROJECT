@@ -19,7 +19,7 @@ export default function Settings() {
       <h2 style={{ fontSize: 'calc(24 * var(--u))', fontWeight: 600, letterSpacing: 'calc(-.4 * var(--u))', marginBottom: 'calc(4 * var(--u))', flexShrink: 0 }}>App Settings</h2>
       <p style={{ fontSize: 'calc(13 * var(--u))', color: 'rgba(255,255,255,0.7)', marginBottom: 'calc(24 * var(--u))', flexShrink: 0 }}>Customize units, profile options, and notifications</p>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'calc(32 * var(--u))', flex: 1, overflowY: 'auto' }}>
+      <div className="responsive-two-col-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'calc(32 * var(--u))', flex: 1, overflowY: 'auto' }}>
         {/* Left column: Profile & Units */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 'calc(20 * var(--u))' }}>
           <div>
