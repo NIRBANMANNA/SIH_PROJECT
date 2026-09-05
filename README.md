@@ -1,4 +1,4 @@
-# Aurora Weather — Hyper-Local Agromet Intelligence Platform
+# KisanDarpan AI — Hyper-Local Agromet Intelligence Platform
 
 [![React](https://img.shields.io/badge/React-19.2-61DAFB?logo=react&logoColor=black)](https://react.dev/)
 [![Vite](https://img.shields.io/badge/Vite-8.2-646CFF?logo=vite&logoColor=white)](https://vite.dev/)
@@ -18,7 +18,7 @@
 
 Traditional weather forecasts provide coarse regional predictions (~9 km to 25 km grid spacing) that fail to capture localized microclimatic variations—such as riverine humidity corridors, localized convective downpours, and elevation depressions. 
 
-**Aurora Weather** bridges this gap through a unified full-stack architecture combining a **FastAPI ML downscaling inference backend** with a **high-performance React 19 frontend**. It delivers hyper-local telemetry across all Gram Panchayats in West Bengal, stage-specific crop advisories, multi-hazard risk alerts, animated GIS wind vector streamlines, and official printable PDF bulletins.
+**KisanDarpan AI** bridges this gap through a unified full-stack architecture combining a **FastAPI ML downscaling inference backend** with a **high-performance React 19 frontend**. It delivers hyper-local telemetry across all Gram Panchayats in West Bengal, stage-specific crop advisories, multi-hazard risk alerts, animated GIS wind vector streamlines, and official printable PDF bulletins.
 
 ---
 

@@ -55,24 +55,44 @@ function SectionLabel({ children }) {
   )
 }
 
+/* ── Farmer Logo ────────────────────────────────────────── */
+function FarmerLogo({ size = 32 }) {
+  return (
+    <div style={{
+      width: size,
+      height: size,
+      borderRadius: '9px',
+      background: 'linear-gradient(135deg, rgba(34, 197, 94, 0.35) 0%, rgba(234, 179, 8, 0.28) 100%)',
+      border: '1.5px solid rgba(250, 204, 21, 0.5)',
+      boxShadow: '0 2px 10px rgba(34, 197, 94, 0.25), inset 0 1px 1px rgba(255, 255, 255, 0.4)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      flexShrink: 0,
+      backdropFilter: 'blur(8px)',
+      position: 'relative',
+      overflow: 'hidden'
+    }}>
+      <svg viewBox="0 0 24 24" fill="none" style={{ width: size * 0.78, height: size * 0.78 }} stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        {/* Straw farmer hat (wide brim) */}
+        <path d="M2 13.5 C4.5 12, 7.5 11, 12 11 C16.5 11, 19.5 12, 22 13.5" stroke="#facc15" strokeWidth="2.2" strokeLinecap="round" />
+        <path d="M6 11.5 C6.5 6.5, 8.5 4.5, 12 4.5 C15.5 4.5, 17.5 6.5, 18 11.5" fill="rgba(250, 204, 21, 0.35)" stroke="#facc15" strokeWidth="1.8" />
+        {/* Hat band ribbon */}
+        <path d="M6.5 9.5 C8.5 8.5, 10 8, 12 8 C14 8, 15.5 8.5, 17.5 9.5" stroke="#22c55e" strokeWidth="1.6" />
+        {/* Head / Farmer Face */}
+        <circle cx="12" cy="14.2" r="2.6" stroke="#ffffff" fill="rgba(255,255,255,0.2)" strokeWidth="1.5" />
+        {/* Farmer Shirt & Neck */}
+        <path d="M7.5 21.5 v-1.8 a3 3 0 0 1 3 -3 h3 a3 3 0 0 1 3 3 v1.8" stroke="#4ade80" strokeWidth="1.8" />
+        {/* Small Golden Wheat Stalk / Sprout */}
+        <path d="M12 16.5 v3.5 M10.5 18 c.9-.6 1.5-.3 1.5 0 M13.5 18 c-.9-.6-1.5-.3-1.5 0" stroke="#fef08a" strokeWidth="1.4" />
+      </svg>
+    </div>
+  )
+}
+
 /* ── Logo ─────────────────────────────────────────────── */
 function Logo({ size = 36 }) {
-  return (
-    <svg viewBox="0 0 40 40" fill="none" aria-hidden="true"
-      style={{ width: size, height: size, flexShrink: 0 }}>
-      <rect x="0" y="0" width="40" height="40" rx="12" fill="rgba(255,255,255,.18)" />
-      {[
-        ['.6', '7,13 12,11 17,14 22,11 27,13 33,11'],
-        ['.75', '7,17 12,15 17,18 22,15 27,17 33,15'],
-        ['.9', '7,21 12,19 17,22 22,19 27,21 33,19'],
-        ['.75', '7,25 12,23 17,26 22,23 27,25 33,23'],
-        ['.6', '7,29 12,27 17,30 22,27 27,29 33,27'],
-      ].map(([op, pts], i) => (
-        <polyline key={i} points={pts} stroke="#fff" strokeWidth="2"
-          strokeLinecap="round" strokeLinejoin="round" fill="none" opacity={op} />
-      ))}
-    </svg>
-  )
+  return <FarmerLogo size={size} />
 }
 
 /* ═══════════════════════════════════════════════════════
@@ -114,8 +134,10 @@ function StickyNav() {
     }}>
       {/* Brand */}
       <button onClick={() => scrollTo('hero')} style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 'calc(10 * var(--u))', padding: 0 }}>
-        <Logo size={30} />
-        <span style={{ fontSize: 'clamp(14px, calc(16 * var(--u)), 19px)', fontWeight: 800, color: '#fff', letterSpacing: '0.04em' }}>Aurora Weather</span>
+        <FarmerLogo size={32} />
+        <span style={{ fontSize: 'clamp(15px, calc(17 * var(--u)), 20px)', fontWeight: 800, color: '#fff', letterSpacing: '0.03em', display: 'flex', alignItems: 'center', gap: 'calc(6 * var(--u))' }}>
+          KisanDarpan <span style={{ color: '#38bdf8', fontSize: '0.85em', background: 'rgba(56, 189, 248, 0.15)', border: '1px solid rgba(56, 189, 248, 0.35)', padding: '1px 7px', borderRadius: '6px', fontWeight: 700 }}>AI</span>
+        </span>
       </button>
 
       {/* Links */}
@@ -241,8 +263,8 @@ function HeroSection() {
         </div>
 
         {/* Stats */}
-        <div className="anim-bigtemp" style={{ display: 'flex', gap: 'calc(42 * var(--u))', alignItems: 'flex-end' }}>
-          {[['2M+', 'Active users'], ['140+', 'Countries'], ['99.9%', 'Uptime SLA'], ['< 1s', 'Avg latency']].map(([n, l]) => (
+        <div className="anim-bigtemp" style={{ display: 'flex', gap: 'calc(36 * var(--u))', alignItems: 'flex-end', flexWrap: 'wrap' }}>
+          {[['1K+', 'Active Users'], ['25', 'Blocks Covered'], ['120+', 'Panchayats Mapped'], ['< 1s', 'Avg Latency']].map(([n, l]) => (
             <div key={l} style={{ display: 'flex', flexDirection: 'column', gap: 'calc(3 * var(--u))' }}>
               <span style={{ fontSize: 'clamp(26px,calc(30 * var(--u)),36px)', fontWeight: 800, color: '#fff', letterSpacing: '0.04em', lineHeight: 1, textShadow: '0 2px 10px rgba(0,0,0,0.7)' }}>{n}</span>
               <span style={{ fontSize: 'clamp(11px,calc(12 * var(--u)),14px)', fontWeight: 500, color: 'rgba(255,255,255,.65)', letterSpacing: '0.08em', textTransform: 'uppercase', textShadow: '0 1px 4px rgba(0,0,0,0.6)' }}>{l}</span>
@@ -284,12 +306,12 @@ function HeroSection() {
 const HOW_STEPS = [
   {
     num: '01', title: 'Search your location',
-    desc: 'Type any city, pin a point on the map, or let Aurora auto-detect your GPS coordinates in seconds.',
+    desc: 'Type any block or panchayat, pin a point on the map, or let KisanDarpan AI auto-detect your location in seconds.',
     icon: <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" style={{ width: '100%', height: '100%' }}><circle cx="18" cy="18" r="10" /><line x1="25" y1="25" x2="34" y2="34" /><line x1="18" y1="12" x2="18" y2="24" strokeWidth="1.4" opacity=".5" /><line x1="12" y1="18" x2="24" y2="18" strokeWidth="1.4" opacity=".5" /></svg>,
   },
   {
     num: '02', title: 'Get your hyper-local forecast',
-    desc: 'Instant hourly, daily, and 15-day forecasts powered by 50,000+ ground sensors and satellite feeds.',
+    desc: 'Instant hourly, daily, and micro-grid forecasts powered by WRF 9km input downscaled to 1 km² by AI.',
     icon: <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" style={{ width: '100%', height: '100%' }}><circle cx="20" cy="16" r="6" /><path d="M8 32c0-6 5-11 12-11s12 5 12 11" opacity=".4" /><path d="M7 20h4M29 20h4M20 7V4M12 12l-2-2M28 12l2-2" strokeWidth="1.5" opacity=".55" /></svg>,
   },
   {
@@ -537,7 +559,7 @@ function PreviewSection() {
       transition: 'opacity .8s ease, transform .8s ease',
     }}>
       <SectionLabel>Product</SectionLabel>
-      <h2 style={h2Style}>See Aurora in action</h2>
+      <h2 style={h2Style}>See KisanDarpan AI in action</h2>
       <p style={{ ...subStyle, marginBottom: 'calc(52 * var(--u))' }}>A single unified dashboard — weather, radar, alerts, and AI insights at a glance.</p>
 
       {/* Mock dashboard */}
@@ -551,7 +573,7 @@ function PreviewSection() {
         <div style={{ background: 'rgba(255,255,255,.07)', backdropFilter: 'blur(20px)', padding: 'calc(12 * var(--u)) calc(18 * var(--u))', display: 'flex', alignItems: 'center', gap: 'calc(8 * var(--u))', borderBottom: '1px solid rgba(255,255,255,.07)' }}>
           {['#ff5f57', '#febc2e', '#28c840'].map(c => <div key={c} style={{ width: 'calc(10 * var(--u))', height: 'calc(10 * var(--u))', borderRadius: '50%', background: c }} />)}
           <div style={{ flex: 1, height: 'calc(22 * var(--u))', background: 'rgba(255,255,255,.08)', borderRadius: 'calc(6 * var(--u))', marginLeft: 'calc(8 * var(--u))', display: 'flex', alignItems: 'center', paddingLeft: 'calc(10 * var(--u))' }}>
-            <span style={{ fontSize: 'calc(10 * var(--u))', color: 'rgba(255,255,255,.32)' }}>aurora.weather/dashboard</span>
+            <span style={{ fontSize: 'calc(10 * var(--u))', color: 'rgba(255,255,255,.32)' }}>kisandarpan.ai/dashboard</span>
           </div>
         </div>
 
@@ -717,9 +739,9 @@ function PricingSection() {
    8. TESTIMONIALS
 ═══════════════════════════════════════════════════════ */
 const TESTIMONIALS = [
-  { quote: "Aurora's hyper-local forecasts changed how we plan irrigation. We reduced water waste by 30% in one season.", name: 'Priya Sharma', role: 'Agri-tech Lead, GreenField Co.', avatar: 'PS' },
-  { quote: "The severity alert system saved our outdoor event. 12 hours before the storm, Aurora was the only platform that caught it.", name: 'Arjun Mehta', role: 'Operations Manager, Apex Events', avatar: 'AM' },
-  { quote: "We embedded Aurora's API in our logistics dashboard. Weather overlays on our route planner has been a game-changer for fleet safety.", name: 'Neha Krishnan', role: 'CTO, SwiftRoute Logistics', avatar: 'NK' },
+  { quote: "KisanDarpan AI's hyper-local forecasts changed how we plan irrigation. We reduced water waste by 30% in our paddy and potato crops.", name: 'Priya Sharma', role: 'Agri-tech Lead, GreenField Co.', avatar: 'PS' },
+  { quote: "The severity alert system saved our Kharif harvest. 12 hours before the cloudburst in Hooghly, KisanDarpan AI was the only platform that warned us.", name: 'Arjun Mehta', role: 'Operations Manager, Polba FPO', avatar: 'AM' },
+  { quote: "We embedded KisanDarpan AI's downscaled telemetry into our local farm advisory network. Village microclimate precision is a game-changer.", name: 'Neha Krishnan', role: 'Krishi Vigyan Kendra Consultant', avatar: 'NK' },
 ]
 
 function TestiCard({ t, i, visible }) {
@@ -765,8 +787,8 @@ function TestimonialsSection() {
       transition: 'opacity .75s ease, transform .75s ease',
     }}>
       <SectionLabel>Testimonials</SectionLabel>
-      <h2 style={h2Style}>Trusted by professionals</h2>
-      <p style={{ ...subStyle, marginBottom: 'calc(52 * var(--u))' }}>See how teams across industries rely on Aurora every day.</p>
+      <h2 style={h2Style}>Trusted by farmers & experts</h2>
+      <p style={{ ...subStyle, marginBottom: 'calc(52 * var(--u))' }}>See how agricultural officers and farmers rely on KisanDarpan AI every day.</p>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 'calc(18 * var(--u))' }}>
         {TESTIMONIALS.map((t, i) => <TestiCard key={t.name} t={t} i={i} visible={visible} />)}
       </div>
@@ -778,13 +800,13 @@ function TestimonialsSection() {
    9. FAQ
 ═══════════════════════════════════════════════════════ */
 const FAQS = [
-  { q: "How accurate are Aurora's forecasts?", a: "Aurora blends 50,000+ IoT ground sensors, satellite imagery, Doppler radar, and a proprietary AI model. In independent benchmarks, our forecasts are accurate to ±1°C at street level — beating major providers by 18%." },
-  { q: "Can I use Aurora for free forever?", a: "Yes! The Free tier requires no credit card and never expires. You get 5 saved locations, 7-day forecasts, basic radar, and email alerts. Upgrade to Pro only when you need more." },
-  { q: "What data sources does Aurora use?", a: "We aggregate data from ISRO, IMD, NASA MODIS, NOAA, ESA Copernicus, and our own network of 50,000+ IoT sensors deployed across India and 140+ countries." },
-  { q: "Is there an API I can integrate into my app?", a: "Yes — Pro and Enterprise plans include full RESTful and WebSocket API access with 99.9% SLA. Our API is actively used by logistics platforms, agri-tech companies, and government bodies." },
-  { q: "How do severe weather alerts work?", a: "Set custom thresholds for any parameter — temperature, rain intensity, wind speed, UV, AQI. Aurora monitors 24/7 and fires push, email, or SMS alerts the moment a threshold is crossed." },
-  { q: "Is my location data private and secure?", a: "Yes. We are GDPR and DPDPA compliant. Location data is anonymized, never sold, and encrypted end-to-end with AES-256 both at rest and in transit." },
-  { q: "Can Aurora be used for agriculture and government?", a: "Absolutely. Agriculture Mode offers evapotranspiration, soil moisture forecasts, and crop risk indices. We also offer white-label and on-prem deployment for government and enterprise clients." },
+  { q: "How accurate are KisanDarpan AI's forecasts?", a: "KisanDarpan AI blends ground AWS sensors across 25 blocks, satellite imagery, Doppler radar, and our ConvNeXt U-Net downscaling model. In independent benchmarks, our 1 km² micro-grid forecasts achieve over 92% R² accuracy." },
+  { q: "Can I use KisanDarpan AI for free?", a: "Yes! The platform is designed for public welfare and research. Farmers and administrative officers can access all 25 blocks, 120+ panchayats, crop advisories, and weather radar with zero charges." },
+  { q: "What data sources does KisanDarpan AI use?", a: "We aggregate data from IMD, WRF 9km Numerical Weather Prediction grids, ISRO, and our localized network of AWS IoT sensors deployed across 25 blocks and 120+ panchayats in West Bengal." },
+  { q: "Is there an API I can integrate into local agricultural systems?", a: "Yes — KisanDarpan AI provides full RESTful and WebSocket API endpoints with micro-grid downscaled precipitation, temperature, humidity, and wind telemetry." },
+  { q: "How do severe weather alerts work?", a: "Set custom thresholds for rain intensity, thunderstorm probability, heat stress, or wind gusts. KisanDarpan AI monitors 24/7 and triggers automated warnings before extreme events strike." },
+  { q: "Is my location data private and secure?", a: "Yes. We are DPDPA compliant. Location telemetry is anonymized and encrypted end-to-end both at rest and in transit." },
+  { q: "Can KisanDarpan AI provide advisories in regional languages?", a: "Absolutely. KisanDarpan AI supports voice audio bulletins and text in Bengali (বাংলা), Hindi (हिंदी), and English, with automated Agro-Bot recommendations." },
 ]
 
 function FAQItem({ faq, isOpen, onToggle }) {
@@ -820,7 +842,7 @@ function FAQSection() {
       <h2 style={h2Style}>Frequently asked questions</h2>
       <p style={{ ...subStyle, marginBottom: 'calc(52 * var(--u))' }}>
         Can't find what you need?{' '}
-        <a href="mailto:hello@aurora.weather" style={{ color: 'rgba(255,255,255,.65)', textDecoration: 'underline' }}>Email us.</a>
+        <a href="mailto:contact@kisandarpan.ai" style={{ color: 'rgba(255,255,255,.65)', textDecoration: 'underline' }}>Email us.</a>
       </p>
       <div style={{ maxWidth: 'calc(760 * var(--u))', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 'calc(10 * var(--u))' }}>
         {FAQS.map((faq, i) => <FAQItem key={i} faq={faq} isOpen={open === i} onToggle={() => setOpen(open === i ? null : i)} />)}
@@ -854,7 +876,7 @@ function CTASection() {
           <div style={{ display: 'inline-flex', alignItems: 'center', padding: 'calc(5 * var(--u)) calc(14 * var(--u))', border: '1px solid rgba(255,255,255,.16)', borderRadius: 'calc(20 * var(--u))', fontSize: 'calc(11 * var(--u))', fontWeight: 600, color: 'rgba(255,255,255,.58)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 'calc(24 * var(--u))' }}>✦ &nbsp; No credit card required</div>
           <h2 style={{ fontFamily: "'Inter Tight','Inter',sans-serif", fontWeight: 800, fontSize: 'clamp(30px,calc(50 * var(--u)),66px)', lineHeight: 1.1, letterSpacing: '0.02em', color: '#fff', marginBottom: 'calc(18 * var(--u))', textShadow: '0 2px 20px rgba(0,0,0,0.5)' }}>Start for free today.</h2>
           <p style={{ fontSize: 'clamp(14px,calc(15.5 * var(--u)),18px)', color: 'rgba(255,255,255,.58)', lineHeight: 1.65, maxWidth: 'calc(460 * var(--u))', margin: '0 auto calc(40 * var(--u))' }}>
-            Join 2 million people who trust Aurora for daily weather intelligence. Free forever, upgrade anytime.
+            Join 1,000+ farmers and agricultural officers who trust KisanDarpan AI for daily hyper-local micro-climate intelligence. Free forever, upgrade anytime.
           </p>
           <div style={{ display: 'flex', gap: 'calc(12 * var(--u))', justifyContent: 'center', flexWrap: 'wrap' }}>
             <button onClick={() => navigate('/register')}
@@ -891,10 +913,10 @@ function FooterSection() {
         {/* Brand */}
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 'calc(9 * var(--u))', marginBottom: 'calc(13 * var(--u))' }}>
-            <Logo size={28} />
-            <span style={{ fontSize: 'calc(15 * var(--u))', fontWeight: 800, color: '#fff', letterSpacing: '0.04em' }}>Aurora</span>
+            <FarmerLogo size={28} />
+            <span style={{ fontSize: 'calc(15 * var(--u))', fontWeight: 800, color: '#fff', letterSpacing: '0.04em' }}>KisanDarpan AI</span>
           </div>
-          <p style={{ fontSize: 'calc(12 * var(--u))', color: 'rgba(255,255,255,.42)', lineHeight: 1.72, maxWidth: 'calc(195 * var(--u))', margin: '0 0 calc(18 * var(--u))' }}>Precision weather intelligence for everyone — from farmers to fleet managers.</p>
+          <p style={{ fontSize: 'calc(12 * var(--u))', color: 'rgba(255,255,255,.42)', lineHeight: 1.72, maxWidth: 'calc(195 * var(--u))', margin: '0 0 calc(18 * var(--u))' }}>Precision agromet intelligence for every farmer, panchayat, and agricultural officer.</p>
           <div style={{ display: 'flex', gap: 'calc(8 * var(--u))' }}>
             {['𝕏', 'in', '▶', '𝕗'].map(icon => (
               <a key={icon} href="#" style={{ width: 'calc(30 * var(--u))', height: 'calc(30 * var(--u))', borderRadius: 'calc(7 * var(--u))', background: 'rgba(255,255,255,.07)', border: '1px solid rgba(255,255,255,.09)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 'calc(10.5 * var(--u))', color: 'rgba(255,255,255,.5)', textDecoration: 'none', transition: 'background .2s,color .2s' }}
@@ -921,7 +943,7 @@ function FooterSection() {
       </div>
 
       <div style={{ borderTop: '1px solid rgba(255,255,255,.07)', paddingTop: 'calc(22 * var(--u))', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 'calc(10 * var(--u))' }}>
-        <span style={{ fontSize: 'calc(11 * var(--u))', color: 'rgba(255,255,255,.28)' }}>© {new Date().getFullYear()} Aurora Weather, Inc. All rights reserved. Made with ❤️ for SIH 2026.</span>
+        <span style={{ fontSize: 'calc(11 * var(--u))', color: 'rgba(255,255,255,.28)' }}>© {new Date().getFullYear()} KisanDarpan AI, Inc. All rights reserved. Made with ❤️ for SIH 2026.</span>
         <div style={{ display: 'flex', gap: 'calc(18 * var(--u))' }}>
           {['Privacy', 'Terms', 'Cookies'].map(l => (
             <a key={l} href="#" style={{ fontSize: 'calc(11 * var(--u))', color: 'rgba(255,255,255,.28)', textDecoration: 'none', transition: 'color .2s' }}
