@@ -304,7 +304,14 @@ The FastAPI backend exposes the following endpoints:
 | `/dashboard/settings` | **Settings** | Units preference (°C/°F, mm/in, km/h/mph) and user preferences. |
 
 ---
+---
+> ## 🔬 Research & Reference
+> 
+> **[View the Research Gist Data](https://gist.github.com/Sowmajit-Kar/8b35e66c022a787edebd559c72ed3b4d)**  
+> *(Click the link above to view the code snippets and reference material).*
 
+
+---
 ## 📄 License
 
 This project is open-sourced under the [MIT License](LICENSE).
