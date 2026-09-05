@@ -12,7 +12,8 @@
 > **Smart India Hackathon (SIH)** — An AI/ML-powered microclimate weather downscaling and precision agricultural advisory network delivering **Gram Panchayat-level resolution (1 km²)** downscaled from regional 9 km WRF and numerical weather models.
 
 ---
-<img width="1523" height="726" alt="image" src="https://github.com/user-attachments/assets/93e734dc-9807-461a-8dbc-0504035b9297" />
+<img width="1519" height="698" alt="image" src="https://github.com/user-attachments/assets/7aac6691-1203-4b94-9a4b-51e7a7542fad" />
+
 
 ## 📌 Overview
 
