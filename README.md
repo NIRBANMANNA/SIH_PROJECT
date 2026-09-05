@@ -37,25 +37,76 @@ Traditional weather forecasts provide coarse regional predictions (~9 km to 25 k
 
 ---
 
-## 🏛️ Administrative Hierarchy Architecture
+## 🏛️ Upgraded Administrative Hierarchy & Spatial Architecture
 
-The system supports a 4-tier spatial downscaling hierarchy:
+The platform features an advanced **6-Tier Bidirectional Multi-Scale Spatial Hierarchy** spanning from global/national Numerical Weather Prediction (NWP) models down to individual farm plots and farmer advisory channels:
 
 ```mermaid
-graph LR
-    A["State (West Bengal)"] --> B["District (e.g., Purba Medinipur, Hooghly)"]
-    B --> C["Block (e.g., Tamluk, Mahishadal, Polba-Dadpur)"]
-    C --> D["Gram Panchayat (1 km² ML Downscaled Node)"]
+graph TD
+    subgraph Macro_Tier["Tier 0: Macro NWP & Climatology (Global / National)"]
+        IMD["IMD / NCMRWF / ECMWF & WRF 9km Meso-Scale Grid"]
+        ERA5["ERA5 Climatological Reanalysis & Satellite Telemetry (INSAT-3D)"]
+    end
+
+    subgraph State_Tier["Tier 1: State Policy & Disaster Oversight (Macro Region)"]
+        State["State Apex: West Bengal (Dept. of Agriculture & WBSDMA)"]
+        RMC["RMC Kolkata: Regional Meteorological Centre Oversight"]
+    end
+
+    subgraph District_Tier["Tier 2: Agro-Climatic Field Units / AMFU (Meso Zone)"]
+        DistPurba["Purba Medinipur (Coastal Alluvial / Saline Zone)"]
+        DistHooghly["Hooghly (Gangetic Alluvial Floodplain)"]
+        DistNadia["Nadia & Burdwan (Lower Indo-Gangetic Plains)"]
+        KVK["KVK (Krishi Vigyan Kendra) Agro-Scientists & DDMA"]
+    end
+
+    subgraph Block_Tier["Tier 3: Block Agromet Units / DAMU (GKMS Network)"]
+        BlockTamluk["Tamluk / Mahishadal / Haldia / Nandigram / Contai"]
+        BlockPolba["Polba-Dadpur / Chinsurah / Singur / Haripal"]
+        BAO["Block Agriculture Officer (BAO) & BDO Disaster Cell"]
+    end
+
+    subgraph Micro_Tier["Tier 4: Gram Panchayat Micro-Grid (1 km² Ultra-High Res AI Node)"]
+        GPNode["Gram Panchayat AI Node (1 km² Micro-Grid)"]
+        AuroraML["Aurora ConvNeXt U-Net: 9km -> 1km Spatial Downscaling"]
+        AWS["Local AWS Sensors & Ground IoT Mesh (Temp, Rain, Humidity)"]
+    end
+
+    subgraph Farm_Tier["Tier 5: Cadastral Mouza / Farm Plot Level (Hyper-Local End-Mile)"]
+        Plot["Cadastral Mouza & Crop Parcel (Rice, Potato, Jute, Mustard)"]
+        Delivery["Agro-Bot Voice (EN/BN/HI), WhatsApp Broadcast & Kisan Mandi SMS"]
+        Feedback["Farmer Field Feedback & Crowd-Sourced Telemetry"]
+    end
+
+    Macro_Tier --> State_Tier
+    State_Tier --> District_Tier
+    District_Tier --> Block_Tier
+    Block_Tier --> Micro_Tier
+    Micro_Tier --> Farm_Tier
+
+    Farm_Tier -. "Ground Truth In-Situ Telemetry" .-> Micro_Tier
+    Micro_Tier -. "Real-Time Bias Correction & Edge Validation" .-> Block_Tier
+    Block_Tier -. "Extreme Incident Escalation" .-> District_Tier
 ```
 
-### Coverage:
-- **Purba Medinipur**: Tamluk, Mahishadal, Haldia, Nandigram-I, Contai-I
-- **Hooghly**: Polba-Dadpur, Chinsurah-Mogra, Singur, Haripal
-- **Burdwan**: Burdwan-I, Burdwan-II, Kalna-I
-- **Nadia**: Krishnanagar-I, Ranaghat-I, Santipur
-- **Other Districts**: Howrah, Bankura, Malda, Murshidabad, North & South 24 Parganas
+### 📊 Multi-Tier Resolution & Operational Matrix
 
----
+| Tier | Governance Level | Spatial Resolution | Core Stakeholders | Primary Functions |
+|:---:|:---|:---:|:---|:---|
+| **Tier 0** | **National / Global NWP** | $9 \times 9\text{ km}$ to $25\text{ km}$ | IMD, NCMRWF, MoES | Macro NWP ingest, synoptic charts, satellite radiances |
+| **Tier 1** | **State Level** | $\sim 88,752\text{ km}^2$ | State Dept of Agriculture, WBSDMA | Macro relief planning, seasonal crop budgeting, policy directives |
+| **Tier 2** | **District (AMFU)** | $\sim 2,500\text{ km}^2$ | District Magistrate, KVK Scientists, DDMA | Agro-climatic classification (Saline, Alluvial, Laterite), KVK validation |
+| **Tier 3** | **Block (DAMU / GKMS)** | $\sim 200\text{ km}^2$ | Block Agriculture Officer (BAO), BDO | 3-day GKMS block bulletins, seed/fertilizer stock positioning |
+| **Tier 4** | **Gram Panchayat (Microgrid)** | **$1 \times 1\text{ km}^2$ Ultra-Grid** | Panchayat Pradhan, Krishi Sahayak, IoT mesh | **Aurora ML downscaling**, flash-flood detection, microclimate alerts |
+| **Tier 5** | **Mouza / Plot / Farmer** | **Cadastral Plot ($\le 250\text{m}$)** | Farmers, FPOs, Self-Help Groups | Multilingual voice agro-advisories (BN/HI/EN), crop disease spray timing |
+
+### 🌾 Agro-Climatic Zone Mapping:
+- **Coastal Saline Zone (Purba Medinipur, South 24 Parganas)**: Tamluk, Mahishadal, Haldia, Nandigram-I, Contai-I, Canning-I — Focus: *Cyclone wind gusts, salinity surges, drainage congestion*.
+- **Gangetic Alluvial Floodplain (Hooghly, Howrah, Burdwan)**: Polba-Dadpur, Chinsurah-Mogra, Singur, Haripal, Burdwan-I — Focus: *High-intensity cloudbursts, Potato late blight forecasting, Kharif paddy inundation*.
+- **Lower Indo-Gangetic Plains (Nadia, Murshidabad, North 24 Parganas)**: Krishnanagar-I, Ranaghat-I, Santipur, Barasat-I — Focus: *Heatwave stress, humidity anomalies, Jute retting advisories*.
+- **Red & Laterite Belt (Bankura, Malda)**: Bankura-I, Bishnupur — Focus: *Soil moisture deficits, agricultural drought monitoring*.
+
+-----
 
 ## 🛠️ Tech Stack
 
