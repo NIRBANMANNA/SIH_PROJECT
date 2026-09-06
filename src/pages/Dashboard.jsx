@@ -4,6 +4,7 @@ import Sidebar from '../components/Sidebar'
 import Header  from '../components/Header'
 import { DashboardProvider, useDashboard } from '../context/DashboardContext'
 import DynamicWeatherCanvas from '../components/DynamicWeatherCanvas'
+import ErrorBoundary from '../components/ErrorBoundary'
 
 function DashboardLayout() {
   const [searchOpen, setSearchOpen] = useState(false)
@@ -59,7 +60,9 @@ function DashboardLayout() {
         setNotifications={setNotifications}
       />
 
-      <Outlet />
+      <ErrorBoundary>
+        <Outlet />
+      </ErrorBoundary>
     </div>
   )
 }

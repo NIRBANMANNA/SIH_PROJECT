@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import { useDashboard } from '../context/DashboardContext'
 import { 
   mockCropsList, 
@@ -59,7 +59,7 @@ export default function CropAdvisory() {
   const [chatMessages, setChatMessages] = useState([
     {
       sender: 'ai',
-      text: `Namaskar! I am your Kisan Darpan AI Intelligence Assistant for ${weatherData.city}. How can I assist you with ${activeCrop} management and weather telemetry today?`
+      text: `Namaskar! I am your Kisan Darpan AI Intelligence Assistant for ${weatherData?.city || activeBlock || 'your region'}. How can I assist you with ${activeCrop} management and weather telemetry today?`
     }
   ])
   const [chatInput, setChatInput] = useState('')
@@ -67,9 +67,11 @@ export default function CropAdvisory() {
 
   // Current Panchayat Details
   const currentPanchayat = mockPanchayatDetails[activePanchayat] || {
-    name: weatherData.city.split(' ')[0],
-    block: activeBlock || "Tamluk",
-    district: activeDistrict || "PurbaMedinipur"
+    name: weatherData?.city ? weatherData.city.split(' ')[0] : (activePanchayat || "Amnan"),
+    block: activeBlock || "Polba-Dadpur",
+    district: activeDistrict || "Hooghly",
+    state: activeState || "West Bengal",
+    totalFarmers: 1420
   }
 
   const blocksList = (blocksInDistrict && blocksInDistrict.length > 0)
@@ -104,11 +106,16 @@ export default function CropAdvisory() {
 
   // Generate dynamic advisory based on user selected Panchayat, Crop & Stage
   const advisory = useMemo(() => {
-    return getAdvisory(activeCrop, activeGrowthStage, weatherData, currentPanchayat.name)
-  }, [activeCrop, activeGrowthStage, weatherData, currentPanchayat.name])
+    return getAdvisory(activeCrop, activeGrowthStage, weatherData || {}, currentPanchayat?.name || "Amnan")
+  }, [activeCrop, activeGrowthStage, weatherData, currentPanchayat?.name])
 
   // Current language translation helper
-  const t = advisory.translations[selectedLanguage] || advisory.translations.en
+  const t = advisory?.translations?.[selectedLanguage] || advisory?.translations?.en || {
+    selectors: { rain: "Rainfall", rh: "RH", quickSwitch: "Quick Switch GP" },
+    cropRisk: { level: "Low", title: "Normal Field Conditions", details: "Optimal conditions." },
+    operations: { irrigation: "Standard", fertilizer: "Standard", pest: "Normal" },
+    tabs: { fiveday: "5-Day Stage Plan", operations: "Agro Operations", askai: "Ask AI Agronomist" }
+  }
 
   // Notification Toast Helper
   const showToast = (msg) => {
@@ -125,7 +132,7 @@ export default function CropAdvisory() {
         showToast(selectedLanguage === 'bn' ? "ভয়েস বার্তা থামানো হয়েছে" : selectedLanguage === 'hi' ? "ध्वनि संदेश रोक दिया गया" : "Voice Bulletin Paused")
       } else {
         window.speechSynthesis.cancel()
-        const textToSpeak = t?.audioScript || advisory.translations.en.audioScript
+        const textToSpeak = t?.audioScript || advisory?.translations?.en?.audioScript || ""
         const utterance = new SpeechSynthesisUtterance(textToSpeak)
         utterance.lang = selectedLanguage === 'bn' ? 'bn-IN' : selectedLanguage === 'hi' ? 'hi-IN' : 'en-IN'
         utterance.rate = 0.95
@@ -183,11 +190,11 @@ export default function CropAdvisory() {
           state: activeState,
         },
         weather: {
-          temp: weatherData.temp,
-          rainfall: weatherData.rainfall,
-          humidity: weatherData.humidity,
-          wind: weatherData.wind,
-          condition: weatherData.condition,
+          temp: weatherData?.temp ?? 30,
+          rainfall: weatherData?.rainfall ?? '0 mm',
+          humidity: weatherData?.humidity ?? '70%',
+          wind: weatherData?.wind ?? '15 km/h',
+          condition: weatherData?.condition ?? 'Partly Cloudy',
         },
         language: selectedLanguage,
       })
@@ -498,9 +505,9 @@ export default function CropAdvisory() {
                 cursor: 'pointer'
               }}
             >
-              {panchayatsInBlock.map(p => (
+              {(panchayatsInBlock || []).map(p => (
                 <option key={p.id} value={p.id} style={{ color: '#000', background: '#fff' }}>
-                  {p.name} ({p.rainfallStatus?.split('(')[0]?.trim() || p.rainfall + ' mm'})
+                  {p.name} ({p.rainfallStatus?.split('(')[0]?.trim() || (p.rainfall != null ? p.rainfall + ' mm' : 'Telemetry Active')})
                 </option>
               ))}
             </select>
@@ -608,14 +615,14 @@ export default function CropAdvisory() {
                 justifyContent: 'center',
                 color: '#38bdf8'
               }}>
-                <Icon id={weatherData.conditionId || 'i-cloud'} width="20" height="20" />
+                <Icon id={weatherData?.conditionId || 'i-cloud'} width="20" height="20" />
               </div>
               <div>
                 <div style={{ fontSize: 'calc(15 * var(--u))', fontWeight: 700, color: '#fff', lineHeight: 1.1 }}>
-                  {weatherData.temp}°C
+                  {weatherData?.temp ?? '--'}°C
                 </div>
                 <div style={{ fontSize: 'calc(10.5 * var(--u))', color: 'rgba(255,255,255,0.55)' }}>
-                  {weatherData.condition}
+                  {weatherData?.condition || 'Clear'}
                 </div>
               </div>
             </div>
@@ -631,11 +638,11 @@ export default function CropAdvisory() {
             }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 'calc(4 * var(--u))' }}>
                 <Icon id="i-drop" width="12" height="12" style={{ color: '#38bdf8' }} />
-                <span>{t.selectors.rain}: <strong style={{ color: '#fff' }}>{weatherData.rainfall}</strong></span>
+                <span>{t?.selectors?.rain || 'Rainfall'}: <strong style={{ color: '#fff' }}>{weatherData?.rainfall || '0 mm'}</strong></span>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 'calc(4 * var(--u))' }}>
                 <Icon id="i-droplet" width="12" height="12" style={{ color: '#60a5fa' }} />
-                <span>{t.selectors.rh}: <strong style={{ color: '#fff' }}>{weatherData.humidity}</strong></span>
+                <span>{t?.selectors?.rh || 'RH'}: <strong style={{ color: '#fff' }}>{weatherData?.humidity || '70%'}</strong></span>
               </div>
             </div>
           </div>
@@ -646,7 +653,7 @@ export default function CropAdvisory() {
           <span style={{ fontSize: 'calc(11 * var(--u))', color: 'rgba(255,255,255,0.5)', textTransform: 'uppercase', letterSpacing: 'calc(0.6 * var(--u))', fontWeight: 600 }}>
             {t.selectors.quickSwitch} ({activeBlock}):
           </span>
-          {panchayatsInBlock.map(p => {
+          {(panchayatsInBlock || []).map(p => {
             const isSelected = p.id === activePanchayat
             return (
               <button
@@ -893,7 +900,7 @@ export default function CropAdvisory() {
                 gap: 'calc(5 * var(--u))'
               }}>
                 <Icon id="i-drop" width="13" height="13" style={{ color: '#38bdf8' }} />
-                <span>{t.selectors.rain}: <strong style={{ color: '#fff' }}>{weatherData.rainfall}</strong></span>
+                <span>{t?.selectors?.rain || 'Rainfall'}: <strong style={{ color: '#fff' }}>{weatherData?.rainfall || '0 mm'}</strong></span>
               </span>
               <span style={{ 
                 fontSize: 'calc(12 * var(--u))', 
@@ -907,7 +914,7 @@ export default function CropAdvisory() {
                 gap: 'calc(5 * var(--u))'
               }}>
                 <Icon id="i-wind" width="13" height="13" style={{ color: '#c084fc' }} />
-                <span>{selectedLanguage === 'bn' ? 'বাতাস' : selectedLanguage === 'hi' ? 'हवा' : 'Wind Gusts'}: <strong style={{ color: '#fff' }}>{weatherData.gusts || weatherData.wind}</strong></span>
+                <span>{selectedLanguage === 'bn' ? 'বাতাস' : selectedLanguage === 'hi' ? 'हवा' : 'Wind Gusts'}: <strong style={{ color: '#fff' }}>{weatherData?.gusts || weatherData?.wind || '15 km/h'}</strong></span>
               </span>
             </div>
           </div>
@@ -1172,7 +1179,7 @@ export default function CropAdvisory() {
               flexDirection: 'column', 
               gap: 'calc(10 * var(--u))' 
             }}>
-              {t.recommendedActions.map((action, idx) => (
+              {(t?.recommendedActions || []).map((action, idx) => (
                 <li 
                   key={idx} 
                   style={{ 
@@ -1242,7 +1249,7 @@ export default function CropAdvisory() {
               flexDirection: 'column', 
               gap: 'calc(10 * var(--u))' 
             }}>
-              {t.actionsToAvoid.map((avoidItem, idx) => (
+              {(t?.actionsToAvoid || []).map((avoidItem, idx) => (
                 <li 
                   key={idx} 
                   style={{ 
@@ -1372,7 +1379,7 @@ export default function CropAdvisory() {
                   {t.tabs.fivedaySubtitle}
                 </span>
               </div>
-              {t.fiveDayPlan.map((item, i) => (
+              {(t?.fiveDayPlan || []).map((item, i) => (
                 <div
                   key={i}
                   style={{
@@ -2044,17 +2051,17 @@ export default function CropAdvisory() {
                 2. {t.recLabel}
               </h4>
               <ul style={{ margin: 0, paddingLeft: 'calc(18 * var(--u))', fontSize: 'calc(13 * var(--u))', color: '#334155', lineHeight: 1.5 }}>
-                {t.recommendedActions.map((a, i) => <li key={i}>{a}</li>)}
+                {(t?.recommendedActions || []).map((a, i) => <li key={i}>{a}</li>)}
               </ul>
             </div>
 
             {/* Actions to Avoid */}
             <div>
               <h4 style={{ margin: 0, fontSize: 'calc(14 * var(--u))', fontWeight: 700, color: '#991b1b', marginBottom: 'calc(6 * var(--u))' }}>
-                3. {t.avoidLabel}
+                3. {t?.avoidLabel || 'Actions to Avoid'}
               </h4>
               <ul style={{ margin: 0, paddingLeft: 'calc(18 * var(--u))', fontSize: 'calc(13 * var(--u))', color: '#334155', lineHeight: 1.5 }}>
-                {t.actionsToAvoid.map((a, i) => <li key={i}>{a}</li>)}
+                {(t?.actionsToAvoid || []).map((a, i) => <li key={i}>{a}</li>)}
               </ul>
             </div>
 

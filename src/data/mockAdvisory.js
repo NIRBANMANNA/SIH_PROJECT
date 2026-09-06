@@ -203,10 +203,11 @@ export const stageTranslations = {
 
 // Dynamic advisory generator based on Panchayat Weather, Crop, and Growth Stage
 export const getAdvisory = (crop, stage, weather = {}, panchayatName = "Amnan") => {
-  const rainfall = parseFloat(weather.rainfall) || 0
-  const temp = parseFloat(weather.temp) || 30
-  const humidity = parseFloat(weather.humidity) || 70
-  const wind = parseFloat(weather.wind) || 15
+  const safeWeather = weather || {}
+  const rainfall = parseFloat(safeWeather.rainfall) || 0
+  const temp = parseFloat(safeWeather.temp) || 30
+  const humidity = parseFloat(safeWeather.humidity) || 70
+  const wind = parseFloat(safeWeather.wind) || 15
 
   // Multilingual dynamic holders
   let scenarioKey = "normal" // "heavyRain" | "heatStress" | "moderateRain" | "normal"
