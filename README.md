@@ -9,7 +9,7 @@
 [![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?logo=docker&logoColor=white)](https://docker.com)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-> **Smart India Hackathon (SIH)** — An AI/ML-powered microclimate weather downscaling and precision agricultural advisory network delivering **Gram Panchayat-level resolution (1 km²)** downscaled from regional 9 km WRF and numerical weather models.
+> **KisanDarpan AI** — An AI/ML-powered microclimate weather downscaling and precision agricultural advisory network delivering **Gram Panchayat-level resolution (1 km²)** downscaled from regional 9 km WRF and numerical weather models.
 
 ---
 <img width="1519" height="698" alt="image" src="https://github.com/user-attachments/assets/7aac6691-1203-4b94-9a4b-51e7a7542fad" />
