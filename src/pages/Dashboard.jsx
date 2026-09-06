@@ -3,10 +3,12 @@ import { Outlet } from 'react-router-dom'
 import Sidebar from '../components/Sidebar'
 import Header  from '../components/Header'
 import { DashboardProvider, useDashboard } from '../context/DashboardContext'
+import DynamicWeatherCanvas from '../components/DynamicWeatherCanvas'
 
 function DashboardLayout() {
   const [searchOpen, setSearchOpen] = useState(false)
   const [notificationsOpen, setNotificationsOpen] = useState(false)
+  const [ambientMode, setAmbientMode] = useState('auto')
   const [notifications, setNotifications] = useState([
     { id: 1, type: 'warning', text: 'Severe rainstorm alert active for Polba-Dadpur and surrounding blocks.', time: '10m ago', unread: true },
     { id: 2, type: 'info', text: 'Monsoon cloudbursts monitored across Hooghly administrative blocks.', time: '45m ago', unread: true },
@@ -29,6 +31,8 @@ function DashboardLayout() {
         transition: 'background-image 0.5s ease-in-out',
       }}
     >
+      {/* Live Atmospheric Weather Engine & Time of Day Canvas */}
+      <DynamicWeatherCanvas manualMode={ambientMode} onModeChange={setAmbientMode} />
       {/* Vignette overlay */}
       <div
         aria-hidden="true"
