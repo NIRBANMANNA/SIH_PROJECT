@@ -10,7 +10,8 @@ export default function Overview() {
     activeBlock, 
     handleBlockChange, 
     activeDistrict, 
-    activeState 
+    activeState,
+    tempUnit,
   } = useDashboard()
 
   return (
@@ -40,17 +41,17 @@ export default function Overview() {
         <Hero
           cityData={blockWeatherData}
           chipText={`Block Weather • ${activeBlock} (${activeDistrict})`}
-          tempUnit="C"
+          tempUnit={tempUnit}
           style={{ position: 'relative', left: 'auto', top: 'auto', maxWidth: 'none', flexShrink: 0 }}
         />
         <Forecast
           cityData={blockWeatherData}
-          tempUnit="C"
+          tempUnit={tempUnit}
           style={{ position: 'relative', left: 'auto', right: 'auto', bottom: 'auto', flexShrink: 0 }}
         />
       </div>
       <RightRail 
-        tempUnit="C" 
+        tempUnit={tempUnit} 
         style={{ position: 'relative', right: 'auto', top: 'auto', bottom: 'auto', width: 'calc(310 * var(--u))', height: '100%' }}
       />
     </div>

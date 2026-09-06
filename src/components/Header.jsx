@@ -1,6 +1,8 @@
 import { useState, useRef, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { Icon } from './IconSprite'
 import { useDashboard } from '../context/DashboardContext'
+import { useAuth } from '../context/AuthContext'
 import { mockBlockWeather, getBlockWeatherData } from '../data/mockWeather'
 import { mockBlocks } from '../data/mockPanchayats'
 import LocationSelectorModal from './LocationSelectorModal'
@@ -14,6 +16,8 @@ export default function Header({
   setNotifications,
 }) {
   const [isLocationModalOpen, setIsLocationModalOpen] = useState(false)
+  const navigate = useNavigate()
+  const { user } = useAuth()
   const {
     activeBlock,
     handleBlockChange,
@@ -23,6 +27,9 @@ export default function Header({
     handlePanchayatChange,
     panchayatsInBlock
   } = useDashboard()
+
+  const displayName = user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Farmer Partner'
+  const userInitial = displayName.charAt(0).toUpperCase()
 
   const [imgError, setImgError] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
@@ -100,7 +107,7 @@ export default function Header({
           className="header-greeting-name anim-who"
           style={{ fontSize: 'calc(19.5 * var(--u))', fontWeight: 700, letterSpacing: 'calc(-.35 * var(--u))', color: '#fff', lineHeight: 1, whiteSpace: 'nowrap' }}
         >
-          Nirban Manna
+          {displayName}
         </div>
         <div
           className="header-location-badge"
@@ -204,26 +211,50 @@ export default function Header({
 
         {/* Avatar */}
         <div
-          className="anim-tool4"
-          role="img"
-          aria-label="Nirban Manna profile"
+          className="anim-tool4 cursor-pointer"
+          role="button"
+          tabIndex={0}
+          onClick={() => navigate('/dashboard/settings')}
+          aria-label={`${displayName} profile & settings`}
+          title="Profile & Settings"
           style={{
             width: 'clamp(36px, calc(40 * var(--u)), 44px)',
             height: 'clamp(36px, calc(40 * var(--u)), 44px)',
-            borderRadius: '50%', overflow: 'hidden', flexShrink: 0,
+            borderRadius: '50%',
+            overflow: 'hidden',
+            flexShrink: 0,
+            cursor: 'pointer',
+            border: '2px solid rgba(255,255,255,0.35)',
+            transition: 'border-color 0.2s, transform 0.2s',
           }}
+          onMouseEnter={e => { e.currentTarget.style.borderColor = '#38bdf8'; e.currentTarget.style.transform = 'scale(1.05)'; }}
+          onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.35)'; e.currentTarget.style.transform = 'scale(1)'; }}
         >
-          {imgError ? (
-            <svg width="40" height="40" aria-hidden="true"><use href="#i-avatar" /></svg>
-          ) : (
+          {user?.user_metadata?.avatar_url && !imgError ? (
             <img
-              src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=160&h=160&fit=crop&crop=faces&q=80&auto=format"
-              alt="Nirban Manna"
+              src={user.user_metadata.avatar_url}
+              alt={displayName}
               loading="eager"
               decoding="async"
               onError={() => setImgError(true)}
-              style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center top', display: 'block' }}
+              style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
             />
+          ) : (
+            <div style={{
+              width: '100%',
+              height: '100%',
+              background: 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)',
+              color: '#fff',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontWeight: 700,
+              fontSize: 'clamp(14px, calc(16 * var(--u)), 18px)',
+              letterSpacing: '0.02em',
+              textShadow: '0 1px 2px rgba(0,0,0,0.5)'
+            }}>
+              {userInitial}
+            </div>
           )}
         </div>
 

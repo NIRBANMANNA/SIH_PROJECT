@@ -64,17 +64,18 @@ export default function Sidebar() {
           position: 'absolute',
           left: 'calc(16 * var(--u))',
           top: 'calc(14 * var(--u))',
-          bottom: 'calc(7 * var(--u))',
+          bottom: 'calc(14 * var(--u))',
           width: 'calc(72 * var(--u))',
           zIndex: 10,
           flexDirection: 'column',
           alignItems: 'center',
-          paddingTop: 'calc(22 * var(--u))',
-          paddingBottom: 'calc(52 * var(--u))',
+          paddingTop: 'calc(18 * var(--u))',
+          paddingBottom: 'calc(16 * var(--u))',
           background: 'linear-gradient(180deg, rgba(255,255,255,.125) 0%, rgba(255,255,255,.135) 13%, rgba(255,255,255,.098) 34%, rgba(255,255,255,.092) 100%)',
           backdropFilter: 'blur(calc(18 * var(--u))) saturate(115%)',
           WebkitBackdropFilter: 'blur(calc(18 * var(--u))) saturate(115%)',
           borderRadius: 'calc(26 * var(--u))',
+          boxSizing: 'border-box',
         }}
       >
         {/* Active sliding illuminated bar */}
@@ -84,9 +85,9 @@ export default function Sidebar() {
             style={{
               position: 'absolute',
               left: 0,
-              top: `calc((${105.5 + 53 * activeIndex}) * var(--u))`,
+              top: `calc((${73 + 37 * activeIndex}) * var(--u))`,
               width: 'calc(4.5 * var(--u))',
-              height: 'calc(26 * var(--u))',
+              height: 'calc(24 * var(--u))',
               borderTopRightRadius: 'calc(4 * var(--u))',
               borderBottomRightRadius: 'calc(4 * var(--u))',
               background: '#ffffff',
@@ -101,7 +102,7 @@ export default function Sidebar() {
           className="anim-popIn"
           aria-label="KisanDarpan AI"
           title="KisanDarpan AI"
-          style={{ width: 'calc(40 * var(--u))', height: 'calc(40 * var(--u))', flexShrink: 0, cursor: 'pointer' }}
+          style={{ width: 'calc(38 * var(--u))', height: 'calc(38 * var(--u))', flexShrink: 0, cursor: 'pointer' }}
           onClick={() => navigate('/dashboard/overview')}
         >
           <div style={{
@@ -135,8 +136,9 @@ export default function Sidebar() {
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            gap: 'calc(30 * var(--u))',
-            marginTop: 'calc(45 * var(--u))',
+            gap: 'calc(15 * var(--u))',
+            marginTop: 'calc(18 * var(--u))',
+            width: '100%',
           }}
         >
           {navItems.map((item, i) => {
@@ -147,13 +149,14 @@ export default function Sidebar() {
                 key={item.id}
                 role="listitem"
                 aria-label={item.label}
+                title={item.label}
                 aria-current={isActive ? 'page' : undefined}
                 style={{
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  width: 'calc(23 * var(--u))',
-                  height: 'calc(23 * var(--u))',
+                  width: 'calc(22 * var(--u))',
+                  height: 'calc(22 * var(--u))',
                   opacity: isActive ? 1 : 0.55,
                   transform: isActive ? 'scale(1.08)' : 'scale(1)',
                   filter: isActive ? 'drop-shadow(0 0 calc(6 * var(--u)) rgba(255,255,255,0.65))' : 'none',
@@ -170,39 +173,67 @@ export default function Sidebar() {
                   e.currentTarget.style.transform = isActive ? 'scale(1.08)' : 'scale(1)'; 
                 }}
               >
-                <Icon id={item.id} width="23" height="23" />
+                <Icon id={item.id} width="22" height="22" />
               </Link>
             )
           })}
         </div>
 
-        {/* Logout */}
-        <button
-          className="anim-logout"
-          aria-label="Sign out"
-          onClick={async () => {
-            await signOut()
-            navigate('/login')
-          }}
+        {/* Logout Section with clean divider and zero overlap */}
+        <div
           style={{
             marginTop: 'auto',
+            paddingTop: 'calc(10 * var(--u))',
             display: 'flex',
+            flexDirection: 'column',
             alignItems: 'center',
-            justifyContent: 'center',
-            width: 'calc(23 * var(--u))',
-            height: 'calc(23 * var(--u))',
-            opacity: 0.45,
-            background: 'none',
-            border: 'none',
-            cursor: 'pointer',
-            color: '#fff',
-            transition: 'opacity .2s, transform .2s',
+            width: '100%',
           }}
-          onMouseEnter={e => { e.currentTarget.style.opacity = '0.9'; e.currentTarget.style.transform = 'translateY(calc(-1 * var(--u)))'; }}
-          onMouseLeave={e => { e.currentTarget.style.opacity = '0.45'; e.currentTarget.style.transform = 'translateY(0)'; }}
         >
-          <Icon id="i-out" width="23" height="23" />
-        </button>
+          <div
+            style={{
+              width: 'calc(28 * var(--u))',
+              height: '1px',
+              background: 'rgba(255, 255, 255, 0.14)',
+              marginBottom: 'calc(10 * var(--u))',
+            }}
+          />
+          <button
+            className="anim-logout"
+            aria-label="Sign out"
+            title="Sign Out"
+            onClick={async () => {
+              await signOut()
+              navigate('/login')
+            }}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: 'calc(32 * var(--u))',
+              height: 'calc(32 * var(--u))',
+              borderRadius: 'calc(8 * var(--u))',
+              opacity: 0.55,
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              color: '#f87171',
+              transition: 'all .2s ease',
+            }}
+            onMouseEnter={e => {
+              e.currentTarget.style.opacity = '1'
+              e.currentTarget.style.background = 'rgba(239, 68, 68, 0.15)'
+              e.currentTarget.style.transform = 'scale(1.1)'
+            }}
+            onMouseLeave={e => {
+              e.currentTarget.style.opacity = '0.55'
+              e.currentTarget.style.background = 'none'
+              e.currentTarget.style.transform = 'scale(1)'
+            }}
+          >
+            <Icon id="i-out" width="20" height="20" />
+          </button>
+        </div>
       </nav>
 
       {/* ─── Mobile Bottom Navigation Bar (Sticky Bottom, ≤900px) ─── */}

@@ -16,6 +16,37 @@ export function DashboardProvider({ children }) {
   const [activeCrop, setActiveCrop] = useState("Rice (Kharif)")
   const [activeGrowthStage, setActiveGrowthStage] = useState("Tillering")
 
+  // App Settings & Measurement Units (persisted)
+  const [tempUnit, setTempUnit] = useState(() => localStorage.getItem('kisandarpan_temp_unit') || 'C')
+  const [windUnit, setWindUnit] = useState(() => localStorage.getItem('kisandarpan_wind_unit') || 'km/h')
+  const [preferences, setPreferences] = useState(() => {
+    try {
+      const saved = localStorage.getItem('kisandarpan_prefs')
+      return saved ? JSON.parse(saved) : { severeAlerts: true, dailyForecast: true, agroEmail: true }
+    } catch {
+      return { severeAlerts: true, dailyForecast: true, agroEmail: true }
+    }
+  })
+
+  const updateUnits = (newTemp, newWind) => {
+    if (newTemp) {
+      setTempUnit(newTemp)
+      localStorage.setItem('kisandarpan_temp_unit', newTemp)
+    }
+    if (newWind) {
+      setWindUnit(newWind)
+      localStorage.setItem('kisandarpan_wind_unit', newWind)
+    }
+  }
+
+  const updatePreferences = (newPrefs) => {
+    setPreferences(prev => {
+      const updated = { ...prev, ...newPrefs }
+      localStorage.setItem('kisandarpan_prefs', JSON.stringify(updated))
+      return updated
+    })
+  }
+
   // Live API state — shared across all pages
   const [liveApiResult, setLiveApiResult] = useState(null)
   const [liveApiLoading, setLiveApiLoading] = useState(false)
@@ -152,6 +183,11 @@ export function DashboardProvider({ children }) {
         blocksInDistrict,
         mockBlocks,
         mockBlockWeather,
+        // Settings & Units
+        tempUnit, setTempUnit,
+        windUnit, setWindUnit,
+        updateUnits,
+        preferences, updatePreferences,
         // Live Aurora ML API
         liveApiResult,
         liveApiLoading,

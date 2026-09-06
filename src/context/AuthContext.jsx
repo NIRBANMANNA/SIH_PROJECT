@@ -1,4 +1,4 @@
-﻿// src/context/AuthContext.jsx
+// src/context/AuthContext.jsx
 import React, { createContext, useContext, useState, useEffect } from 'react'
 import { supabase, isSupabaseConfigured } from '../lib/supabase'
 
@@ -45,10 +45,22 @@ export function AuthProvider({ children }) {
     if (!isSupabaseConfigured) {
       // Instant dev authentication
       await new Promise(r => setTimeout(r, 600))
+      
+      let existingFullName = ''
+      try {
+        const stored = localStorage.getItem('kisandarpan_user')
+        if (stored) {
+          const parsed = JSON.parse(stored)
+          if (parsed?.email === email && parsed?.user_metadata?.full_name) {
+            existingFullName = parsed.user_metadata.full_name
+          }
+        }
+      } catch {}
+
       const devUser = {
         id: 'dev-user-01',
         email,
-        user_metadata: { full_name: email.split('@')[0] },
+        user_metadata: { full_name: existingFullName || email.split('@')[0] },
       }
       localStorage.setItem('kisandarpan_user', JSON.stringify(devUser))
       setUser(devUser)
@@ -103,6 +115,29 @@ export function AuthProvider({ children }) {
     })
   }
 
+  // Update User Profile (Name, Email, Metadata)
+  const updateUserProfile = async ({ fullName, email: newEmail }) => {
+    const updatedMeta = { ...(user?.user_metadata || {}), full_name: fullName }
+    const updatedUser = {
+      ...(user || {}),
+      email: newEmail || user?.email,
+      user_metadata: updatedMeta
+    }
+
+    localStorage.setItem('kisandarpan_user', JSON.stringify(updatedUser))
+    setUser(updatedUser)
+
+    if (isSupabaseConfigured) {
+      const updates = { data: { full_name: fullName } }
+      if (newEmail && newEmail !== user?.email) {
+        updates.email = newEmail
+      }
+      return await supabase.auth.updateUser(updates)
+    }
+
+    return { data: { user: updatedUser }, error: null }
+  }
+
   // Sign Out
   const signOut = async () => {
     localStorage.removeItem('kisandarpan_user')
@@ -123,6 +158,7 @@ export function AuthProvider({ children }) {
         signInWithEmail,
         signUpWithEmail,
         signInWithGoogle,
+        updateUserProfile,
         signOut,
       }}
     >
