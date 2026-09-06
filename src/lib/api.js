@@ -184,87 +184,146 @@ Instructions:
     }
   }
 
-  // 3. Check Custom Backend Server
-  try {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 3500);
-    const res = await fetch(backendUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ question, crop, growthStage, location, weather, language }),
-      signal: controller.signal
-    });
-    clearTimeout(timeoutId);
-    if (res.ok) {
-      const data = await res.json();
-      if (data?.reply) return data.reply;
+  // 3. Check Custom Backend Server (only if explicitly set in environment)
+  if (import.meta.env.VITE_ADVISORY_API_URL) {
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 3000);
+      const res = await fetch(import.meta.env.VITE_ADVISORY_API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ question, crop, growthStage, location, weather, language }),
+        signal: controller.signal
+      });
+      clearTimeout(timeoutId);
+      if (res.ok) {
+        const data = await res.json();
+        if (data?.reply) return data.reply;
+      }
+    } catch (err) {
+      console.warn('Custom advisory backend failed, falling back to agromet engine...', err);
     }
-  } catch (err) {
-    // Backend endpoint not responding or dev standalone mode
   }
 
-  // 4. Intelligent Local Knowledge-Base Fallback (AMFU Hooghly Rules Engine)
-  return generateLocalAgrometResponse(question, crop, growthStage, location, weather, language);
+  // 4. Intelligent Local Agromet Knowledge Engine (Instant AMFU Agronomy Rules)
+  try {
+    return generateLocalAgrometResponse(question, crop, growthStage, location, weather, language);
+  } catch (err) {
+    return `Under current weather (${weather.temp || 30}°C, ${weather.rainfall || '10mm'} rainfall), for ${crop} at ${growthStage} stage, keep field drainage clear and avoid chemical application during rain.`;
+  }
 }
 
-function generateLocalAgrometResponse(query, crop, stage, loc, weather, lang) {
+function generateLocalAgrometResponse(query, crop = 'Rice', stage = 'Tillering', loc = {}, weather = {}, lang = 'en') {
   const q = (query || '').toLowerCase();
   const rainNum = parseFloat(weather.rainfall) || 0;
-  const isRain = rainNum > 5 || (weather.condition || '').toLowerCase().includes('rain');
+  const isRain = rainNum > 3 || (weather.condition || '').toLowerCase().includes('rain') || (weather.condition || '').toLowerCase().includes('shower');
+  const temp = weather.temp || 30;
+  const place = loc.panchayat || loc.block || 'Field';
 
+  // Keyword flags (including colloquial terms & common typos like 'fartiliser')
+  const isSpray = q.includes('spray') || q.includes('spraying') || q.includes('spary') || q.includes('sprey') || q.includes('পিস্টিসাইড') || q.includes('স্প্রে') || q.includes('छिड़काव');
+  const isFertilizer = q.includes('fertiliz') || q.includes('fartiliz') || q.includes('fert') || q.includes('urea') || q.includes('dap') || q.includes('npk') || q.includes('nutrient') || q.includes('সার') || q.includes('ইউরিয়া') || q.includes('खाद') || q.includes('यूरिया');
+  const isWater = q.includes('water') || q.includes('irrigation') || q.includes('drain') || q.includes('moisture') || q.includes('জল') || q.includes('সেচ') || q.includes('পানি') || q.includes('सिंचाई');
+  const isPest = q.includes('pest') || q.includes('disease') || q.includes('fungus') || q.includes('blight') || q.includes('borer') || q.includes('insect') || q.includes('পোকা') || q.includes('মাজরা') || q.includes('कीट') || q.includes('रोग');
+
+  // ─── BENGALI RESPONSES ───────────────────────────────────────────────────
   if (lang === 'bn') {
-    if (q.includes('স্প্রে') || q.includes('কীটনাশক') || q.includes('spray')) {
+    if (isSpray && isFertilizer) {
       if (isRain) {
-        return `⚠️ বর্তমান বৃষ্টিপাতের পূর্বাভাসে (${weather.rainfall}) কীটনাশক বা ছত্রাকনাশক স্প্রে করবেন না। বৃষ্টির কারণে ওষুধ ধুয়ে অপচয় হবে। বৃষ্টি থামার পর পরিষ্কার রোদ ঝলমলে দিনে স্টিকার (spreader/sticker) মিশিয়ে স্প্রে করার পরামর্শ দেওয়া হচ্ছে।`;
+        return `⚠️ বর্তমান বৃষ্টিপাতের আবহাওয়ায় (${weather.rainfall || 'বৃষ্টি'}) জমিতে কোনো তরল বা ফোলিয়ার সার (Foliar spray) করবেন না। বৃষ্টির জলে সার ধুয়ে অপচয় হবে।
+• বৃষ্টির পর আকাশ পরিষ্কার হলে এবং পাতার জল শুকিয়ে গেলে স্প্রে করুন।
+• উপযুক্ত সময়: সকাল ৬:৩০ - ৯:০০ অথবা বিকেল ৩:৩০ - ৫:০০।
+• ${crop}-এর ${stage} দশায় মাটিতে পর্যাপ্ত আর্দ্রতা থাকলে তবেই ইউরিয়া ও পটাশ সার প্রয়োগ করুন।`;
       }
-      return `✅ বর্তমান আবহাওয়া (${weather.temp}°C, আর্দ্রতা ${weather.humidity}) স্প্রে করার জন্য অনুকূল। সকালের দিকে বাতাস শান্ত থাকাকালে (বাতাসের গতি ${weather.wind}) অনুমোদিত মাত্রায় স্প্রে সম্পন্ন করুন।`;
+      return `✅ সার স্প্রে করার অনুকূল সময়সূচি:
+• বর্তমান আবহাওয়া (${temp}°C, বাতাস ${weather.wind || '১৫ কিমি/ঘণ্টা'}) সার স্প্রে করার জন্য ভালো।
+• সকাল ৭:০০ থেকে ৯:৩০-এর মধ্যে অথবা বিকেলে রোদ কমে গেলে স্প্রে সম্পন্ন করুন।
+• ${crop}-এর ${stage} দশায় পাতার মাধ্যমে দ্রুত পুষ্টি শোষণের জন্য তরল মাইক্রোনিউট্রিয়েন্ট বা এনপিকে স্প্রে করার পরামর্শ দেওয়া হচ্ছে।`;
     }
-    if (q.includes('সার') || q.includes('ইউরিয়া') || q.includes('দানা') || q.includes('fertilizer')) {
+    if (isSpray || isPest) {
       if (isRain) {
-        return `🚫 ভারী বৃষ্টির সময় জমিতে ইউরিয়া বা নাইট্রোজেন সারের উপরিপ্রয়োগ (Top-dressing) স্থগিত রাখুন। অতিরিক্ত জলের সাথে সার ধুয়ে নষ্ট হয়ে যাবে। জল নিষ্কাশনের পর মাটি আর্দ্র হলে সার প্রয়োগ করুন।`;
+        return `⚠️ বৃষ্টিপাতের কারণে কীটনাশক বা ছত্রাকনাশক স্প্রে স্থগিত রাখুন। ওষুধ ধুয়ে কার্যকারিতা নষ্ট হবে। রোদ উঠলে স্টিকার (sticker/adjuvant) মিশিয়ে স্প্রে করুন।`;
       }
-      return `🌾 ${crop}-এর ${stage} দশায় সুষম পুষ্টির জন্য ইউরিয়া ও পটাশ সার বিকেলে ছিটিয়ে প্রয়োগ করুন। জমিতে যেন ২-৩ ইঞ্চি পরিমিত জল থাকে তা নিশ্চিত করুন।`;
+      return `✅ স্প্রে উইন্ডো খোলা রয়েছে। সকালের শান্ত আবহাওয়ায় (বাতাসের গতি কম থাকলে) মাজরা পোকা ও ছত্রাকের জন্য অনুমোদিত ওষুধ প্রয়োগ করুন।`;
     }
-    if (q.includes('জল') || q.includes('সেচ') || q.includes('ড্রেন') || q.includes('water') || q.includes('drain')) {
+    if (isFertilizer) {
       if (isRain) {
-        return `🌧️ জমিতে অতিরিক্ত জল জমে যাতে ফসলের গোড়া পচে না যায়, সেজন্য অবিলম্বে আল কেটে নিকাশি নালা (Drainage canal) পরিষ্কার রাখুন।`;
+        return `🚫 ভারী বৃষ্টির সময় ইউরিয়া বা দানাদার সারের উপরিপ্রয়োগ (Top-dressing) করবেন না। জল নিষ্কাশনের পর মাটি আর্দ্র হলে সার ছড়ান।`;
       }
-      return `💧 বর্তমান মাটিতে আর্দ্রতার মাত্রা সন্তোষজনক। নতুন করে ভারী সেচের প্রয়োজন নেই, শুধু প্রয়োজনীয় আর্দ্রতা বজায় রাখুন।`;
+      return `🌾 ${crop}-এর ${stage} দশায় সুষম পুষ্টির জন্য ইউরিয়া ও পটাশ বিকেলে জমিতে প্রয়োগ করুন। জমিতে ২-৩ ইঞ্চি জল স্তর বজায় রাখুন।`;
     }
-    if (q.includes('রোগ') || q.includes('পোকা') || q.includes('মাজরা') || q.includes('pest')) {
-      return `🔍 আর্দ্র আবহাওয়ায় (${weather.humidity}) মাজরা পোকা ও পাতা পোড়া রোগের প্রাদুর্ভাব ঘটতে পারে। ক্ষেতের জমিতে ফেরোমোন ট্র্যাপ ব্যবহার করুন এবং রোগাক্রান্ত পাতা দেখা দিলে কৃষি বিশেষজ্ঞদের পরামর্শে কার্বেনডাজিম বা নিমতেল প্রয়োগ করুন।`;
+    if (isWater) {
+      if (isRain) {
+        return `🌧️ জমিতে অতিরিক্ত জল জমে যাতে ফসলের গোড়া পচে না যায়, সেজন্য অবিলম্বে নিকাশি নালা (Drainage) পরিষ্কার রাখুন।`;
+      }
+      return `💧 বর্তমান মাটিতে আর্দ্রতার মাত্রা সন্তোষজনক। নতুন করে সেচের প্রয়োজন নেই।`;
     }
-    return `📌 ${loc.panchayat || loc.block} অঞ্চলে বর্তমান আবহাওয়ায় (${weather.temp}°C, বৃষ্টি ${weather.rainfall}): ${crop} ফসলের ${stage} পর্যায়ে মাঠ নিয়মিত পরিদর্শন করুন এবং নিকাশি ব্যবস্থা সুগম রাখুন।`;
+    return `📌 ${place} অঞ্চলে বর্তমান আবহাওয়ায় (${temp}°C, বৃষ্টি ${weather.rainfall || '০ মিমি'}): ${crop} ফসলের ${stage} পর্যায়ে মাঠ নিয়মিত পরিদর্শন করুন ও নিকাশি ব্যবস্থা স্বাভাবিক রাখুন।`;
   }
 
+  // ─── HINDI RESPONSES ─────────────────────────────────────────────────────
   if (lang === 'hi') {
-    if (q.includes('स्प्रे') || q.includes('कीटनाशक') || q.includes('spray')) {
+    if (isSpray && isFertilizer) {
       if (isRain) {
-        return `⚠️ वर्तमान बारिश (${weather.rainfall}) में किसी भी कीटनाशक का छिड़काव न करें। बारिश से दवा बह जाएगी। मौसम साफ होने पर ही छिड़काव करें।`;
+        return `⚠️ वर्तमान बारिश (${weather.rainfall || 'बारिश'}) में तरल खाद या फोलियर स्प्रे न करें। बारिश से दवा बह जाएगी।
+• बारिश रुकने और पत्तियां सूखने के बाद ही छिड़काव करें।
+• उपयुक्त समय: सुबह 7:00 से 9:30 या शाम 3:30 से 5:30 बजे।
+• ${crop} की ${stage} अवस्था में खेत से जल निकासी के बाद ही खाद डालें।`;
       }
-      return `✅ वर्तमान मौसम (${weather.temp}°C) छिड़काव के लिए उपयुक्त है। सुबह के समय शांत हवा में अनुशंसित मात्रा में छिड़काव करें।`;
+      return `✅ खाद छिड़काव का सही समय:
+• सुबह शांत हवा में या शाम को धूप ढलने के बाद छिड़काव करें।
+• ${crop} की ${stage} अवस्था के लिए नैनो यूरिया या घुलनशील एनपीके का फोलियर स्प्रे प्रभावी रहेगा।`;
     }
-    if (q.includes('खाद') || q.includes('यूरिया') || q.includes('fertilizer')) {
+    if (isSpray || isPest) {
       if (isRain) {
-        return `🚫 बारिश के दौरान यूरिया का छिड़काव टालें। खेत से पानी निकलने और मिट्टी नम होने पर ही खाद डालें।`;
+        return `⚠️ बारिश के दौरान किसी भी कीटनाशक का छिड़काव न करें। मौसम साफ होने पर स्टीकर मिलाकर छिड़काव करें।`;
+      }
+      return `✅ मौसम अनुकूल है। शांत हवा में अनुशंसित मात्रा में छिड़काव करें।`;
+    }
+    if (isFertilizer) {
+      if (isRain) {
+        return `🚫 बारिश में यूरिया का छिड़काव टालें। खेत से पानी निकलने के बाद ही खाद डालें।`;
       }
       return `🌾 ${crop} की ${stage} अवस्था पर यूरिया और पोटाश का संतुलित प्रयोग करें।`;
     }
-    return `📌 ${loc.panchayat || loc.block} में वर्तमान मौसम (${weather.temp}°C, बारिश ${weather.rainfall}) के तहत ${crop} की ${stage} अवस्था में खेत की जल निकासी का ध्यान रखें।`;
+    return `📌 ${place} में वर्तमान मौसम (${temp}°C, बारिश ${weather.rainfall || '0mm'}) के तहत ${crop} की ${stage} अवस्था में खेत की जल निकासी का ध्यान रखें।`;
   }
 
-  // English fallback
-  if (q.includes('spray') || q.includes('pesticide')) {
+  // ─── ENGLISH RESPONSES ───────────────────────────────────────────────────
+  if (isSpray && isFertilizer) {
     if (isRain) {
-      return `⚠️ Postpone all foliar spraying due to active precipitation (${weather.rainfall}). Rainwash risk is high. Resume only in dry conditions with an agricultural sticker/surfactant.`;
+      return `⚠️ Do NOT spray foliar fertilizer or chemicals right now due to active precipitation (${weather.rainfall || 'rain'}). The rain will wash off the nutrients before leaves can absorb them.
+• Wait for a 24-hour dry window after the rain clears and foliage has dried.
+• Best Spray Window: Early morning (6:30 AM – 9:30 AM) or late afternoon (3:30 PM – 5:30 PM) when wind speed is under 15 km/h.
+• For ${crop} at ${stage} stage: Only apply soil nutrients (Urea/NPK) after ensuring standing water is drained to 2–3 cm depth.`;
     }
-    return `✅ Current conditions (${weather.temp}°C, wind ${weather.wind}) provide an optimal spray window. Apply in morning hours before wind speeds pick up.`;
+    return `✅ Recommended schedule for spraying fertilizer / foliar nutrients:
+• Optimal Time: Spray during early morning (7:00 AM – 9:30 AM) or late afternoon (3:30 PM – 5:30 PM) when wind is calm (current wind: ${weather.wind || '18 km/h'}).
+• Avoid midday heat (>30°C) to prevent leaf scorching.
+• For ${crop} at ${stage} stage: Liquid Nano Urea or 19:19:19 water-soluble NPK with an agricultural surfactant/sticker gives best absorption.`;
   }
-  if (q.includes('fertilizer') || q.includes('urea') || q.includes('nutrient')) {
+
+  if (isSpray || isPest) {
     if (isRain) {
-      return `🚫 Suspend urea top-dressing. High moisture runoff will cause nutrient leaching. Apply when soil moisture stabilizes after drainage.`;
+      return `⚠️ Postpone pesticide and chemical spraying. Active rain (${weather.rainfall || 'rain'}) will wash off the application. Resume only when the weather clears, and always mix an agricultural sticker (adjuvant).`;
     }
-    return `🌾 For ${crop} at ${stage} stage, split-apply nitrogen and potassium in late afternoon when soil is moist.`;
+    return `✅ Current weather conditions (${temp}°C, wind: ${weather.wind || '15 km/h'}) are favorable for spraying. Apply in the early morning hours before wind picks up.`;
   }
-  return `📌 Under current telemetry at ${loc.panchayat || loc.block} (${weather.temp}°C, ${weather.rainfall} rain): monitor field drainage for ${crop} during the ${stage} stage.`;
+
+  if (isFertilizer) {
+    if (isRain) {
+      return `🚫 Suspend urea and granular fertilizer top-dressing. Heavy water runoff will cause severe nutrient leaching. Apply once soil moisture stabilizes after drainage.`;
+    }
+    return `🌾 For ${crop} at ${stage} stage, split-apply nitrogen and potassium (MOP) in the late afternoon. Maintain 2–3 cm shallow standing water in the plot.`;
+  }
+
+  if (isWater) {
+    if (isRain) {
+      return `🌧️ Maintain open drainage channels immediately to prevent waterlogging and root asphyxiation during precipitation (${weather.rainfall || 'active rain'}).`;
+    }
+    return `💧 Soil moisture levels are currently adequate (${weather.humidity || '75%'} RH). No immediate supplementary irrigation is required.`;
+  }
+
+  return `📌 Agronomic Telemetry Advisory for ${place} (${temp}°C, ${weather.rainfall || '0mm'} rain):
+• For ${crop} during the ${stage} stage, ensure effective field drainage, monitor for stem borer and fungal leaf spots, and avoid field chemical applications during cloudy rain periods.`;
 }

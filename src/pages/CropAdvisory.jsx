@@ -26,6 +26,7 @@ export default function CropAdvisory() {
     panchayatsInBlock,
     blocksInDistrict,
     activeDistrict,
+    activeState,
     mockBlocks
   } = useDashboard()
 
