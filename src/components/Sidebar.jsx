@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Icon } from './IconSprite'
 import { useNavigate, useLocation, Link } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
 
 const navItems = [
   { id: 'i-grid',  label: 'Overview',          path: '/dashboard/overview' },
@@ -36,6 +37,7 @@ const mobileSecondaryItems = [
 export default function Sidebar() {
   const navigate = useNavigate()
   const location = useLocation()
+  const { signOut } = useAuth()
   const [drawerOpen, setDrawerOpen] = useState(false)
   
   // Find index of active tab for the sliding pip animation
@@ -178,7 +180,10 @@ export default function Sidebar() {
         <button
           className="anim-logout"
           aria-label="Sign out"
-          onClick={() => navigate('/')}
+          onClick={async () => {
+            await signOut()
+            navigate('/login')
+          }}
           style={{
             marginTop: 'auto',
             display: 'flex',
@@ -432,9 +437,10 @@ export default function Sidebar() {
 
               {/* Sign Out Action in Drawer */}
               <div
-                onClick={() => {
+                onClick={async () => {
                   setDrawerOpen(false)
-                  navigate('/')
+                  await signOut()
+                  navigate('/login')
                 }}
                 style={{
                   display: 'flex',

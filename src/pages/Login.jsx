@@ -147,9 +147,12 @@ function SocialBtn({ children, label, onClick, fullWidth }) {
   )
 }
 
+import { useAuth } from '../context/AuthContext'
+
 /* ─── Main Login page ──────────────────────────────────── */
 export default function Login() {
   const navigate = useNavigate()
+  const { signInWithEmail, signInWithGoogle } = useAuth()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPw, setShowPw] = useState(false)
@@ -157,13 +160,38 @@ export default function Login() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault()
     setError('')
     if (!email || !password) { setError('Please fill in all fields.'); return }
     setLoading(true)
-    // Simulate auth — replace with real call
-    setTimeout(() => { setLoading(false); navigate('/dashboard') }, 1200)
+
+    try {
+      const { data, error: authError } = await signInWithEmail(email, password)
+      if (authError) {
+        setError(authError.message || 'Unable to sign in. Please verify your credentials.')
+        setLoading(false)
+      } else {
+        navigate('/dashboard')
+      }
+    } catch (err) {
+      setError(err?.message || 'Authentication error')
+      setLoading(false)
+    }
+  }
+
+  async function handleGoogleLogin() {
+    setError('')
+    try {
+      const { error: googleError } = await signInWithGoogle()
+      if (googleError) {
+        setError(googleError.message)
+      } else {
+        navigate('/dashboard')
+      }
+    } catch (err) {
+      setError(err?.message || 'Google sign in failed')
+    }
   }
 
   return (
@@ -369,7 +397,7 @@ export default function Login() {
 
         {/* Social buttons */}
         <div className="anim-bigtemp" style={{ display: 'flex', gap: 'calc(12 * var(--u))', marginBottom: 'calc(28 * var(--u))' }}>
-          <SocialBtn label="Continue with Google" fullWidth>
+          <SocialBtn label="Continue with Google" onClick={handleGoogleLogin} fullWidth>
             <GoogleG />
             Continue with Google
           </SocialBtn>

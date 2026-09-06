@@ -183,9 +183,12 @@ function StrengthBar({ password }) {
   )
 }
 
+import { useAuth } from '../context/AuthContext'
+
 /* ─── Main Register page ─────────────────────────────────── */
 export default function Register() {
   const navigate = useNavigate()
+  const { signUpWithEmail, signInWithGoogle } = useAuth()
   const [form, setForm] = useState({ name: '', email: '', password: '', confirm: '' })
   const [showPw, setShowPw] = useState(false)
   const [showConfirm, setShowConfirm] = useState(false)
@@ -195,7 +198,7 @@ export default function Register() {
 
   const set = key => e => setForm(f => ({ ...f, [key]: e.target.value }))
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault()
     setError('')
     if (!form.name || !form.email || !form.password || !form.confirm)
@@ -206,8 +209,34 @@ export default function Register() {
       return setError('Password must be at least 8 characters.')
     if (!agree)
       return setError('You must agree to the Terms of Service.')
+
     setLoading(true)
-    setTimeout(() => { setLoading(false); navigate('/dashboard') }, 1400)
+    try {
+      const { data, error: authError } = await signUpWithEmail(form.email, form.password, form.name)
+      if (authError) {
+        setError(authError.message || 'Failed to create account.')
+        setLoading(false)
+      } else {
+        navigate('/dashboard')
+      }
+    } catch (err) {
+      setError(err?.message || 'Error creating account.')
+      setLoading(false)
+    }
+  }
+
+  async function handleGoogleSignUp() {
+    setError('')
+    try {
+      const { error: googleError } = await signInWithGoogle()
+      if (googleError) {
+        setError(googleError.message)
+      } else {
+        navigate('/dashboard')
+      }
+    } catch (err) {
+      setError(err?.message || 'Google sign in failed')
+    }
   }
 
   return (
@@ -371,7 +400,7 @@ export default function Register() {
 
         {/* Social sign-up */}
         <div className="anim-bigtemp" style={{ display: 'flex', gap: 'calc(12 * var(--u))', marginBottom: 'calc(24 * var(--u))' }}>
-          <SocialBtn label="Sign up with Google" fullWidth><GoogleG />Sign up with Google</SocialBtn>
+          <SocialBtn label="Sign up with Google" onClick={handleGoogleSignUp} fullWidth><GoogleG />Sign up with Google</SocialBtn>
         </div>
 
         {/* Divider */}

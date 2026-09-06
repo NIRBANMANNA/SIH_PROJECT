@@ -17,6 +17,8 @@ import Reports from './pages/Reports'
 import Settings from './pages/Settings'
 import ModelConsole from './pages/ModelConsole'
 
+import ProtectedRoute from './components/ProtectedRoute'
+
 export default function App() {
   return (
     <>
@@ -26,20 +28,23 @@ export default function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         
-        <Route path="/dashboard" element={<Dashboard />}>
-          <Route index element={<Navigate to="overview" replace />} />
-          <Route path="overview" element={<Overview />} />
-          <Route path="map" element={<WeatherMap />} />
-          <Route path="forecast" element={<ForecastDownscaled />} />
-          <Route path="console" element={<ModelConsole />} />
-          <Route path="alerts" element={<RiskAlerts />} />
-          <Route path="cropadvisory" element={<CropAdvisory />} />
-          <Route path="crop-advisory" element={<CropAdvisory />} />
-          <Route path="advisory" element={<CropAdvisory />} />
-          <Route path="historical" element={<HistoricalTrends />} />
-          <Route path="accuracy" element={<Accuracy />} />
-          <Route path="reports" element={<Reports />} />
-          <Route path="settings" element={<Settings />} />
+        {/* Protected Dashboard Shell & Subroutes */}
+        <Route element={<ProtectedRoute />}>
+          <Route path="/dashboard" element={<Dashboard />}>
+            <Route index element={<Navigate to="overview" replace />} />
+            <Route path="overview" element={<Overview />} />
+            <Route path="map" element={<WeatherMap />} />
+            <Route path="forecast" element={<ForecastDownscaled />} />
+            <Route path="console" element={<ModelConsole />} />
+            <Route path="alerts" element={<RiskAlerts />} />
+            <Route path="cropadvisory" element={<CropAdvisory />} />
+            <Route path="crop-advisory" element={<CropAdvisory />} />
+            <Route path="advisory" element={<CropAdvisory />} />
+            <Route path="historical" element={<HistoricalTrends />} />
+            <Route path="accuracy" element={<Accuracy />} />
+            <Route path="reports" element={<Reports />} />
+            <Route path="settings" element={<Settings />} />
+          </Route>
         </Route>
         
         <Route path="*" element={<Navigate to="/" replace />} />
