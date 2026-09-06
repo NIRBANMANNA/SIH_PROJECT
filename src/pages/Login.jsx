@@ -321,7 +321,7 @@ export default function Login() {
 
         {/* Footer */}
         <div style={{ fontSize: 'clamp(11px, calc(13 * var(--u)), 15px)', color: 'rgba(255,255,255,.35)', letterSpacing: 'calc(.2 * var(--u))' }}>
-          © 2025 Aurora Weather Inc. — All rights reserved.
+          © {new Date().getFullYear()} KisanDarpan AI — All rights reserved.
         </div>
       </div>
 
@@ -363,7 +363,7 @@ export default function Login() {
             Welcome back
           </div>
           <div style={{ fontSize: 'clamp(13px, calc(15.5 * var(--u)), 18.5px)', fontWeight: 400, color: 'rgba(255,255,255,.60)', marginTop: 'calc(6 * var(--u))' }}>
-            Sign in to your Aurora account
+            Sign in to your KisanDarpan AI account
           </div>
         </div>
 
@@ -514,7 +514,7 @@ function SubmitButton({ loading }) {
           <span>Signing in…</span>
         </>
       ) : (
-        'Sign in to Aurora'
+        'Sign in to KisanDarpan AI'
       )}
     </button>
   )

@@ -330,7 +330,7 @@ export default function Register() {
 
         {/* Footer */}
         <div style={{ fontSize: 'clamp(11px, calc(13 * var(--u)), 15px)', color: 'rgba(255,255,255,.35)', letterSpacing: 'calc(.2 * var(--u))' }}>
-          © 2025 Aurora Weather Inc. — All rights reserved.
+          © {new Date().getFullYear()} KisanDarpan AI — All rights reserved.
         </div>
       </div>
 
