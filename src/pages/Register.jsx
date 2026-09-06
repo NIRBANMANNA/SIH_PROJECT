@@ -1,35 +1,10 @@
 import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
-
+import KisanDarpanLogo from '../components/KisanDarpanLogo'
 
 /* ─── shared primitives ───────────────────────────────── */
-function Logo({ size = 40 }) {
-  return (
-    <div style={{
-      width: size,
-      height: size,
-      borderRadius: '11px',
-      background: 'linear-gradient(135deg, rgba(34, 197, 94, 0.35) 0%, rgba(234, 179, 8, 0.28) 100%)',
-      border: '1.5px solid rgba(250, 204, 21, 0.5)',
-      boxShadow: '0 2px 10px rgba(34, 197, 94, 0.25), inset 0 1px 1px rgba(255, 255, 255, 0.4)',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      flexShrink: 0,
-      backdropFilter: 'blur(8px)',
-      position: 'relative',
-      overflow: 'hidden'
-    }}>
-      <svg viewBox="0 0 24 24" fill="none" style={{ width: size * 0.78, height: size * 0.78 }} stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M2 13.5 C4.5 12, 7.5 11, 12 11 C16.5 11, 19.5 12, 22 13.5" stroke="#facc15" strokeWidth="2.2" strokeLinecap="round" />
-        <path d="M6 11.5 C6.5 6.5, 8.5 4.5, 12 4.5 C15.5 4.5, 17.5 6.5, 18 11.5" fill="rgba(250, 204, 21, 0.35)" stroke="#facc15" strokeWidth="1.8" />
-        <path d="M6.5 9.5 C8.5 8.5, 10 8, 12 8 C14 8, 15.5 8.5, 17.5 9.5" stroke="#22c55e" strokeWidth="1.6" />
-        <circle cx="12" cy="14.2" r="2.6" stroke="#ffffff" fill="rgba(255,255,255,0.2)" strokeWidth="1.5" />
-        <path d="M7.5 21.5 v-1.8 a3 3 0 0 1 3 -3 h3 a3 3 0 0 1 3 3 v1.8" stroke="#4ade80" strokeWidth="1.8" />
-        <path d="M12 16.5 v3.5 M10.5 18 c.9-.6 1.5-.3 1.5 0 M13.5 18 c-.9-.6-1.5-.3-1.5 0" stroke="#fef08a" strokeWidth="1.4" />
-      </svg>
-    </div>
-  )
+function Logo({ size = 44 }) {
+  return <KisanDarpanLogo size={size} animated={true} />
 }
 
 function EyeIcon({ open }) {

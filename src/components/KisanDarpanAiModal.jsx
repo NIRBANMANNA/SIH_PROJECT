@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { Icon } from './IconSprite'
 import { useDashboard } from '../context/DashboardContext'
 import { askCropAdvisoryAI } from '../lib/api'
+import KisanDarpanLogo from './KisanDarpanLogo'
 
 export default function KisanDarpanAiModal({ isOpen, onClose }) {
   const navigate = useNavigate()
@@ -252,22 +253,7 @@ export default function KisanDarpanAiModal({ isOpen, onClose }) {
         >
           {/* Title & Badge */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 'calc(10 * var(--u))' }}>
-            <div
-              style={{
-                width: 'calc(38 * var(--u))',
-                height: 'calc(38 * var(--u))',
-                borderRadius: 'calc(12 * var(--u))',
-                background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.3) 0%, rgba(6, 182, 212, 0.3) 100%)',
-                border: '1px solid rgba(52, 211, 153, 0.5)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: '#34d399',
-                boxShadow: '0 0 calc(14 * var(--u)) rgba(52, 211, 153, 0.3)'
-              }}
-            >
-              <Icon id="i-kisan-ai" width="22" height="22" />
-            </div>
+            <KisanDarpanLogo size={38} animated={true} />
 
             <div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 'calc(8 * var(--u))' }}>

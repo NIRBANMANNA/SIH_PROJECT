@@ -7,6 +7,7 @@ import { mockBlockWeather, getBlockWeatherData } from '../data/mockWeather'
 import { mockBlocks } from '../data/mockPanchayats'
 import LocationSelectorModal from './LocationSelectorModal'
 import KisanDarpanAiModal from './KisanDarpanAiModal'
+import KisanDarpanLogo from './KisanDarpanLogo'
 
 export default function Header({
   searchOpen,
@@ -143,24 +144,12 @@ export default function Header({
         {/* Kisan Darpan AI Intelligence Quick Launcher (Global) */}
         <button
           onClick={() => setIsAiModalOpen(true)}
-          className="anim-tool-ai rounded-2xl border-2 border-dashed border-emerald-400/80 bg-emerald-500/15 text-emerald-300 backdrop-blur-md transition-all duration-300 hover:translate-x-[-3px] hover:translate-y-[-3px] hover:rounded-md hover:bg-emerald-500/25 hover:border-emerald-300 hover:shadow-[3px_3px_0px_#10b981] active:translate-x-[0px] active:translate-y-[0px] active:rounded-2xl active:shadow-none cursor-pointer flex items-center justify-center relative group"
+          className="anim-tool-ai rounded-2xl border-2 border-dashed border-cyan-400/80 bg-cyan-500/15 text-cyan-300 backdrop-blur-md transition-all duration-300 hover:translate-x-[-3px] hover:translate-y-[-3px] hover:rounded-md hover:bg-cyan-500/25 hover:border-cyan-300 hover:shadow-[3px_3px_0px_#06b6d4] active:translate-x-[0px] active:translate-y-[0px] active:rounded-2xl active:shadow-none cursor-pointer flex items-center justify-center relative group"
           aria-label="Kisan Darpan AI Intelligence"
           title="Kisan Darpan AI Intelligence"
-          style={{ width: 'clamp(36px, calc(40 * var(--u)), 44px)', height: 'clamp(36px, calc(40 * var(--u)), 44px)', flexShrink: 0 }}
+          style={{ width: 'clamp(36px, calc(40 * var(--u)), 44px)', height: 'clamp(36px, calc(40 * var(--u)), 44px)', flexShrink: 0, padding: 0 }}
         >
-          <Icon id="i-kisan-ai" width="20" height="20" />
-          <span
-            style={{
-              position: 'absolute',
-              top: 'calc(2 * var(--u))',
-              right: 'calc(2 * var(--u))',
-              width: 'calc(6 * var(--u))',
-              height: 'calc(6 * var(--u))',
-              borderRadius: '50%',
-              background: '#34d399',
-              boxShadow: '0 0 calc(6 * var(--u)) #34d399'
-            }}
-          />
+          <KisanDarpanLogo size={32} animated={true} style={{ pointerEvents: 'none' }} />
         </button>
 
         {/* Add location (Opens 4-Tier Location Input Modal) */}
