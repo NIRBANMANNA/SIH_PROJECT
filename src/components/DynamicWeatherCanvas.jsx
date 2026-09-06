@@ -501,28 +501,6 @@ export default function DynamicWeatherCanvas({ manualMode, onModeChange }) {
     }
   }, [effectiveScenario])
 
-  // ─── 6. LIVE METRIC STATUS LABEL ───────────────────────────────────────────
-  const displayLabel = useMemo(() => {
-    const timeStr = `${currentHour % 12 || 12}:${currentMinute < 10 ? '0' : ''}${currentMinute} ${currentHour >= 12 ? 'PM' : 'AM'}`
-
-    switch (effectiveScenario) {
-      case 'night-rain':
-        return `🌙 Night Rain • ${timeStr} (${rainMm}mm)`
-      case 'night-clear':
-        return `🌙 Starry Night • ${timeStr} (${tempC}°C)`
-      case 'day-rain':
-        return `🌧️ Live Rain • ${timeStr} (${rainMm}mm)`
-      case 'summer-day':
-        return `☀️ Summer Sun • ${timeStr} (${tempC}°C)`
-      case 'sunset':
-        return `🌅 Golden Sunset • ${timeStr}`
-      case 'dawn':
-        return `🌄 Morning Dawn • ${timeStr}`
-      default:
-        return `🌤️ Live • ${timeStr}`
-    }
-  }, [effectiveScenario, currentHour, currentMinute, rainMm, tempC])
-
   return (
     <>
       {/* Background color grading & dynamic gradient tint (Minimal Weather Sense for All Tabs) */}
@@ -552,60 +530,6 @@ export default function DynamicWeatherCanvas({ manualMode, onModeChange }) {
           zIndex: 2,
         }}
       />
-
-      {/* Floating Interactive Ambience & Time Controller Badge (Overview Tab Only) */}
-      {isOverview && (
-        <div
-          style={{
-            position: 'fixed',
-            bottom: 'calc(18 * var(--u))',
-            right: 'calc(38 * var(--u))',
-            zIndex: 80,
-            display: 'flex',
-            alignItems: 'center',
-            gap: 'calc(6 * var(--u))',
-            background: 'rgba(15, 23, 42, 0.88)',
-            backdropFilter: 'blur(16px)',
-            border: '1px solid rgba(255, 255, 255, 0.22)',
-            borderRadius: 'calc(16 * var(--u))',
-            padding: 'calc(4 * var(--u)) calc(8 * var(--u))',
-            boxShadow: '0 4px 20px rgba(0,0,0,0.5)',
-            fontSize: 'calc(11.5 * var(--u))',
-            color: '#fff',
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: 'calc(6 * var(--u))', padding: '0 calc(4 * var(--u))' }}>
-            <span style={{ width: 'calc(6 * var(--u))', height: 'calc(6 * var(--u))', borderRadius: '50%', background: '#38bdf8', boxShadow: '0 0 8px #38bdf8' }} />
-            <span style={{ fontWeight: 600, color: '#e2e8f0', letterSpacing: '-0.2px' }}>{displayLabel}</span>
-          </div>
-
-          {/* Quick Ambience Switcher Dropdown */}
-          <select
-            value={manualMode || 'auto'}
-            onChange={(e) => onModeChange?.(e.target.value)}
-            aria-label="Select Atmospheric Weather & Time Environment"
-            style={{
-              background: 'rgba(255, 255, 255, 0.12)',
-              border: '1px solid rgba(255, 255, 255, 0.25)',
-              borderRadius: 'calc(10 * var(--u))',
-              color: '#7dd3fc',
-              padding: 'calc(3 * var(--u)) calc(8 * var(--u))',
-              fontSize: 'calc(11 * var(--u))',
-              fontWeight: 700,
-              cursor: 'pointer',
-              outline: 'none',
-            }}
-          >
-            <option value="auto" style={{ background: '#0f172a', color: '#fff' }}>⚡ Auto (Trained ML & Live Telemetry)</option>
-            <option value="day-rain" style={{ background: '#0f172a', color: '#fff' }}>🌧️ Daytime Rain Showers</option>
-            <option value="night-rain" style={{ background: '#0f172a', color: '#fff' }}>🌧️🌙 Night Monsoon Rain</option>
-            <option value="summer-day" style={{ background: '#0f172a', color: '#fff' }}>☀️ Summer Sun & Heat</option>
-            <option value="night-clear" style={{ background: '#0f172a', color: '#fff' }}>🌙 Starry Night Sky</option>
-            <option value="sunset" style={{ background: '#0f172a', color: '#fff' }}>🌅 Golden Sunset</option>
-            <option value="dawn" style={{ background: '#0f172a', color: '#fff' }}>🌄 Morning Dawn</option>
-          </select>
-        </div>
-      )}
     </>
   )
 }
