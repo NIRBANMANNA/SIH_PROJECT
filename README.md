@@ -27,7 +27,7 @@ Traditional weather forecasts provide coarse regional predictions (~9 km to 25 k
 
 | Module | Features & Implementation |
 | :--- | :--- |
-| ⚡ **AI/ML Downscaling Engine** | FastAPI backend (`:8001`) interfacing with Aurora ML models to downscale 9km WRF grid forecasts to **1 km² Gram Panchayat precision** with latency tracking and statistical verification ($R^2$, RMSE, MAE). |
+| ⚡ **AI/ML Downscaling Engine** | FastAPI backend (`:8001`) interfacing with KisanDarpan AI ML models to downscale 9km WRF grid forecasts to **1 km² Gram Panchayat precision** with latency tracking and statistical verification ($R^2$, RMSE, MAE). |
 | 🎛️ **Live Model Console (`/dashboard/console`)** | Interactive model execution cockpit: select state, district, block, panchayat, and date to run real-time inference, inspect tensor outputs, downscaled temperature/rainfall deltas, and compute efficiency. |
 | 🌐 **Interactive GIS Map (`/dashboard/map`)** | Dual basemaps (Satellite vs. High-Contrast Dark OSM), multi-layer telemetry heatmaps (Rainfall, Temp, Humidity, Wind), **AWS Sensor Station Pins** with live pulsing beacons, and **Dynamic Wind Vectors** with 60fps animated streamlines. |
 | 📍 **Dynamic All-West Bengal Hierarchy** | Automatic district-to-block-to-panchayat resolution across all West Bengal districts (Purba Medinipur, Hooghly, Burdwan, Nadia, Howrah, Bankura, 24 Parganas, etc.) with dynamic coordinate generation. |
