@@ -185,8 +185,14 @@ SIH_PROJECT/
 │   ├── App.jsx                  # Application router configuration
 │   ├── main.jsx                 # Client entry point
 │   └── index.css                # Global CSS variables, animations & utilities
+├── checkpoints/                 # Production ONNX model graph & weights
+│   ├── tp_downscaler.onnx       # Sub-pixel U-Net inference graph
+│   └── tp_downscaler.onnx.data  # Trained neural network weights
+├── data/raw/wrf_9km/            # Real atmospheric input telemetry
+│   └── merged.nc                # Multi-temporal 9km WRF NetCDF dataset
+├── prepare_dataset.py           # Automated IMD/WRF dataset ingestion & surrogate generator
 ├── docker-compose.yml           # Multi-container orchestration
-├── Dockerfile.frontend          # Optimized multi-stage Nginx container build
+├── Dockerfile.frontend          # Optimized multi-stage container build
 ├── index.html                   # HTML document root
 ├── package.json                 # Node.js dependencies & scripts
 ├── vite.config.js               # Vite configuration with Tailwind CSS v4
@@ -225,45 +231,14 @@ source venv/bin/activate
 pip install -r backend/requirements.txt
 ```
 
-#### 3. Data Ingestion & Dataset Preparation:
-Large NetCDF datasets (`*.nc`) and model weights are ignored by Git. You can acquire real IMD meteorological data or generate an instant synthetic testing dataset:
-
-* **Option A: Real IMD Gridded Rainfall (Recommended for production/research)**
-  ```bash
-  # Download official IMD gridded daily data (e.g., 2020)
-  pip install imddata
-  imddata --name rain --syear 2020 --eyear 2020 --output data/raw/imd_public/
-
-  # Automatically format into standard 9km WRF input & 3km IMD ground-truth:
-  python prepare_dataset.py --mode real --source data/raw/imd_public/IMD_rain_2020.nc
-  ```
-
-* **Option B: Quick-Start Synthetic Surrogates (For instant local testing)**
-  ```bash
-  python prepare_dataset.py --mode synthetic
-  ```
-  *This automatically generates `data/raw/wrf_9km/merged.nc` and `data/raw/imd_3km/merged.nc`.*
-
-#### 4. Train Model Checkpoints & Export ONNX:
-If you want to train the downscaler model from scratch and generate fresh checkpoints:
-```bash
-# 1. Train U-Net with PixelShuffle 3x (saves checkpoint in checkpoints/unet-*.ckpt)
-python -m ml_pipeline.training.train
-
-# 2. Export trained checkpoint to high-performance ONNX model:
-python -m ml_pipeline.training.export
-# Or export multi-variable models (tp, t2m, rh, ws):
-python ml_pipeline/export_all.py
-```
-*This populates `checkpoints/tp_downscaler.onnx` ready for sub-second API inference.*
-
-#### 5. Start the Python ML Backend:
+#### 3. Start the Python ML Backend:
+> **Note:** Pre-trained production ONNX model weights (`checkpoints/tp_downscaler.onnx`) and WRF 9km data (`data/raw/wrf_9km/merged.nc`) are already bundled in the repository!
 ```bash
 python -m uvicorn backend.main:app --host 0.0.0.0 --port 8001 --reload
 ```
 The backend will be live at `http://localhost:8001` (API docs at `http://localhost:8001/docs`).
 
-#### 6. Start the Frontend Application:
+#### 4. Start the Frontend Application:
 In a separate terminal window:
 ```bash
 # Install NPM dependencies
@@ -273,6 +248,58 @@ npm install
 npm run dev
 ```
 Open your browser at `http://localhost:5173`.
+
+---
+
+### ☁️ Cloud Production Deployment (Render + Vercel)
+
+For running live AI downscaling predictions 24/7 without needing your local machine:
+
+#### Step 1: Deploy the Python Backend on Render
+1. Go to [Render.com](https://render.com) and click **New +** → **Web Service**.
+2. Connect this GitHub repository: `NIRBANMANNA/SIH_PROJECT`.
+3. Configure the service settings:
+   - **Runtime**: `Python 3`
+   - **Region**: `Singapore` (optimal for South Asia)
+   - **Build Command**: `pip install -r backend/requirements.txt`
+   - **Start Command**: `uvicorn backend.main:app --host 0.0.0.0 --port $PORT`
+   - **Plan**: Free
+4. Click **Create Web Service**. Once deployed, copy your live backend URL (e.g., `https://kisandarpan-backend.onrender.com`).
+
+#### Step 2: Connect Frontend on Vercel
+1. Open your project on the [Vercel Dashboard](https://vercel.com/dashboard) → **Settings** → **Environment Variables**.
+2. Add a new variable:
+   - **Key**: `VITE_API_URL`
+   - **Value**: `https://your-backend-name.onrender.com` *(your Render URL without trailing slash)*
+3. Redeploy your latest build on Vercel.  
+Now, predictions on your live website will execute directly on your trained cloud neural network!
+
+---
+
+### 🔬 Retraining Models & Data Regeneration (Optional)
+
+If you wish to retrain the downscaler model from scratch or ingest new meteorological years:
+
+* **Download Real IMD Gridded Rainfall:**
+  ```bash
+  pip install imddata
+  imddata --name rain --syear 2020 --eyear 2020 --output data/raw/imd_public/
+  python prepare_dataset.py --mode real --source data/raw/imd_public/IMD_rain_2020.nc
+  ```
+
+* **Or Generate Instant Synthetic Testing Surrogates:**
+  ```bash
+  python prepare_dataset.py --mode synthetic
+  ```
+
+* **Train U-Net & Export ONNX Checkpoints:**
+  ```bash
+  # Train PyTorch Lightning U-Net
+  python -m ml_pipeline.training.train
+
+  # Export trained weights to ONNX graph
+  python -m ml_pipeline.training.export
+  ```
 
 ---
 
