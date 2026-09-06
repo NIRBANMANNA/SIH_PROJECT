@@ -1,30 +1,32 @@
 import React, { useRef, useEffect, useState, useMemo } from 'react'
+import { useLocation } from 'react-router-dom'
 import { useDashboard } from '../context/DashboardContext'
 
 /**
  * DynamicWeatherCanvas
  * ─────────────────────────────────────────────────────────────────────────────
- * Meteorologically accurate GPU-accelerated atmospheric animation engine:
- * 1. Accurately synchronizes with:
- *    - Live block/panchayat telemetry (wind speed, precipitation mm, temperature, condition)
- *    - Trained Machine Learning downscaling models (WRF 9km -> 1km Edge-ML variables: tp, t2m, ws, rh)
- *    - Accurate local system clock (Night, Dawn, Daylight, Golden Sunset)
- * 2. Real physical simulation:
- *    - Dynamic rain particle count, fall velocity, streak length & thickness scaled to rain mm
- *    - Dynamic rain wind-slant vector calculated directly from telemetry wind speed (km/h)
- *    - Expanding water splash ripples on ground impact
- *    - Thunderstorm flash illumination triggered during severe downpours or thunder telemetry
- *    - Summer solar corona, rotating god rays, and rising heat motes scaled to temperature (°C)
- *    - Nocturnal celestial sky with 110 individually twinkling stars & luminous lunar halo
- *    - Realistic drifting cloud layers responsive to wind velocity
- * 3. Non-blocking UI overlay (`pointerEvents: 'none'`) with interactive manual scenario override
+ * 1. Overview Tab:
+ *    - Full, serene, noise-free atmospheric weather animation
+ *    - Gentle, soft raindrops (significantly reduced count & thickness, no visual noise)
+ *    - Delicate ground ripples, gentle stars, and warm solar radiance
+ *    - Interactive live ambience switcher badge
+ * 2. Map, Forecast & All Other Tabs:
+ *    - Minimal weather sense only (accurate day/night/sunset sky color grading)
+ *    - Zero particle clutter or raindrops over maps, charts, or tables
+ *    - Zero switcher badge clutter
  */
 export default function DynamicWeatherCanvas({ manualMode, onModeChange }) {
   const canvasRef = useRef(null)
+  const location = useLocation()
   const { blockWeatherData, weatherData, liveApiResult, activeBlock } = useDashboard()
 
+  // Determine if user is on the main Overview page
+  const isOverview = useMemo(() => {
+    const path = (location?.pathname || '').toLowerCase()
+    return path.endsWith('/overview') || path === '/dashboard' || path === '/dashboard/'
+  }, [location?.pathname])
+
   // ─── 1. METEOROLOGICAL METRICS RESOLUTION ──────────────────────────────────
-  // Extract accurate numerical telemetry from live API (ML model) or active block/panchayat
   const rainMm = useMemo(() => {
     if (liveApiResult?.variables?.tp?.avg != null) return Number(liveApiResult.variables.tp.avg)
     if (liveApiResult?.tp?.avg != null) return Number(liveApiResult.tp.avg)
@@ -68,7 +70,7 @@ export default function DynamicWeatherCanvas({ manualMode, onModeChange }) {
   }, [rainMm, conditionText])
 
   const isThunder = useMemo(() => {
-    return conditionText.includes('thunder') || conditionText.includes('storm') || rainMm >= 28
+    return conditionText.includes('thunder') || conditionText.includes('storm') || rainMm >= 32
   }, [conditionText, rainMm])
 
   const isSunny = useMemo(() => {
@@ -94,10 +96,6 @@ export default function DynamicWeatherCanvas({ manualMode, onModeChange }) {
   }, [])
 
   // Precise astronomical day/night cycle:
-  // Dawn: 05:00 - 07:30
-  // Day: 07:30 - 17:00
-  // Sunset: 17:00 - 19:30
-  // Night: 19:30 - 05:00
   const realTimeOfDay = useMemo(() => {
     const timeDec = currentHour + currentMinute / 60
     if (timeDec >= 5.0 && timeDec < 7.5) return 'dawn'
@@ -139,31 +137,30 @@ export default function DynamicWeatherCanvas({ manualMode, onModeChange }) {
     }
     window.addEventListener('resize', handleResize)
 
-    // Dynamic particle counts calibrated to physical weather parameters
-    let numStars = effectiveScenario.includes('night') || effectiveScenario === 'sunset' || effectiveScenario === 'dawn' ? 120 : 0
-    
-    // Scale raindrop count to rainfall mm:
-    // Heavy rain (>= 25mm): 300 drops
-    // Moderate rain (10-25mm): 190 drops
-    // Light rain/drizzle (1-10mm): 85 drops
-    // No rain: 0 drops
+    // Particle pools:
+    // Only populated when on Overview tab.
+    // Kept calm, gentle, and noise-free.
+    let numStars = 0
     let numRain = 0
-    if (effectiveScenario.includes('rain') || (effectiveScenario === 'auto' && isRaining)) {
-      if (rainMm >= 25) numRain = 300
-      else if (rainMm >= 10) numRain = 190
-      else numRain = 85
-    }
-
-    // Scale summer heat motes to temperature:
-    // Hot (>= 33°C): 65 motes
-    // Moderate (27-33°C): 40 motes
-    // Mild (< 27°C): 20 motes
     let numMotes = 0
-    if (effectiveScenario === 'summer-day' || (!effectiveScenario.includes('night') && !effectiveScenario.includes('rain') && isSunny)) {
-      numMotes = tempC >= 33 ? 65 : tempC >= 27 ? 40 : 20
-    }
+    let numClouds = isOverview ? 5 : 2
 
-    const numClouds = isRaining || conditionText.includes('cloud') ? 9 : 4
+    if (isOverview) {
+      if (effectiveScenario.includes('night') || effectiveScenario === 'sunset' || effectiveScenario === 'dawn') {
+        numStars = 65 // gentle, delicate twinkle
+      }
+
+      if (effectiveScenario.includes('rain') || (effectiveScenario === 'auto' && isRaining)) {
+        // Less noise, calm and aesthetic rain
+        if (rainMm >= 25) numRain = 85      // Heavy rain: reduced from 300 to 85
+        else if (rainMm >= 10) numRain = 45  // Moderate rain: reduced from 190 to 45
+        else numRain = 22                   // Light drizzle: reduced from 85 to 22
+      }
+
+      if (effectiveScenario === 'summer-day' || (!effectiveScenario.includes('night') && !effectiveScenario.includes('rain') && isSunny)) {
+        numMotes = tempC >= 33 ? 28 : 16    // Summer motes: soft golden drift
+      }
+    }
 
     let stars = []
     let raindrops = []
@@ -177,53 +174,53 @@ export default function DynamicWeatherCanvas({ manualMode, onModeChange }) {
       for (let i = 0; i < numStars; i++) {
         stars.push({
           x: Math.random() * width,
-          y: Math.random() * (height * 0.78),
-          radius: Math.random() * 1.5 + 0.4,
-          baseAlpha: Math.random() * 0.75 + 0.25,
-          twinkleSpeed: Math.random() * 0.03 + 0.008,
+          y: Math.random() * (height * 0.72),
+          radius: Math.random() * 1.3 + 0.3,
+          baseAlpha: Math.random() * 0.65 + 0.2,
+          twinkleSpeed: Math.random() * 0.025 + 0.008,
           phase: Math.random() * Math.PI * 2,
         })
       }
 
-      // 2. Raindrops pool
+      // 2. Raindrops pool (gentle, soft, thin strokes)
       raindrops = []
       for (let i = 0; i < numRain; i++) {
-        const speedBase = rainMm >= 25 ? 22 : rainMm >= 10 ? 16 : 11
+        const speedBase = rainMm >= 25 ? 16 : rainMm >= 10 ? 12 : 9
         raindrops.push({
           x: Math.random() * (width + 250) - 100,
           y: Math.random() * height,
-          length: rainMm >= 25 ? Math.random() * 26 + 18 : Math.random() * 18 + 10,
-          speed: Math.random() * 8 + speedBase,
-          thickness: rainMm >= 25 ? Math.random() * 1.0 + 1.0 : Math.random() * 0.6 + 0.6,
-          opacity: rainMm >= 25 ? Math.random() * 0.55 + 0.35 : Math.random() * 0.4 + 0.2,
+          length: rainMm >= 25 ? Math.random() * 14 + 10 : Math.random() * 10 + 6,
+          speed: Math.random() * 5 + speedBase,
+          thickness: rainMm >= 25 ? Math.random() * 0.3 + 0.8 : Math.random() * 0.2 + 0.6,
+          opacity: rainMm >= 25 ? Math.random() * 0.16 + 0.18 : Math.random() * 0.12 + 0.14,
         })
       }
       splashes = []
 
-      // 3. Summer heat shimmer motes pool
+      // 3. Summer heat shimmer motes
       motes = []
       for (let i = 0; i < numMotes; i++) {
         motes.push({
           x: Math.random() * width,
           y: Math.random() * height,
-          radius: Math.random() * 2.6 + 1.0,
-          vx: (Math.random() - 0.5) * 0.4,
-          vy: -(Math.random() * 0.65 + 0.35),
-          opacity: Math.random() * 0.6 + 0.25,
+          radius: Math.random() * 2.2 + 0.8,
+          vx: (Math.random() - 0.5) * 0.3,
+          vy: -(Math.random() * 0.5 + 0.25),
+          opacity: Math.random() * 0.45 + 0.2,
           pulse: Math.random() * Math.PI * 2,
-          pulseSpeed: Math.random() * 0.025 + 0.01,
+          pulseSpeed: Math.random() * 0.02 + 0.008,
         })
       }
 
-      // 4. Cloud masses
+      // 4. Ambient cloud masses
       clouds = []
       for (let i = 0; i < numClouds; i++) {
         clouds.push({
           x: Math.random() * width,
-          y: Math.random() * (height * 0.48) + 20,
-          radius: Math.random() * 180 + 120,
-          speed: (Math.random() * 0.2 + 0.08) * (windSpeed / 18),
-          opacity: isRaining ? Math.random() * 0.12 + 0.08 : Math.random() * 0.07 + 0.03,
+          y: Math.random() * (height * 0.45) + 20,
+          radius: Math.random() * 160 + 100,
+          speed: (Math.random() * 0.15 + 0.05) * (windSpeed / 18),
+          opacity: isRaining ? Math.random() * 0.09 + 0.05 : Math.random() * 0.05 + 0.02,
         })
       }
     }
@@ -234,10 +231,9 @@ export default function DynamicWeatherCanvas({ manualMode, onModeChange }) {
     let lastTime = performance.now()
     let sunRotation = 0
     let lightningIntensity = 0
-    let nextLightningTime = performance.now() + Math.random() * 8000 + 4000
+    let nextLightningTime = performance.now() + Math.random() * 12000 + 6000
 
-    // Realistic wind-driven slant angle (between 3° for light breeze and 32° for gale winds)
-    const windAngle = Math.min(32, Math.max(3, (windSpeed / 50) * 30)) * (Math.PI / 180)
+    const windAngle = Math.min(26, Math.max(3, (windSpeed / 50) * 24)) * (Math.PI / 180)
     const windTiltX = Math.sin(windAngle)
     const windTiltY = Math.cos(windAngle)
 
@@ -246,6 +242,12 @@ export default function DynamicWeatherCanvas({ manualMode, onModeChange }) {
       lastTime = time
       ctx.clearRect(0, 0, width, height)
 
+      // When NOT on Overview: clean canvas, minimal weather sense only (background tint handles the atmosphere)
+      if (!isOverview) {
+        animId = requestAnimationFrame(render)
+        return
+      }
+
       const isNightMode = effectiveScenario.includes('night')
       const isRainMode = effectiveScenario.includes('rain')
       const isSummerMode = effectiveScenario === 'summer-day' || (!isNightMode && !isRainMode && isSunny)
@@ -253,17 +255,17 @@ export default function DynamicWeatherCanvas({ manualMode, onModeChange }) {
 
       // ─── A. STARS & LUNAR CELESTIAL SKY ──────────────────────
       if ((isNightMode || isSunsetMode) && stars.length > 0) {
-        const starFade = isNightMode ? (isRainMode ? 0.45 : 1.0) : 0.4
+        const starFade = isNightMode ? (isRainMode ? 0.35 : 0.85) : 0.3
         for (let i = 0; i < stars.length; i++) {
           const s = stars[i]
           s.phase += s.twinkleSpeed * (dt / 16)
-          const alpha = (s.baseAlpha + Math.sin(s.phase) * 0.35) * starFade
+          const alpha = (s.baseAlpha + Math.sin(s.phase) * 0.28) * starFade
           ctx.beginPath()
           ctx.arc(s.x, s.y, s.radius, 0, Math.PI * 2)
-          ctx.fillStyle = `rgba(235, 245, 255, ${Math.max(0.08, Math.min(1, alpha))})`
-          if (s.radius > 1.2 && !isRainMode) {
-            ctx.shadowBlur = 6
-            ctx.shadowColor = 'rgba(210, 235, 255, 0.75)'
+          ctx.fillStyle = `rgba(235, 245, 255, ${Math.max(0.06, Math.min(0.9, alpha))})`
+          if (s.radius > 1.1 && !isRainMode) {
+            ctx.shadowBlur = 4
+            ctx.shadowColor = 'rgba(210, 235, 255, 0.6)'
           } else {
             ctx.shadowBlur = 0
           }
@@ -275,30 +277,28 @@ export default function DynamicWeatherCanvas({ manualMode, onModeChange }) {
         if (isNightMode) {
           const moonX = width * 0.78
           const moonY = height * 0.14
-          const moonAlpha = isRainMode ? 0.35 : 0.95
+          const moonAlpha = isRainMode ? 0.28 : 0.9
 
-          // Atmospheric Lunar Halo
-          const haloGrad = ctx.createRadialGradient(moonX, moonY, 15, moonX, moonY, 140)
-          haloGrad.addColorStop(0, `rgba(215, 235, 255, ${0.22 * moonAlpha})`)
-          haloGrad.addColorStop(0.5, `rgba(160, 205, 250, ${0.08 * moonAlpha})`)
+          const haloGrad = ctx.createRadialGradient(moonX, moonY, 15, moonX, moonY, 120)
+          haloGrad.addColorStop(0, `rgba(215, 235, 255, ${0.18 * moonAlpha})`)
+          haloGrad.addColorStop(0.5, `rgba(160, 205, 250, ${0.06 * moonAlpha})`)
           haloGrad.addColorStop(1, 'rgba(10, 25, 45, 0)')
           ctx.beginPath()
-          ctx.arc(moonX, moonY, 140, 0, Math.PI * 2)
+          ctx.arc(moonX, moonY, 120, 0, Math.PI * 2)
           ctx.fillStyle = haloGrad
           ctx.fill()
 
           // Crescent Moon
           ctx.save()
           ctx.beginPath()
-          ctx.arc(moonX, moonY, 20, 0, Math.PI * 2)
+          ctx.arc(moonX, moonY, 18, 0, Math.PI * 2)
           ctx.fillStyle = `rgba(255, 255, 255, ${moonAlpha})`
-          ctx.shadowColor = 'rgba(255, 255, 255, 0.85)'
-          ctx.shadowBlur = isRainMode ? 6 : 14
+          ctx.shadowColor = 'rgba(255, 255, 255, 0.75)'
+          ctx.shadowBlur = isRainMode ? 4 : 10
           ctx.fill()
 
-          // Crescent shadow cutter
           ctx.beginPath()
-          ctx.arc(moonX + 8, moonY - 4, 18, 0, Math.PI * 2)
+          ctx.arc(moonX + 7, moonY - 3, 16, 0, Math.PI * 2)
           ctx.fillStyle = '#061320'
           ctx.shadowBlur = 0
           ctx.fill()
@@ -308,18 +308,18 @@ export default function DynamicWeatherCanvas({ manualMode, onModeChange }) {
 
       // ─── B. SUMMER SUN & RADIANT GOD RAYS ───────────────────
       if (isSummerMode) {
-        sunRotation += 0.0018 * (dt / 16)
+        sunRotation += 0.0014 * (dt / 16)
         const sunX = width * 0.72
         const sunY = height * 0.16
 
         // Solar Aura
-        const sunGlow = ctx.createRadialGradient(sunX, sunY, 20, sunX, sunY, 320)
-        sunGlow.addColorStop(0, 'rgba(255, 235, 160, 0.38)')
-        sunGlow.addColorStop(0.35, 'rgba(254, 215, 102, 0.18)')
-        sunGlow.addColorStop(0.7, 'rgba(251, 146, 60, 0.06)')
+        const sunGlow = ctx.createRadialGradient(sunX, sunY, 20, sunX, sunY, 280)
+        sunGlow.addColorStop(0, 'rgba(255, 235, 160, 0.30)')
+        sunGlow.addColorStop(0.35, 'rgba(254, 215, 102, 0.14)')
+        sunGlow.addColorStop(0.7, 'rgba(251, 146, 60, 0.04)')
         sunGlow.addColorStop(1, 'rgba(255, 255, 255, 0)')
         ctx.beginPath()
-        ctx.arc(sunX, sunY, 320, 0, Math.PI * 2)
+        ctx.arc(sunX, sunY, 280, 0, Math.PI * 2)
         ctx.fillStyle = sunGlow
         ctx.fill()
 
@@ -327,19 +327,19 @@ export default function DynamicWeatherCanvas({ manualMode, onModeChange }) {
         ctx.save()
         ctx.translate(sunX, sunY)
         ctx.rotate(sunRotation)
-        const rayCount = 12
+        const rayCount = 10
         for (let r = 0; r < rayCount; r++) {
           const angle = (r * Math.PI * 2) / rayCount
-          const rayLen = r % 2 === 0 ? 300 : 210
-          const raySpread = 0.08
+          const rayLen = r % 2 === 0 ? 240 : 170
+          const raySpread = 0.07
           ctx.beginPath()
           ctx.moveTo(0, 0)
           ctx.lineTo(Math.cos(angle - raySpread) * rayLen, Math.sin(angle - raySpread) * rayLen)
           ctx.lineTo(Math.cos(angle + raySpread) * rayLen, Math.sin(angle + raySpread) * rayLen)
           ctx.closePath()
           const rayGrad = ctx.createRadialGradient(0, 0, 10, 0, 0, rayLen)
-          rayGrad.addColorStop(0, 'rgba(254, 240, 138, 0.20)')
-          rayGrad.addColorStop(0.5, 'rgba(253, 186, 116, 0.08)')
+          rayGrad.addColorStop(0, 'rgba(254, 240, 138, 0.15)')
+          rayGrad.addColorStop(0.5, 'rgba(253, 186, 116, 0.05)')
           rayGrad.addColorStop(1, 'rgba(255, 255, 255, 0)')
           ctx.fillStyle = rayGrad
           ctx.fill()
@@ -348,10 +348,10 @@ export default function DynamicWeatherCanvas({ manualMode, onModeChange }) {
 
         // Solar Core Disc
         ctx.beginPath()
-        ctx.arc(sunX, sunY, 32, 0, Math.PI * 2)
-        ctx.fillStyle = 'rgba(255, 255, 245, 0.95)'
-        ctx.shadowColor = 'rgba(253, 224, 71, 0.9)'
-        ctx.shadowBlur = 24
+        ctx.arc(sunX, sunY, 28, 0, Math.PI * 2)
+        ctx.fillStyle = 'rgba(255, 255, 245, 0.92)'
+        ctx.shadowColor = 'rgba(253, 224, 71, 0.8)'
+        ctx.shadowBlur = 18
         ctx.fill()
         ctx.shadowBlur = 0
 
@@ -359,7 +359,7 @@ export default function DynamicWeatherCanvas({ manualMode, onModeChange }) {
         for (let m = 0; m < motes.length; m++) {
           const mote = motes[m]
           mote.y += mote.vy * (dt / 16)
-          mote.x += (mote.vx + Math.sin(mote.y * 0.015 + mote.pulse) * 0.3) * (dt / 16)
+          mote.x += (mote.vx + Math.sin(mote.y * 0.015 + mote.pulse) * 0.25) * (dt / 16)
           mote.pulse += mote.pulseSpeed
 
           if (mote.y < -10) {
@@ -369,12 +369,12 @@ export default function DynamicWeatherCanvas({ manualMode, onModeChange }) {
           if (mote.x < -10) mote.x = width + 10
           if (mote.x > width + 10) mote.x = -10
 
-          const mAlpha = mote.opacity * (0.6 + Math.sin(mote.pulse) * 0.4)
+          const mAlpha = mote.opacity * (0.6 + Math.sin(mote.pulse) * 0.35)
           ctx.beginPath()
           ctx.arc(mote.x, mote.y, mote.radius, 0, Math.PI * 2)
           ctx.fillStyle = `rgba(254, 240, 138, ${mAlpha})`
-          ctx.shadowColor = 'rgba(250, 204, 21, 0.6)'
-          ctx.shadowBlur = 4
+          ctx.shadowColor = 'rgba(250, 204, 21, 0.45)'
+          ctx.shadowBlur = 3
           ctx.fill()
         }
         ctx.shadowBlur = 0
@@ -386,18 +386,18 @@ export default function DynamicWeatherCanvas({ manualMode, onModeChange }) {
         cloud.x += cloud.speed * (dt / 16)
         if (cloud.x - cloud.radius > width) {
           cloud.x = -cloud.radius
-          cloud.y = Math.random() * (height * 0.48) + 20
+          cloud.y = Math.random() * (height * 0.45) + 20
         }
 
         const cloudGrad = ctx.createRadialGradient(cloud.x, cloud.y, cloud.radius * 0.2, cloud.x, cloud.y, cloud.radius)
         if (isNightMode) {
-          cloudGrad.addColorStop(0, `rgba(26, 40, 60, ${cloud.opacity * 1.6})`)
+          cloudGrad.addColorStop(0, `rgba(26, 40, 60, ${cloud.opacity * 1.4})`)
           cloudGrad.addColorStop(1, 'rgba(8, 16, 28, 0)')
         } else if (isSunsetMode) {
-          cloudGrad.addColorStop(0, `rgba(235, 120, 140, ${cloud.opacity * 2})`)
+          cloudGrad.addColorStop(0, `rgba(235, 120, 140, ${cloud.opacity * 1.6})`)
           cloudGrad.addColorStop(1, 'rgba(200, 80, 100, 0)')
         } else {
-          cloudGrad.addColorStop(0, `rgba(255, 255, 255, ${cloud.opacity * 2.2})`)
+          cloudGrad.addColorStop(0, `rgba(255, 255, 255, ${cloud.opacity * 1.8})`)
           cloudGrad.addColorStop(1, 'rgba(255, 255, 255, 0)')
         }
         ctx.beginPath()
@@ -406,17 +406,17 @@ export default function DynamicWeatherCanvas({ manualMode, onModeChange }) {
         ctx.fill()
       }
 
-      // ─── D. METEOROLOGICAL RAIN ENGINE ───────────────────────
+      // ─── D. GENTLE, NOISE-FREE RAINDROP ENGINE ────────────────
       if (isRainMode && raindrops.length > 0) {
-        // Lightning burst simulation for storms
+        // Soft thunder ambient glow (rare & subtle)
         if (isThunder && time > nextLightningTime) {
-          lightningIntensity = 1.0
-          nextLightningTime = time + Math.random() * 10000 + 4000
+          lightningIntensity = 0.45
+          nextLightningTime = time + Math.random() * 14000 + 7000
         }
         if (lightningIntensity > 0) {
-          ctx.fillStyle = `rgba(220, 235, 255, ${lightningIntensity * 0.42})`
+          ctx.fillStyle = `rgba(220, 235, 255, ${lightningIntensity * 0.22})`
           ctx.fillRect(0, 0, width, height)
-          lightningIntensity -= 0.04 * (dt / 16)
+          lightningIntensity -= 0.03 * (dt / 16)
         }
 
         const dropColor = isNightMode ? 'rgba(195, 220, 255,' : 'rgba(255, 255, 255,'
@@ -437,15 +437,15 @@ export default function DynamicWeatherCanvas({ manualMode, onModeChange }) {
           ctx.lineWidth = drop.thickness
           ctx.stroke()
 
-          // Ground / bottom ripple splash
+          // Ground / bottom subtle ripple splash
           if (drop.y > height - 10) {
-            if (Math.random() < 0.4 && splashes.length < 50) {
+            if (Math.random() < 0.25 && splashes.length < 20) {
               splashes.push({
                 x: drop.x,
-                y: height - Math.random() * 15,
-                radius: 1,
-                maxRadius: rainMm >= 25 ? Math.random() * 10 + 5 : Math.random() * 6 + 3,
-                alpha: 0.65,
+                y: height - Math.random() * 12,
+                radius: 0.8,
+                maxRadius: rainMm >= 25 ? Math.random() * 5 + 3 : Math.random() * 3 + 2,
+                alpha: 0.35,
               })
             }
             drop.y = -drop.length
@@ -454,11 +454,11 @@ export default function DynamicWeatherCanvas({ manualMode, onModeChange }) {
           if (drop.x > width + 100) drop.x = -50
         }
 
-        // Render expanding splash ripples
+        // Render soft splash ripples
         for (let s = splashes.length - 1; s >= 0; s--) {
           const splash = splashes[s]
-          splash.radius += 0.5 * (dt / 16)
-          splash.alpha -= 0.03 * (dt / 16)
+          splash.radius += 0.35 * (dt / 16)
+          splash.alpha -= 0.025 * (dt / 16)
           if (splash.alpha <= 0) {
             splashes.splice(s, 1)
             continue
@@ -466,7 +466,7 @@ export default function DynamicWeatherCanvas({ manualMode, onModeChange }) {
           ctx.beginPath()
           ctx.ellipse(splash.x, splash.y, splash.radius * 2, splash.radius * 0.7, 0, 0, Math.PI * 2)
           ctx.strokeStyle = `rgba(215, 235, 255, ${splash.alpha})`
-          ctx.lineWidth = 1
+          ctx.lineWidth = 0.8
           ctx.stroke()
         }
       }
@@ -479,9 +479,9 @@ export default function DynamicWeatherCanvas({ manualMode, onModeChange }) {
       cancelAnimationFrame(animId)
       window.removeEventListener('resize', handleResize)
     }
-  }, [effectiveScenario, windSpeed, rainMm, tempC, isRaining, isThunder, isSunny, conditionText])
+  }, [effectiveScenario, windSpeed, rainMm, tempC, isRaining, isThunder, isSunny, conditionText, isOverview])
 
-  // ─── 5. SKY GRADIENT COLOR GRADING ─────────────────────────────────────────
+  // ─── 5. SKY GRADIENT COLOR GRADING (MINIMAL WEATHER SENSE ACROSS ALL TABS) ─
   const skyOverlayGradient = useMemo(() => {
     switch (effectiveScenario) {
       case 'night-rain':
@@ -525,7 +525,7 @@ export default function DynamicWeatherCanvas({ manualMode, onModeChange }) {
 
   return (
     <>
-      {/* Background color grading & dynamic gradient tint */}
+      {/* Background color grading & dynamic gradient tint (Minimal Weather Sense for All Tabs) */}
       <div
         id="dynamic-sky-backdrop-filter"
         aria-hidden="true"
@@ -539,7 +539,7 @@ export default function DynamicWeatherCanvas({ manualMode, onModeChange }) {
         }}
       />
 
-      {/* Live Particle Canvas: Rain, Stars, Sun Rays, Motes */}
+      {/* Live Particle Canvas: Rendered on Overview only; clean & cleared on other tabs */}
       <canvas
         ref={canvasRef}
         aria-hidden="true"
@@ -553,57 +553,59 @@ export default function DynamicWeatherCanvas({ manualMode, onModeChange }) {
         }}
       />
 
-      {/* Floating Interactive Ambience & Time Controller Badge */}
-      <div
-        style={{
-          position: 'fixed',
-          bottom: 'calc(18 * var(--u))',
-          right: 'calc(38 * var(--u))',
-          zIndex: 80,
-          display: 'flex',
-          alignItems: 'center',
-          gap: 'calc(6 * var(--u))',
-          background: 'rgba(15, 23, 42, 0.88)',
-          backdropFilter: 'blur(16px)',
-          border: '1px solid rgba(255, 255, 255, 0.22)',
-          borderRadius: 'calc(16 * var(--u))',
-          padding: 'calc(4 * var(--u)) calc(8 * var(--u))',
-          boxShadow: '0 4px 20px rgba(0,0,0,0.5)',
-          fontSize: 'calc(11.5 * var(--u))',
-          color: '#fff',
-        }}
-      >
-        <div style={{ display: 'flex', alignItems: 'center', gap: 'calc(6 * var(--u))', padding: '0 calc(4 * var(--u))' }}>
-          <span style={{ width: 'calc(6 * var(--u))', height: 'calc(6 * var(--u))', borderRadius: '50%', background: '#38bdf8', boxShadow: '0 0 8px #38bdf8' }} />
-          <span style={{ fontWeight: 600, color: '#e2e8f0', letterSpacing: '-0.2px' }}>{displayLabel}</span>
-        </div>
-
-        {/* Quick Ambience Switcher Dropdown */}
-        <select
-          value={manualMode || 'auto'}
-          onChange={(e) => onModeChange?.(e.target.value)}
-          aria-label="Select Atmospheric Weather & Time Environment"
+      {/* Floating Interactive Ambience & Time Controller Badge (Overview Tab Only) */}
+      {isOverview && (
+        <div
           style={{
-            background: 'rgba(255, 255, 255, 0.12)',
-            border: '1px solid rgba(255, 255, 255, 0.25)',
-            borderRadius: 'calc(10 * var(--u))',
-            color: '#7dd3fc',
-            padding: 'calc(3 * var(--u)) calc(8 * var(--u))',
-            fontSize: 'calc(11 * var(--u))',
-            fontWeight: 700,
-            cursor: 'pointer',
-            outline: 'none',
+            position: 'fixed',
+            bottom: 'calc(18 * var(--u))',
+            right: 'calc(38 * var(--u))',
+            zIndex: 80,
+            display: 'flex',
+            alignItems: 'center',
+            gap: 'calc(6 * var(--u))',
+            background: 'rgba(15, 23, 42, 0.88)',
+            backdropFilter: 'blur(16px)',
+            border: '1px solid rgba(255, 255, 255, 0.22)',
+            borderRadius: 'calc(16 * var(--u))',
+            padding: 'calc(4 * var(--u)) calc(8 * var(--u))',
+            boxShadow: '0 4px 20px rgba(0,0,0,0.5)',
+            fontSize: 'calc(11.5 * var(--u))',
+            color: '#fff',
           }}
         >
-          <option value="auto" style={{ background: '#0f172a', color: '#fff' }}>⚡ Auto (Trained ML & Live Telemetry)</option>
-          <option value="day-rain" style={{ background: '#0f172a', color: '#fff' }}>🌧️ Daytime Rain Showers</option>
-          <option value="night-rain" style={{ background: '#0f172a', color: '#fff' }}>🌧️🌙 Night Monsoon Rain</option>
-          <option value="summer-day" style={{ background: '#0f172a', color: '#fff' }}>☀️ Summer Sun & Heat</option>
-          <option value="night-clear" style={{ background: '#0f172a', color: '#fff' }}>🌙 Starry Night Sky</option>
-          <option value="sunset" style={{ background: '#0f172a', color: '#fff' }}>🌅 Golden Sunset</option>
-          <option value="dawn" style={{ background: '#0f172a', color: '#fff' }}>🌄 Morning Dawn</option>
-        </select>
-      </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 'calc(6 * var(--u))', padding: '0 calc(4 * var(--u))' }}>
+            <span style={{ width: 'calc(6 * var(--u))', height: 'calc(6 * var(--u))', borderRadius: '50%', background: '#38bdf8', boxShadow: '0 0 8px #38bdf8' }} />
+            <span style={{ fontWeight: 600, color: '#e2e8f0', letterSpacing: '-0.2px' }}>{displayLabel}</span>
+          </div>
+
+          {/* Quick Ambience Switcher Dropdown */}
+          <select
+            value={manualMode || 'auto'}
+            onChange={(e) => onModeChange?.(e.target.value)}
+            aria-label="Select Atmospheric Weather & Time Environment"
+            style={{
+              background: 'rgba(255, 255, 255, 0.12)',
+              border: '1px solid rgba(255, 255, 255, 0.25)',
+              borderRadius: 'calc(10 * var(--u))',
+              color: '#7dd3fc',
+              padding: 'calc(3 * var(--u)) calc(8 * var(--u))',
+              fontSize: 'calc(11 * var(--u))',
+              fontWeight: 700,
+              cursor: 'pointer',
+              outline: 'none',
+            }}
+          >
+            <option value="auto" style={{ background: '#0f172a', color: '#fff' }}>⚡ Auto (Trained ML & Live Telemetry)</option>
+            <option value="day-rain" style={{ background: '#0f172a', color: '#fff' }}>🌧️ Daytime Rain Showers</option>
+            <option value="night-rain" style={{ background: '#0f172a', color: '#fff' }}>🌧️🌙 Night Monsoon Rain</option>
+            <option value="summer-day" style={{ background: '#0f172a', color: '#fff' }}>☀️ Summer Sun & Heat</option>
+            <option value="night-clear" style={{ background: '#0f172a', color: '#fff' }}>🌙 Starry Night Sky</option>
+            <option value="sunset" style={{ background: '#0f172a', color: '#fff' }}>🌅 Golden Sunset</option>
+            <option value="dawn" style={{ background: '#0f172a', color: '#fff' }}>🌄 Morning Dawn</option>
+          </select>
+        </div>
+      )}
     </>
   )
 }
