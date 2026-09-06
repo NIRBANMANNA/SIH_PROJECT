@@ -39,12 +39,17 @@ venv/
 *.ckpt
 *.pt
 *.pth
-*.onnx
-*.nc
-*.grib*
-checkpoints/
-/data/
-ml_pipeline/data/
 lightning_logs/
+
+# Ignore raw data and checkpoints by default, but allow our trained production model & dataset
+checkpoints/*
+!checkpoints/tp_downscaler.onnx
+!checkpoints/tp_downscaler.onnx.data
+data/*
+!data/raw/
+data/raw/*
+!data/raw/wrf_9km/
+data/raw/wrf_9km/*
+!data/raw/wrf_9km/merged.nc
 
 

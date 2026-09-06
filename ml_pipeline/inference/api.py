@@ -2,6 +2,7 @@
 import logging
 import os
 from datetime import datetime
+from pathlib import Path
 
 import numpy as np
 import onnxruntime as ort
@@ -28,12 +29,18 @@ app.add_middleware(
 # ── ONNX session loader ──────────────────────────────────────────────────────
 
 def _maybe_create_session(var: str) -> ort.InferenceSession | None:
-    model_path = f"checkpoints/{var}_downscaler.onnx"
-    if not os.path.exists(model_path):
-        logger.warning("ONNX model not found for '%s': %s", var, model_path)
+    candidates = [
+        Path(f"checkpoints/{var}_downscaler.onnx"),
+        Path(__file__).resolve().parents[2] / "checkpoints" / f"{var}_downscaler.onnx",
+        Path(__file__).resolve().parents[1] / "checkpoints" / f"{var}_downscaler.onnx",
+        Path(__file__).resolve().parents[3] / "checkpoints" / f"{var}_downscaler.onnx",
+    ]
+    model_path = next((p for p in candidates if p.exists()), None)
+    if not model_path:
+        logger.warning("ONNX model not found for '%s' in candidates: %s", var, [str(c) for c in candidates])
         return None
     logger.info("Loading ONNX model for '%s' from %s", var, model_path)
-    return ort.InferenceSession(model_path)
+    return ort.InferenceSession(str(model_path))
 
 
 sessions: dict[str, ort.InferenceSession | None] = {

@@ -27,8 +27,15 @@ import xarray as xr
 logger = logging.getLogger(__name__)
 
 # ── Paths ────────────────────────────────────────────────────────────────────
-_ROOT        = Path(__file__).resolve().parents[1]          # d:/arora_AI
-_WRF_PATH    = _ROOT / "data" / "raw" / "wrf_9km" / "merged.nc"
+# ── Paths ────────────────────────────────────────────────────────────────────
+# Check current directory, project root, and parent folder
+_CANDIDATE_PATHS = [
+    Path("data/raw/wrf_9km/merged.nc"),
+    Path(__file__).resolve().parents[2] / "data" / "raw" / "wrf_9km" / "merged.nc",
+    Path(__file__).resolve().parents[1] / "data" / "raw" / "wrf_9km" / "merged.nc",
+    Path(__file__).resolve().parents[3] / "data" / "raw" / "wrf_9km" / "merged.nc",
+]
+_WRF_PATH = next((p for p in _CANDIDATE_PATHS if p.exists()), _CANDIDATE_PATHS[0])
 
 # ── Constants ────────────────────────────────────────────────────────────────
 _PATCH_SIZE  = 32     # ONNX model expects [1, 1, 32, 32]
@@ -43,10 +50,14 @@ _std:   float | None = None
 
 def _load_once() -> None:
     """Open the WRF dataset and compute normalisation stats (called once)."""
-    global _ds, _tp, _mean, _std
+    global _ds, _tp, _mean, _std, _WRF_PATH
 
     if _tp is not None:
         return  # already loaded
+
+    # Refresh _WRF_PATH in case file was mounted or created after import
+    if not _WRF_PATH.exists():
+        _WRF_PATH = next((p for p in _CANDIDATE_PATHS if p.exists()), _WRF_PATH)
 
     if not _WRF_PATH.exists():
         raise FileNotFoundError(
