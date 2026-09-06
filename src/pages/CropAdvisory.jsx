@@ -11,6 +11,7 @@ import { mockPanchayatDetails } from '../data/mockPanchayats'
 import { tabViewBaseStyle } from '../lib/styles'
 import { Icon } from '../components/IconSprite'
 import { askCropAdvisoryAI } from '../lib/api'
+import KisanDarpanLogo from '../components/KisanDarpanLogo'
 
 export default function CropAdvisory() {
   const { 
@@ -1614,7 +1615,7 @@ export default function CropAdvisory() {
                   >
                     {msg.sender === 'ai' && (
                       <div style={{ display: 'flex', alignItems: 'center', gap: 'calc(6 * var(--u))', marginBottom: 'calc(4 * var(--u))', color: '#34d399', fontSize: 'calc(11 * var(--u))', fontWeight: 600 }}>
-                        <Icon id="i-kisan-ai" width="13" height="13" />
+                        <KisanDarpanLogo size={18} variant="bare" animated={true} />
                         <span>Kisan Darpan AI Intelligence Advisor</span>
                       </div>
                     )}

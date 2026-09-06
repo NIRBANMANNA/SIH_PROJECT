@@ -141,15 +141,59 @@ export default function Header({
         aria-label="Quick actions"
         style={{ display: 'flex', alignItems: 'center', gap: 'calc(12 * var(--u))', position: 'relative' }}
       >
-        {/* Kisan Darpan AI Intelligence Quick Launcher (Global) */}
+        {/* Kisan Darpan AI Intelligence Quick Launcher (Global - Ultra Bright & Dynamic) */}
         <button
           onClick={() => setIsAiModalOpen(true)}
-          className="anim-tool-ai rounded-2xl border-2 border-dashed border-cyan-400/80 bg-cyan-500/15 text-cyan-300 backdrop-blur-md transition-all duration-300 hover:translate-x-[-3px] hover:translate-y-[-3px] hover:rounded-md hover:bg-cyan-500/25 hover:border-cyan-300 hover:shadow-[3px_3px_0px_#06b6d4] active:translate-x-[0px] active:translate-y-[0px] active:rounded-2xl active:shadow-none cursor-pointer flex items-center justify-center relative group"
+          className="anim-tool-ai rounded-2xl border-2 border-dashed border-cyan-300 text-white backdrop-blur-md transition-all duration-300 hover:translate-x-[-3px] hover:translate-y-[-3px] hover:rounded-md hover:shadow-[3px_3px_0px_#00f2fe] active:translate-x-[0px] active:translate-y-[0px] active:rounded-2xl active:shadow-none cursor-pointer flex items-center justify-center relative group"
           aria-label="Kisan Darpan AI Intelligence"
-          title="Kisan Darpan AI Intelligence"
-          style={{ width: 'clamp(36px, calc(40 * var(--u)), 44px)', height: 'clamp(36px, calc(40 * var(--u)), 44px)', flexShrink: 0, padding: 0 }}
+          title="Kisan Darpan AI Intelligence — Click to Ask"
+          style={{
+            width: 'clamp(38px, calc(42 * var(--u)), 46px)',
+            height: 'clamp(38px, calc(42 * var(--u)), 46px)',
+            flexShrink: 0,
+            padding: 0,
+            background: 'linear-gradient(135deg, rgba(6, 182, 212, 0.35) 0%, rgba(16, 185, 129, 0.3) 100%)',
+            animation: 'aiHaloPulse 2.8s infinite ease-in-out'
+          }}
         >
-          <KisanDarpanLogo size={32} animated={true} style={{ pointerEvents: 'none' }} />
+          <style>{`
+            @keyframes aiHaloPulse {
+              0%, 100% {
+                box-shadow: 0 0 10px rgba(6, 182, 212, 0.7), 0 0 20px rgba(6, 182, 212, 0.35), inset 0 0 6px rgba(56, 189, 248, 0.4);
+                border-color: rgba(56, 189, 248, 0.95);
+              }
+              50% {
+                box-shadow: 0 0 20px rgba(0, 242, 254, 0.95), 0 0 32px rgba(52, 211, 153, 0.5), inset 0 0 10px rgba(0, 242, 254, 0.7);
+                border-color: #ffffff;
+              }
+            }
+            @keyframes aiDotPing {
+              0% { transform: scale(1); opacity: 1; }
+              75%, 100% { transform: scale(2.2); opacity: 0; }
+            }
+          `}</style>
+
+          <KisanDarpanLogo size={36} animated={true} variant="bare" style={{ pointerEvents: 'none' }} />
+
+          {/* Glowing AI Live Badge */}
+          <span
+            style={{
+              position: 'absolute',
+              top: 'calc(-3 * var(--u, 1px))',
+              right: 'calc(-4 * var(--u, 1px))',
+              background: 'linear-gradient(135deg, #00f2fe 0%, #10b981 100%)',
+              color: '#04121b',
+              fontSize: 'calc(8.5 * var(--u, 1px))',
+              fontWeight: 900,
+              padding: 'calc(1 * var(--u, 1px)) calc(4 * var(--u, 1px))',
+              borderRadius: 'calc(6 * var(--u, 1px))',
+              letterSpacing: '0.04em',
+              boxShadow: '0 0 8px #00f2fe',
+              lineHeight: 1
+            }}
+          >
+            AI
+          </span>
         </button>
 
         {/* Add location (Opens 4-Tier Location Input Modal) */}
