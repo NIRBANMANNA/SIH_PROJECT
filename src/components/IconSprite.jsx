@@ -251,6 +251,14 @@ export default function IconSprite() {
         <path d="M12 3l1.912 5.813a2 2 0 001.275 1.275L21 12l-5.813 1.912a2 2 0 00-1.275 1.275L12 21l-1.912-5.813a2 2 0 00-1.275-1.275L3 12l5.813-1.912a2 2 0 001.275-1.275L12 3z" />
       </symbol>
 
+      {/* i-kisan-ai: Kisan Darpan AI Intelligence Icon */}
+      <symbol id="i-kisan-ai" viewBox="0 0 24 24" fill="none">
+        <path d="M12 2C12 7.52 7.52 12 2 12C7.52 12 12 16.48 12 22C12 16.48 16.48 12 22 12C16.48 12 12 7.52 12 2Z" fill="currentColor" />
+        <path d="M19 1C19 3.21 17.21 5 15 5C17.21 5 19 6.79 19 9C19 6.79 20.79 5 23 5C20.79 5 19 3.21 19 1Z" fill="currentColor" opacity="0.85" />
+        <circle cx="5" cy="19" r="1.5" fill="currentColor" opacity="0.7" />
+        <circle cx="19" cy="19" r="1.5" fill="currentColor" opacity="0.7" />
+      </symbol>
+
       {/* i-volume */}
       <symbol id="i-volume" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
         <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />

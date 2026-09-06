@@ -95,7 +95,7 @@ export async function fetchAccuracyMetrics() {
   };
 }
 
-// ─── Smart Agromet AI Advisory API Integration ──────────────────────────────
+// ─── Smart Kisan Darpan AI Intelligence Advisory API Integration ─────────────
 export async function askCropAdvisoryAI({
   question,
   crop = 'Rice (Kharif)',
@@ -114,7 +114,7 @@ export async function askCropAdvisoryAI({
     ? 'उत्तर स्पष्ट और सरल हिंदी (Hindi) में दें ताकि किसान भाई आसानी से समझ सकें और खेत में लागू कर सकें।'
     : 'Provide a clear, practical, bulleted answer in English suitable for agricultural field extension.';
 
-  const systemPrompt = `You are "KisanDarpan AI" (কিষাণদর্পণ এআই), an expert Agricultural Meteorologist and Crop Advisory Specialist developed for AMFU (Agromet Field Unit) and agricultural extension in West Bengal & Eastern India.
+  const systemPrompt = `You are "Kisan Darpan AI Intelligence" (কিষাণদর্পণ এআই ইন্টেলিজেন্স / किसान दर्पण एआई इंटेलिजेंस), an expert Agricultural Meteorologist and Crop Advisory Specialist developed for AMFU (Agromet Field Unit) and agricultural extension in West Bengal & Eastern India.
 
 Current Farm Context:
 - Location: Gram Panchayat ${location.panchayat || ''}, Block ${location.block || ''}, District ${location.district || ''}, State ${location.state || 'West Bengal'}

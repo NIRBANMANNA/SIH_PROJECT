@@ -849,11 +849,11 @@ export const getAdvisory = (crop, stage, weather = {}, panchayatName = "Amnan") 
       tabs: {
         fiveday: "5-Day Agromet Plan",
         operations: "Field Operations Matrix",
-        askai: "Agromet AI Intelligence",
+        askai: "Kisan Darpan AI Intelligence",
         fivedayTitle: "5-Day Step-by-Step Agromet Implementation Plan",
         fivedaySubtitle: "Precision daily agricultural recommendations tailored to forecasted weather events",
-        askaiTitle: "Agromet AI Intelligence Advisor",
-        askaiPlaceholder: "Ask Agromet AI about crops, fertilizers, pest control, or weather...",
+        askaiTitle: "Kisan Darpan AI Intelligence Advisor",
+        askaiPlaceholder: "Ask Kisan Darpan AI about crops, fertilizers, pest control, or weather...",
         askaiBtn: "Ask AI"
       },
       audioScript: `Agromet advisory for ${crop} at ${stage} stage in ${panchayatName}. ${weatherImpact} The crop risk is evaluated as ${cropRiskLevel}. Key recommendations: ${recommendedActions.slice(0, 3).join('. ')}. Key precautions: ${actionsToAvoid.slice(0, 2).join('. ')}.`
@@ -916,11 +916,11 @@ export const getAdvisory = (crop, stage, weather = {}, panchayatName = "Amnan") 
       tabs: {
         fiveday: "৫ দিনের কৃষি কর্মপরিকল্পনা",
         operations: "মাঠ পর্যায়ের অপারেশন ম্যাট্রিক্স",
-        askai: "এআই কৃষি পরামর্শদাতা",
+        askai: "কিষাণদর্পণ এআই ইন্টেলিজেন্স",
         fivedayTitle: "৫ দিনের ধাপে ধাপে কৃষি আবহাওয়া নির্দেশিকা",
         fivedaySubtitle: "পূর্বাভাসকৃত আবহাওয়ার সাথে সামঞ্জস্য রেখে কৃষকদের জন্য দৈনিক করণীয় তালিকা",
-        askaiTitle: "এআই কৃষি পরামর্শ সহকারী",
-        askaiPlaceholder: "ফসল, সার, রোগবালাই বা আবহাওয়া সম্পর্কে এআই-কে জিজ্ঞাসা করুন...",
+        askaiTitle: "কিষাণদর্পণ এআই ইন্টেলিজেন্স সহকারী",
+        askaiPlaceholder: "ফসল, সার, রোগবালাই বা আবহাওয়া সম্পর্কে কিষাণদর্পণ এআই-কে জিজ্ঞাসা করুন...",
         askaiBtn: "পাঠান"
       },
       audioScript: `${panchayatName} অঞ্চলের ${crop} চাষিদের জন্য আবহাওয়া বার্তা। ${bnWeatherImpact} ফসলের ঝুঁকির মাত্রা ${bnRiskLevel}। প্রধান করণীয়: ${bnRecommendedActions.slice(0, 2).join('। ')}। সতর্কতা: ${bnActionsToAvoid.slice(0, 2).join('। ')}।`
@@ -983,11 +983,11 @@ export const getAdvisory = (crop, stage, weather = {}, panchayatName = "Amnan") 
       tabs: {
         fiveday: "5-दिवसीय कृषि कार्य योजना",
         operations: "क्षेत्रीय परिचालन मैट्रिक्स",
-        askai: "एआई कृषि सलाहकार",
+        askai: "किसान दर्पण एआई इंटेलिजेंस",
         fivedayTitle: "5-दिवसीय चरणबद्ध कृषि मौसम कार्य योजना",
         fivedaySubtitle: "मौसम पूर्वानुमान के अनुसार किसानों के लिए दैनिक सटीक कृषि सिफारिशें",
-        askaiTitle: "एआई कृषि-मौसम सहायक",
-        askaiPlaceholder: "फसल, खाद, कीट नियंत्रण या मौसम के बारे में एआई से पूछें...",
+        askaiTitle: "किसान दर्पण एआई इंटेलिजेंस सहायक",
+        askaiPlaceholder: "फसल, खाद, कीट नियंत्रण या मौसम के बारे में किसान दर्पण एआई से पूछें...",
         askaiBtn: "पूछें"
       },
       audioScript: `${panchayatName} क्षेत्र के किसान भाइयों के लिए सलाह। ${hiWeatherImpact} फसल जोखिम ${hiRiskLevel} है। मुख्य कार्य: ${hiRecommendedActions.slice(0, 2).join('। ')}। सावधानियां: ${hiActionsToAvoid.slice(0, 2).join('। ')}।`

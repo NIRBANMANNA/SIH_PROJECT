@@ -32,7 +32,13 @@ export default function CropAdvisory() {
 
   // UI States
   const [selectedLanguage, setSelectedLanguage] = useState('en') // 'en' | 'bn' | 'hi'
-  const [activeTab, setActiveTab] = useState('fiveday') // 'fiveday' | 'operations' | 'askai'
+  const [activeTab, setActiveTab] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search)
+      if (params.get('tab') === 'askai') return 'askai'
+    }
+    return 'fiveday'
+  }) // 'fiveday' | 'operations' | 'askai'
   const [broadcastModalOpen, setBroadcastModalOpen] = useState(false)
   const [bulletinModalOpen, setBulletinModalOpen] = useState(false)
   const [audioModalOpen, setAudioModalOpen] = useState(false)
@@ -41,11 +47,18 @@ export default function CropAdvisory() {
   const [isBroadcasting, setIsBroadcasting] = useState(false)
   const [broadcastChannel, setBroadcastChannel] = useState('SMS')
 
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    if (params.get('tab') === 'askai') {
+      setActiveTab('askai')
+    }
+  }, [])
+
   // AI Assistant Chat state
   const [chatMessages, setChatMessages] = useState([
     {
       sender: 'ai',
-      text: `Namaskar! I am your AI Agromet Intelligence Assistant for ${weatherData.city}. How can I assist you with ${activeCrop} management and weather telemetry today?`
+      text: `Namaskar! I am your Kisan Darpan AI Intelligence Assistant for ${weatherData.city}. How can I assist you with ${activeCrop} management and weather telemetry today?`
     }
   ])
   const [chatInput, setChatInput] = useState('')
@@ -1320,7 +1333,7 @@ export default function CropAdvisory() {
             {[
               { id: 'fiveday', label: t.tabs?.fiveday || '5-Day Agromet Plan', icon: 'i-cal' },
               { id: 'operations', label: t.tabs?.operations || 'Field Operations Matrix', icon: 'i-wind' },
-              { id: 'askai', label: t.tabs?.askai || 'Agromet AI Intelligence', icon: 'i-bot' }
+              { id: 'askai', label: t.tabs?.askai || 'Kisan Darpan AI Intelligence', icon: 'i-kisan-ai' }
             ].map(tab => (
               <button
                 key={tab.id}
@@ -1600,9 +1613,9 @@ export default function CropAdvisory() {
                     }}
                   >
                     {msg.sender === 'ai' && (
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 'calc(6 * var(--u))', marginBottom: 'calc(4 * var(--u))', color: '#38bdf8', fontSize: 'calc(11 * var(--u))', fontWeight: 600 }}>
-                        <Icon id="i-bot" width="13" height="13" />
-                        <span>Agromet AI Advisor</span>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 'calc(6 * var(--u))', marginBottom: 'calc(4 * var(--u))', color: '#34d399', fontSize: 'calc(11 * var(--u))', fontWeight: 600 }}>
+                        <Icon id="i-kisan-ai" width="13" height="13" />
+                        <span>Kisan Darpan AI Intelligence Advisor</span>
                       </div>
                     )}
                     {msg.text}
@@ -1683,7 +1696,7 @@ export default function CropAdvisory() {
                 <input
                   type="text"
                   disabled={isAiLoading}
-                  placeholder={t.tabs.askaiPlaceholder || "Ask Agromet AI about crops, fertilizers, pest control, or weather..."}
+                  placeholder={t.tabs.askaiPlaceholder || "Ask Kisan Darpan AI about crops, fertilizers, pest control, or weather..."}
                   value={chatInput}
                   onChange={e => setChatInput(e.target.value)}
                   style={{

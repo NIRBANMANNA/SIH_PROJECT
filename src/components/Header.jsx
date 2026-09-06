@@ -6,6 +6,7 @@ import { useAuth } from '../context/AuthContext'
 import { mockBlockWeather, getBlockWeatherData } from '../data/mockWeather'
 import { mockBlocks } from '../data/mockPanchayats'
 import LocationSelectorModal from './LocationSelectorModal'
+import KisanDarpanAiModal from './KisanDarpanAiModal'
 
 export default function Header({
   searchOpen,
@@ -16,6 +17,7 @@ export default function Header({
   setNotifications,
 }) {
   const [isLocationModalOpen, setIsLocationModalOpen] = useState(false)
+  const [isAiModalOpen, setIsAiModalOpen] = useState(false)
   const navigate = useNavigate()
   const { user } = useAuth()
   const {
@@ -138,6 +140,29 @@ export default function Header({
         aria-label="Quick actions"
         style={{ display: 'flex', alignItems: 'center', gap: 'calc(12 * var(--u))', position: 'relative' }}
       >
+        {/* Kisan Darpan AI Intelligence Quick Launcher (Global) */}
+        <button
+          onClick={() => setIsAiModalOpen(true)}
+          className="anim-tool-ai rounded-2xl border-2 border-dashed border-emerald-400/80 bg-emerald-500/15 text-emerald-300 backdrop-blur-md transition-all duration-300 hover:translate-x-[-3px] hover:translate-y-[-3px] hover:rounded-md hover:bg-emerald-500/25 hover:border-emerald-300 hover:shadow-[3px_3px_0px_#10b981] active:translate-x-[0px] active:translate-y-[0px] active:rounded-2xl active:shadow-none cursor-pointer flex items-center justify-center relative group"
+          aria-label="Kisan Darpan AI Intelligence"
+          title="Kisan Darpan AI Intelligence"
+          style={{ width: 'clamp(36px, calc(40 * var(--u)), 44px)', height: 'clamp(36px, calc(40 * var(--u)), 44px)', flexShrink: 0 }}
+        >
+          <Icon id="i-kisan-ai" width="20" height="20" />
+          <span
+            style={{
+              position: 'absolute',
+              top: 'calc(2 * var(--u))',
+              right: 'calc(2 * var(--u))',
+              width: 'calc(6 * var(--u))',
+              height: 'calc(6 * var(--u))',
+              borderRadius: '50%',
+              background: '#34d399',
+              boxShadow: '0 0 calc(6 * var(--u)) #34d399'
+            }}
+          />
+        </button>
+
         {/* Add location (Opens 4-Tier Location Input Modal) */}
         <button
           onClick={() => setIsLocationModalOpen(true)}
@@ -422,6 +447,12 @@ export default function Header({
       <LocationSelectorModal
         isOpen={isLocationModalOpen}
         onClose={() => setIsLocationModalOpen(false)}
+      />
+
+      {/* Global Kisan Darpan AI Intelligence Assistant Modal */}
+      <KisanDarpanAiModal
+        isOpen={isAiModalOpen}
+        onClose={() => setIsAiModalOpen(false)}
       />
     </header>
   )
