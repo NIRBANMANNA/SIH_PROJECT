@@ -10,6 +10,7 @@ import {
 import { mockPanchayatDetails } from '../data/mockPanchayats'
 import { tabViewBaseStyle } from '../lib/styles'
 import { Icon } from '../components/IconSprite'
+import { askCropAdvisoryAI } from '../lib/api'
 
 export default function CropAdvisory() {
   const { 
@@ -47,6 +48,7 @@ export default function CropAdvisory() {
     }
   ])
   const [chatInput, setChatInput] = useState('')
+  const [isAiLoading, setIsAiLoading] = useState(false)
 
   // Current Panchayat Details
   const currentPanchayat = mockPanchayatDetails[activePanchayat] || {
@@ -144,53 +146,53 @@ export default function CropAdvisory() {
     }, 1200)
   }
 
-  // Handle AI Chat Submit
-  const handleSendChatMessage = (e) => {
+  // Handle AI Chat Submit with real AI API integration
+  const handleSendChatMessage = async (e) => {
     e?.preventDefault()
-    if (!chatInput.trim()) return
+    if (!chatInput.trim() || isAiLoading) return
 
-    const userText = chatInput
+    const userText = chatInput.trim()
     setChatMessages(prev => [...prev, { sender: 'user', text: userText }])
     setChatInput('')
+    setIsAiLoading(true)
 
-    setTimeout(() => {
-      let aiReply = ""
-      if (selectedLanguage === 'bn') {
-        aiReply = `${currentPanchayat.name} অঞ্চলে বর্তমান আবহাওয়ায় (${weatherData.rainfall} বৃষ্টি, ${weatherData.temp}°C) ${activeCrop} ফসলের ${activeGrowthStage} পর্যায়ে: `
-        if (userText.includes("স্প্রে") || userText.includes("কীটনাশক") || userText.toLowerCase().includes("spray")) {
-          aiReply += t.operations.sprayText
-        } else if (userText.includes("সার") || userText.includes("ইউরিয়া") || userText.toLowerCase().includes("fertilizer")) {
-          aiReply += t.operations.fertilizerText
-        } else if (userText.includes("জল") || userText.includes("সেচ") || userText.toLowerCase().includes("water")) {
-          aiReply += t.operations.irrigationText
-        } else {
-          aiReply += t.reasonText
-        }
-      } else if (selectedLanguage === 'hi') {
-        aiReply = `${currentPanchayat.name} में वर्तमान मौसम (${weatherData.rainfall} बारिश, ${weatherData.temp}°C) के आधार पर ${activeCrop} की ${activeGrowthStage} अवस्था पर: `
-        if (userText.includes("छिड़काव") || userText.includes("कीटनाशक") || userText.toLowerCase().includes("spray")) {
-          aiReply += t.operations.sprayText
-        } else if (userText.includes("खाद") || userText.includes("यूरिया") || userText.toLowerCase().includes("fertilizer")) {
-          aiReply += t.operations.fertilizerText
-        } else if (userText.includes("पानी") || userText.includes("सिंचाई") || userText.toLowerCase().includes("water")) {
-          aiReply += t.operations.irrigationText
-        } else {
-          aiReply += t.reasonText
-        }
-      } else {
-        aiReply = `Based on current weather telemetry in ${currentPanchayat.name} (${weatherData.rainfall} rainfall, ${weatherData.temp}°C), for ${activeCrop} at ${activeGrowthStage} stage: `
-        if (userText.toLowerCase().includes("spray") || userText.toLowerCase().includes("pesticide")) {
-          aiReply += t.operations.sprayText
-        } else if (userText.toLowerCase().includes("fertilizer") || userText.toLowerCase().includes("urea")) {
-          aiReply += t.operations.fertilizerText
-        } else if (userText.toLowerCase().includes("water") || userText.toLowerCase().includes("irrigation")) {
-          aiReply += t.operations.irrigationText
-        } else {
-          aiReply += t.reasonText
-        }
-      }
+    try {
+      const aiReply = await askCropAdvisoryAI({
+        question: userText,
+        crop: activeCrop,
+        growthStage: activeGrowthStage,
+        location: {
+          panchayat: currentPanchayat.name,
+          block: activeBlock,
+          district: activeDistrict,
+          state: activeState,
+        },
+        weather: {
+          temp: weatherData.temp,
+          rainfall: weatherData.rainfall,
+          humidity: weatherData.humidity,
+          wind: weatherData.wind,
+          condition: weatherData.condition,
+        },
+        language: selectedLanguage,
+      })
+
       setChatMessages(prev => [...prev, { sender: 'ai', text: aiReply }])
-    }, 600)
+    } catch (err) {
+      setChatMessages(prev => [
+        ...prev,
+        {
+          sender: 'ai',
+          text: selectedLanguage === 'bn'
+            ? '⚠️ এআই উত্তর প্রদানে সাময়িক সমস্যা হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন।'
+            : selectedLanguage === 'hi'
+            ? '⚠️ एआई उत्तर देने में समस्या आई। कृपया पुनः प्रयास करें।'
+            : '⚠️ Unable to fetch advisory answer right now. Please try again.'
+        }
+      ])
+    } finally {
+      setIsAiLoading(false)
+    }
   }
 
   // Display crop name based on language
@@ -1571,12 +1573,12 @@ export default function CropAdvisory() {
                   fontWeight: 600
                 }}>
                   <Icon id="i-cpu" width="12" height="12" />
-                  <span>v2.4 Telemetry Model</span>
+                  <span>{import.meta.env.VITE_GEMINI_API_KEY ? 'Gemini 1.5 Flash • Live' : 'v2.4 Telemetry Model'}</span>
                 </div>
               </div>
 
               {/* Chat Message Stream */}
-              <div style={{ maxHeight: 'calc(180 * var(--u))', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 'calc(10 * var(--u))' }}>
+              <div style={{ maxHeight: 'calc(220 * var(--u))', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 'calc(10 * var(--u))' }}>
                 {chatMessages.map((msg, i) => (
                   <div 
                     key={i}
@@ -1592,7 +1594,8 @@ export default function CropAdvisory() {
                       maxWidth: '82%',
                       fontSize: 'calc(13 * var(--u))',
                       lineHeight: 1.5,
-                      boxShadow: '0 calc(2 * var(--u)) calc(8 * var(--u)) rgba(0,0,0,0.15)'
+                      boxShadow: '0 calc(2 * var(--u)) calc(8 * var(--u)) rgba(0,0,0,0.15)',
+                      whiteSpace: 'pre-wrap'
                     }}
                   >
                     {msg.sender === 'ai' && (
@@ -1604,6 +1607,32 @@ export default function CropAdvisory() {
                     {msg.text}
                   </div>
                 ))}
+
+                {isAiLoading && (
+                  <div
+                    style={{
+                      alignSelf: 'flex-start',
+                      background: 'rgba(56, 189, 248, 0.08)',
+                      border: '1px solid rgba(56, 189, 248, 0.25)',
+                      color: '#7dd3fc',
+                      padding: 'calc(8 * var(--u)) calc(14 * var(--u))',
+                      borderRadius: 'calc(12 * var(--u)) calc(12 * var(--u)) calc(12 * var(--u)) 0',
+                      fontSize: 'calc(12.5 * var(--u))',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 'calc(8 * var(--u))'
+                    }}
+                  >
+                    <Icon id="i-bot" width="13" height="13" style={{ color: '#38bdf8' }} />
+                    <span style={{ fontStyle: 'italic' }}>
+                      {selectedLanguage === 'bn' 
+                        ? 'এআই আবহাওয়া ও ফসলের তথ্য বিশ্লেষণ করছে...' 
+                        : selectedLanguage === 'hi' 
+                        ? 'एआई मौसम और फसल डेटा का विश्लेषण कर रहा है...' 
+                        : 'AI is analyzing crop telemetry...'}
+                    </span>
+                  </div>
+                )}
               </div>
 
               {/* Smart Suggestion Chips */}
@@ -1612,6 +1641,7 @@ export default function CropAdvisory() {
                   <button
                     key={p.label}
                     type="button"
+                    disabled={isAiLoading}
                     onClick={() => setChatInput(p.query)}
                     style={{
                       padding: 'calc(5 * var(--u)) calc(11 * var(--u))',
@@ -1620,21 +1650,26 @@ export default function CropAdvisory() {
                       border: '1px solid rgba(255,255,255,0.12)',
                       color: 'rgba(255,255,255,0.8)',
                       fontSize: 'calc(11.5 * var(--u))',
-                      cursor: 'pointer',
+                      cursor: isAiLoading ? 'not-allowed' : 'pointer',
                       display: 'flex',
                       alignItems: 'center',
                       gap: 'calc(6 * var(--u))',
-                      transition: 'all 0.2s'
+                      transition: 'all 0.2s',
+                      opacity: isAiLoading ? 0.5 : 1
                     }}
                     onMouseEnter={e => {
-                      e.currentTarget.style.background = 'rgba(56, 189, 248, 0.15)'
-                      e.currentTarget.style.borderColor = 'rgba(56, 189, 248, 0.4)'
-                      e.currentTarget.style.color = '#fff'
+                      if (!isAiLoading) {
+                        e.currentTarget.style.background = 'rgba(56, 189, 248, 0.15)'
+                        e.currentTarget.style.borderColor = 'rgba(56, 189, 248, 0.4)'
+                        e.currentTarget.style.color = '#fff'
+                      }
                     }}
                     onMouseLeave={e => {
-                      e.currentTarget.style.background = 'rgba(255,255,255,0.05)'
-                      e.currentTarget.style.borderColor = 'rgba(255,255,255,0.12)'
-                      e.currentTarget.style.color = 'rgba(255,255,255,0.8)'
+                      if (!isAiLoading) {
+                        e.currentTarget.style.background = 'rgba(255,255,255,0.05)'
+                        e.currentTarget.style.borderColor = 'rgba(255,255,255,0.12)'
+                        e.currentTarget.style.color = 'rgba(255,255,255,0.8)'
+                      }
                     }}
                   >
                     <Icon id="i-zap" width="11" height="11" style={{ color: '#38bdf8' }} />
@@ -1646,6 +1681,7 @@ export default function CropAdvisory() {
               <form onSubmit={handleSendChatMessage} style={{ display: 'flex', gap: 'calc(8 * var(--u))' }}>
                 <input
                   type="text"
+                  disabled={isAiLoading}
                   placeholder={t.tabs.askaiPlaceholder || "Ask Agromet AI about crops, fertilizers, pest control, or weather..."}
                   value={chatInput}
                   onChange={e => setChatInput(e.target.value)}
@@ -1657,30 +1693,32 @@ export default function CropAdvisory() {
                     borderRadius: 'calc(8 * var(--u))',
                     color: '#fff',
                     fontSize: 'calc(13 * var(--u))',
-                    outline: 'none'
+                    outline: 'none',
+                    opacity: isAiLoading ? 0.6 : 1
                   }}
                 />
                 <button
                   type="submit"
+                  disabled={isAiLoading || !chatInput.trim()}
                   style={{
                     padding: 'calc(10 * var(--u)) calc(18 * var(--u))',
-                    background: 'linear-gradient(135deg, #38bdf8 0%, #0284c7 100%)',
+                    background: isAiLoading || !chatInput.trim() ? 'rgba(255,255,255,0.1)' : 'linear-gradient(135deg, #38bdf8 0%, #0284c7 100%)',
                     border: 'none',
                     borderRadius: 'calc(8 * var(--u))',
-                    color: '#000',
+                    color: isAiLoading || !chatInput.trim() ? 'rgba(255,255,255,0.4)' : '#000',
                     fontWeight: 700,
                     fontSize: 'calc(13 * var(--u))',
-                    cursor: 'pointer',
+                    cursor: isAiLoading || !chatInput.trim() ? 'not-allowed' : 'pointer',
                     display: 'flex',
                     alignItems: 'center',
                     gap: 'calc(6 * var(--u))',
                     transition: 'opacity 0.2s'
                   }}
-                  onMouseEnter={e => e.currentTarget.style.opacity = '0.9'}
-                  onMouseLeave={e => e.currentTarget.style.opacity = '1'}
+                  onMouseEnter={e => { if (!isAiLoading && chatInput.trim()) e.currentTarget.style.opacity = '0.9' }}
+                  onMouseLeave={e => { if (!isAiLoading && chatInput.trim()) e.currentTarget.style.opacity = '1' }}
                 >
                   <Icon id="i-send" width="14" height="14" />
-                  <span>{t.tabs.askaiBtn}</span>
+                  <span>{isAiLoading ? '...' : t.tabs.askaiBtn}</span>
                 </button>
               </form>
             </div>
