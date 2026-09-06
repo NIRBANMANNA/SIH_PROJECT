@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef, useEffect, useCallback } from 'react'
 import { Icon } from './IconSprite'
 import { useNavigate, useLocation, Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
@@ -39,6 +39,9 @@ export default function Sidebar() {
   const location = useLocation()
   const { signOut } = useAuth()
   const [drawerOpen, setDrawerOpen] = useState(false)
+  const sidebarNavRef = useRef(null)
+  const itemRefs = useRef([])
+  const [pipTop, setPipTop] = useState(null)
   
   // Find index of active tab for the sliding pip animation
   const getActiveIndex = () => {
@@ -54,10 +57,44 @@ export default function Sidebar() {
 
   const isMoreActive = mobileSecondaryItems.some(item => currentPath.includes(item.path.toLowerCase()))
 
+  // Dynamically calculate the sliding pip's vertical center position
+  const updatePip = useCallback(() => {
+    if (activeIndex !== -1 && itemRefs.current[activeIndex] && sidebarNavRef.current) {
+      const activeEl = itemRefs.current[activeIndex]
+      const navEl = sidebarNavRef.current
+      const activeRect = activeEl.getBoundingClientRect()
+      const navRect = navEl.getBoundingClientRect()
+      
+      const relTop = activeRect.top - navRect.top + (activeRect.height / 2) - 12
+      setPipTop(relTop)
+    } else {
+      setPipTop(null)
+    }
+  }, [activeIndex])
+
+  useEffect(() => {
+    updatePip()
+    const timer = setTimeout(updatePip, 50)
+
+    let ro
+    if (sidebarNavRef.current && window.ResizeObserver) {
+      ro = new ResizeObserver(updatePip)
+      ro.observe(sidebarNavRef.current)
+    }
+    window.addEventListener('resize', updatePip)
+
+    return () => {
+      clearTimeout(timer)
+      if (ro) ro.disconnect()
+      window.removeEventListener('resize', updatePip)
+    }
+  }, [updatePip, location.pathname])
+
   return (
     <>
       {/* ─── Desktop Sidebar (Floating Left, >900px) ─── */}
       <nav
+        ref={sidebarNavRef}
         className="desktop-sidebar anim-slideL"
         aria-label="Desktop main navigation"
         style={{
@@ -79,13 +116,13 @@ export default function Sidebar() {
         }}
       >
         {/* Active sliding illuminated bar */}
-        {activeIndex !== -1 && (
+        {pipTop !== null && (
           <div
             aria-hidden="true"
             style={{
               position: 'absolute',
               left: 0,
-              top: `calc((${73 + 37 * activeIndex}) * var(--u))`,
+              top: `${pipTop}px`,
               width: 'calc(4.5 * var(--u))',
               height: 'calc(24 * var(--u))',
               borderTopRightRadius: 'calc(4 * var(--u))',
@@ -93,6 +130,7 @@ export default function Sidebar() {
               background: '#ffffff',
               boxShadow: '0 0 calc(12 * var(--u)) rgba(255,255,255,0.95), 0 0 calc(4 * var(--u)) #ffffff',
               transition: 'top 0.32s cubic-bezier(0.16, 1, 0.3, 1)',
+              pointerEvents: 'none',
             }}
           />
         )}
@@ -129,22 +167,26 @@ export default function Sidebar() {
           </div>
         </div>
 
-        {/* Nav links */}
+        {/* Nav links: EQUALLY DISTRIBUTED across available vertical height */}
         <div
           role="list"
           style={{
+            flex: 1,
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            gap: 'calc(15 * var(--u))',
-            marginTop: 'calc(18 * var(--u))',
+            justifyContent: 'space-evenly',
             width: '100%',
+            minHeight: 0,
+            paddingTop: 'calc(10 * var(--u))',
+            paddingBottom: 'calc(10 * var(--u))',
           }}
         >
           {navItems.map((item, i) => {
             const isActive = i === activeIndex
             return (
               <Link
+                ref={el => (itemRefs.current[i] = el)}
                 to={item.path}
                 key={item.id}
                 role="listitem"
@@ -155,22 +197,23 @@ export default function Sidebar() {
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  width: 'calc(22 * var(--u))',
-                  height: 'calc(22 * var(--u))',
+                  width: 'calc(24 * var(--u))',
+                  height: 'calc(24 * var(--u))',
                   opacity: isActive ? 1 : 0.55,
-                  transform: isActive ? 'scale(1.08)' : 'scale(1)',
+                  transform: isActive ? 'scale(1.12)' : 'scale(1)',
                   filter: isActive ? 'drop-shadow(0 0 calc(6 * var(--u)) rgba(255,255,255,0.65))' : 'none',
                   transition: 'opacity .2s, transform .2s, filter .2s',
                   color: '#fff',
-                  textDecoration: 'none'
+                  textDecoration: 'none',
+                  flexShrink: 0,
                 }}
                 onMouseEnter={e => { 
                   e.currentTarget.style.opacity = '1'; 
-                  e.currentTarget.style.transform = isActive ? 'scale(1.12)' : 'translateY(calc(-1 * var(--u)))'; 
+                  e.currentTarget.style.transform = isActive ? 'scale(1.18)' : 'translateY(calc(-1 * var(--u)))'; 
                 }}
                 onMouseLeave={e => { 
                   e.currentTarget.style.opacity = isActive ? '1' : '0.55'; 
-                  e.currentTarget.style.transform = isActive ? 'scale(1.08)' : 'scale(1)'; 
+                  e.currentTarget.style.transform = isActive ? 'scale(1.12)' : 'scale(1)'; 
                 }}
               >
                 <Icon id={item.id} width="22" height="22" />
@@ -179,11 +222,10 @@ export default function Sidebar() {
           })}
         </div>
 
-        {/* Logout Section with clean divider and zero overlap */}
+        {/* Logout Section with clean divider */}
         <div
           style={{
-            marginTop: 'auto',
-            paddingTop: 'calc(10 * var(--u))',
+            flexShrink: 0,
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
