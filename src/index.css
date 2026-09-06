@@ -50,12 +50,38 @@
 }
 
 /* ─── Dynamic Atmospheric Vectors & Streamlines ────────────── */
+@keyframes dynamicStreamlineFlow {
+  0% {
+    stroke-dashoffset: 0;
+  }
+  100% {
+    stroke-dashoffset: -36px;
+  }
+}
+
 path.dynamic-flow-line,
 .dynamic-flow-line {
   stroke-dasharray: 8 10 !important;
+  animation: dynamicStreamlineFlow 1s linear infinite !important;
   will-change: stroke-dashoffset;
 }
 
+@keyframes pulsePillGlow {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.35);
+  }
+  50% {
+    transform: scale(1.06);
+    box-shadow: 0 0 12px rgba(168, 85, 247, 0.85);
+  }
+}
+
+.vec-speed-pill > div {
+  animation: pulsePillGlow 2.2s ease-in-out infinite;
+}
+
+.dynamic-moving-vector,
 .dynamic-vector-arrow,
 .aws-pin-icon-wrapper,
 .vec-speed-pill {
@@ -63,6 +89,7 @@ path.dynamic-flow-line,
   border: none !important;
 }
 
+.dynamic-moving-vector,
 .dynamic-vector-arrow,
 .vec-speed-pill {
   pointer-events: none !important;

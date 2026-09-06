@@ -199,31 +199,27 @@ function LeafletMap({
     }
   }, [tileType])
 
-  // Bulletproof animation driver: directly shifts SVG stroke-dashoffset at 40 FPS on the DOM
+  // Live Dynamic Vector Motion Driver: continuously increments phase to glide vector arrows along trajectories
+  const [flowPhase, setFlowPhase] = useState(0)
+
   useEffect(() => {
     if (!showFlowStreamlines) return
 
-    let offset = 0
-    let frameId
+    let animId
     let lastTime = performance.now()
 
     const animate = (now) => {
-      if (now - lastTime >= 24) {
+      // 32 FPS update delivers fluid geospatial arrow movement
+      if (now - lastTime >= 30) {
         lastTime = now
-        offset -= 1.2
-        if (offset <= -360) offset = 0
-
-        const paths = document.querySelectorAll('.dynamic-flow-line')
-        for (let i = 0; i < paths.length; i++) {
-          paths[i].style.setProperty('stroke-dashoffset', `${offset.toFixed(1)}px`, 'important')
-        }
+        setFlowPhase(prev => (prev + 0.016) % 1)
       }
-      frameId = requestAnimationFrame(animate)
+      animId = requestAnimationFrame(animate)
     }
 
-    frameId = requestAnimationFrame(animate)
-    return () => cancelAnimationFrame(frameId)
-  }, [showFlowStreamlines, panchayats])
+    animId = requestAnimationFrame(animate)
+    return () => cancelAnimationFrame(animId)
+  }, [showFlowStreamlines])
 
   return (
     <MapContainer
@@ -269,11 +265,27 @@ function LeafletMap({
         style={{ color: '#818cf8', weight: 1.5, fill: false, dashArray: '3 3', opacity: 0.7 }}
       />
 
-      {/* Dynamic Atmospheric Vectors & Animated Flow Streamlines */}
-      {showFlowStreamlines && panchayats.map(p => {
+      {/* Dynamic Atmospheric Vectors & Animated Flow Streamlines (100% Moving) */}
+      {showFlowStreamlines && panchayats.map((p, pIdx) => {
         const vec = computeWindFlowVector(p)
         const perpLat = -vec.dLng * 0.45
         const perpLng = vec.dLat * 0.45
+
+        // Continuous moving positions along the vector trajectory
+        const t1 = (flowPhase + pIdx * 0.22) % 1
+        const t2 = (flowPhase + pIdx * 0.22 + 0.5) % 1
+
+        const lat1 = vec.start[0] + (vec.end[0] - vec.start[0]) * t1
+        const lng1 = vec.start[1] + (vec.end[1] - vec.start[1]) * t1
+
+        const lat2 = vec.start[0] + (vec.end[0] - vec.start[0]) * t2
+        const lng2 = vec.start[1] + (vec.end[1] - vec.start[1]) * t2
+
+        const scale1 = 0.75 + 0.45 * Math.sin(t1 * Math.PI)
+        const opacity1 = Math.max(0.2, Math.sin(t1 * Math.PI))
+
+        const scale2 = 0.75 + 0.45 * Math.sin(t2 * Math.PI)
+        const opacity2 = Math.max(0.2, Math.sin(t2 * Math.PI))
 
         return (
           <React.Fragment key={`dynamic-flow-${p.id}`}>
@@ -317,6 +329,64 @@ function LeafletMap({
               }}
             />
 
+            {/* Moving Dynamic Vector Arrow 1 (Actively moving along trajectory) */}
+            <Marker
+              position={[lat1, lng1]}
+              interactive={false}
+              icon={L.divIcon({
+                className: 'dynamic-moving-vector',
+                html: `
+                  <div style="
+                    transform: rotate(${vec.flowAngle}deg) scale(${scale1.toFixed(2)});
+                    transform-origin: center center;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    width: 22px;
+                    height: 22px;
+                    opacity: ${opacity1.toFixed(2)};
+                    filter: drop-shadow(0 0 8px #f472b6);
+                    transition: transform 0.05s linear;
+                  ">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="#f472b6" stroke="#ffffff" stroke-width="2">
+                      <polygon points="12,2 22,22 12,17 2,22" />
+                    </svg>
+                  </div>
+                `,
+                iconSize: [22, 22],
+                iconAnchor: [11, 11]
+              })}
+            />
+
+            {/* Moving Dynamic Vector Arrow 2 (Secondary staggered pulse) */}
+            <Marker
+              position={[lat2, lng2]}
+              interactive={false}
+              icon={L.divIcon({
+                className: 'dynamic-moving-vector',
+                html: `
+                  <div style="
+                    transform: rotate(${vec.flowAngle}deg) scale(${scale2.toFixed(2)});
+                    transform-origin: center center;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    width: 22px;
+                    height: 22px;
+                    opacity: ${opacity2.toFixed(2)};
+                    filter: drop-shadow(0 0 8px #c084fc);
+                    transition: transform 0.05s linear;
+                  ">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="#c084fc" stroke="#ffffff" stroke-width="2">
+                      <polygon points="12,2 22,22 12,17 2,22" />
+                    </svg>
+                  </div>
+                `,
+                iconSize: [22, 22],
+                iconAnchor: [11, 11]
+              })}
+            />
+
             {/* Directional arrowhead at lead vector tip */}
             <Marker
               position={vec.end}
@@ -330,17 +400,17 @@ function LeafletMap({
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    width: 18px;
-                    height: 18px;
-                    filter: drop-shadow(0 0 5px rgba(192, 132, 252, 0.9));
+                    width: 20px;
+                    height: 20px;
+                    filter: drop-shadow(0 0 6px rgba(232, 121, 249, 0.95));
                   ">
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="#e879f9" stroke="#ffffff" stroke-width="1.8">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="#e879f9" stroke="#ffffff" stroke-width="1.8">
                       <polygon points="12,2 22,22 12,17 2,22" />
                     </svg>
                   </div>
                 `,
-                iconSize: [18, 18],
-                iconAnchor: [9, 9]
+                iconSize: [20, 20],
+                iconAnchor: [10, 10]
               })}
             />
 
@@ -352,22 +422,23 @@ function LeafletMap({
                 className: 'vec-speed-pill',
                 html: `
                   <div style="
-                    background: rgba(168, 85, 247, 0.92);
+                    background: rgba(147, 51, 234, 0.95);
                     color: #ffffff;
-                    font-size: 9.5px;
+                    font-size: 10px;
                     font-weight: 700;
-                    padding: 1px 6px;
-                    border-radius: 8px;
-                    border: 1px solid rgba(255,255,255,0.4);
+                    padding: 2px 7px;
+                    border-radius: 9px;
+                    border: 1px solid rgba(255,255,255,0.6);
                     white-space: nowrap;
-                    box-shadow: 0 2px 6px rgba(0,0,0,0.35);
+                    box-shadow: 0 2px 8px rgba(0,0,0,0.45);
                     font-family: system-ui, sans-serif;
+                    letter-spacing: 0.2px;
                   ">
                     ${vec.speed} km/h
                   </div>
                 `,
-                iconSize: [52, 16],
-                iconAnchor: [26, 8]
+                iconSize: [56, 18],
+                iconAnchor: [28, 9]
               })}
             />
           </React.Fragment>
@@ -1090,6 +1161,33 @@ export default function WeatherMap() {
             Dynamic Vectors {showFlowStreamlines ? '✓' : ''}
           </button>
 
+          {/* Satellite Mode Toggle in Toolbar */}
+          <button
+            onClick={() => {
+              setTileType('satellite')
+              setMapTheme('dark')
+            }}
+            title="Switch to Google Satellite Imagery"
+            style={{
+              background: tileType === 'satellite' ? 'linear-gradient(135deg, rgba(5, 150, 105, 0.35), rgba(16, 185, 129, 0.35))' : 'rgba(255,255,255,0.08)',
+              color: tileType === 'satellite' ? '#34d399' : 'rgba(255,255,255,0.85)',
+              border: tileType === 'satellite' ? '1.5px solid #10b981' : '1px solid rgba(255,255,255,0.15)',
+              padding: 'calc(5 * var(--u)) calc(10 * var(--u))',
+              borderRadius: 'calc(8 * var(--u))',
+              fontSize: 'calc(11 * var(--u))',
+              fontWeight: 600,
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 'calc(5 * var(--u))',
+              transition: 'all 0.2s ease',
+              boxShadow: tileType === 'satellite' ? '0 0 10px rgba(16, 185, 129, 0.4)' : 'none'
+            }}
+          >
+            <Globe size={12} color={tileType === 'satellite' ? '#34d399' : 'currentColor'} />
+            <span>Satellite {tileType === 'satellite' ? '✓' : ''}</span>
+          </button>
+
           {/* Map View Color Dark / Light Mode Toggle */}
           <button
             onClick={() => {
@@ -1144,7 +1242,7 @@ export default function WeatherMap() {
           background: mapTheme === 'dark' ? '#0b132b' : '#f8fafc'
         }}>
           {/* Leaflet map fills 100% of left column - absolute inset 0 prevents partial canvas collapse */}
-          <div style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}>
+          <div style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', zIndex: 1 }}>
             <LeafletMap
               panchayats={panchayats}
               activeLayer={activeLayer}
@@ -1160,56 +1258,56 @@ export default function WeatherMap() {
             />
           </div>
 
-          {/* Location Badge (Top-Left) */}
+          {/* Location Badge (Top-Left, Elevated in Front) */}
           <div style={{
             position: 'absolute',
             top: 'calc(14 * var(--u))',
             left: 'calc(14 * var(--u))',
-            zIndex: 20,
+            zIndex: 1200,
             pointerEvents: 'none',
             display: 'flex',
             alignItems: 'center',
             gap: 'calc(6 * var(--u))',
-            background: mapTheme === 'light' ? 'rgba(255,255,255,0.92)' : 'rgba(15,23,42,0.85)',
-            backdropFilter: 'blur(12px)',
-            border: mapTheme === 'light' ? '1px solid rgba(0,0,0,0.12)' : '1px solid rgba(255,255,255,0.14)',
+            background: mapTheme === 'light' ? 'rgba(255,255,255,0.94)' : 'rgba(15,23,42,0.92)',
+            backdropFilter: 'blur(16px)',
+            border: mapTheme === 'light' ? '1px solid rgba(0,0,0,0.12)' : '1px solid rgba(255,255,255,0.18)',
             borderRadius: 'calc(10 * var(--u))',
             padding: 'calc(5 * var(--u)) calc(12 * var(--u))',
             fontSize: 'calc(11.5 * var(--u))',
-            color: mapTheme === 'light' ? '#0f172a' : 'rgba(255,255,255,0.9)',
+            color: mapTheme === 'light' ? '#0f172a' : 'rgba(255,255,255,0.95)',
             fontWeight: 600,
-            boxShadow: '0 4px 12px rgba(0,0,0,0.3)'
+            boxShadow: '0 4px 14px rgba(0,0,0,0.35)'
           }}>
             <MapPin size={13} style={{ color: '#0284c7' }} />
             West Bengal · {effectiveDistrict} · {activeBlock} Block
           </div>
 
-          {/* Map View Switcher: Google Map / Satellite / Dark Mode (Top-Right) */}
+          {/* Map View Switcher: Google Map / Satellite / Dark Mode (Top-Right, Elevated in Front) */}
           <div style={{
             position: 'absolute',
             top: 'calc(14 * var(--u))',
             right: 'calc(14 * var(--u))',
-            zIndex: 20,
+            zIndex: 1200,
             display: 'flex',
             alignItems: 'center',
-            background: mapTheme === 'light' ? 'rgba(255,255,255,0.95)' : 'rgba(15, 23, 42, 0.88)',
-            backdropFilter: 'blur(14px)',
-            border: mapTheme === 'light' ? '1px solid rgba(0,0,0,0.15)' : '1px solid rgba(255,255,255,0.18)',
+            background: mapTheme === 'light' ? 'rgba(255,255,255,0.96)' : 'rgba(15, 23, 42, 0.94)',
+            backdropFilter: 'blur(16px)',
+            border: mapTheme === 'light' ? '1px solid rgba(0,0,0,0.15)' : '1px solid rgba(255,255,255,0.22)',
             borderRadius: 'calc(10 * var(--u))',
-            padding: 'calc(3 * var(--u))',
-            gap: 'calc(3 * var(--u))',
-            boxShadow: '0 4px 14px rgba(0,0,0,0.35)'
+            padding: 'calc(4 * var(--u))',
+            gap: 'calc(4 * var(--u))',
+            boxShadow: '0 6px 20px rgba(0,0,0,0.45)'
           }}>
             <button
               onClick={() => { setTileType('google'); setMapTheme('light'); }}
               title="Google Maps Roadmap (Real Google Maps with roads & towns)"
               style={{
                 background: (mapTheme === 'light' && tileType !== 'satellite') ? 'linear-gradient(135deg, #0284c7, #2563eb)' : 'transparent',
-                color: (mapTheme === 'light' && tileType !== 'satellite') ? '#fff' : (mapTheme === 'light' ? '#475569' : 'rgba(255,255,255,0.7)'),
+                color: (mapTheme === 'light' && tileType !== 'satellite') ? '#fff' : (mapTheme === 'light' ? '#475569' : 'rgba(255,255,255,0.75)'),
                 border: 'none',
-                padding: 'calc(4 * var(--u)) calc(8 * var(--u))',
+                padding: 'calc(5 * var(--u)) calc(10 * var(--u))',
                 borderRadius: 'calc(7 * var(--u))',
-                fontSize: 'calc(10.5 * var(--u))',
+                fontSize: 'calc(11 * var(--u))',
                 fontWeight: 600,
                 cursor: 'pointer',
                 display: 'flex',
@@ -1225,11 +1323,11 @@ export default function WeatherMap() {
               title="Google Satellite Hybrid Imagery"
               style={{
                 background: tileType === 'satellite' ? 'linear-gradient(135deg, #059669, #10b981)' : 'transparent',
-                color: tileType === 'satellite' ? '#fff' : (mapTheme === 'light' ? '#475569' : 'rgba(255,255,255,0.7)'),
+                color: tileType === 'satellite' ? '#fff' : (mapTheme === 'light' ? '#475569' : 'rgba(255,255,255,0.75)'),
                 border: 'none',
-                padding: 'calc(4 * var(--u)) calc(8 * var(--u))',
+                padding: 'calc(5 * var(--u)) calc(10 * var(--u))',
                 borderRadius: 'calc(7 * var(--u))',
-                fontSize: 'calc(10.5 * var(--u))',
+                fontSize: 'calc(11 * var(--u))',
                 fontWeight: 600,
                 cursor: 'pointer',
                 display: 'flex',
@@ -1245,11 +1343,11 @@ export default function WeatherMap() {
               title="Dark Matter Map Mode"
               style={{
                 background: (mapTheme === 'dark' && tileType !== 'satellite') ? 'linear-gradient(135deg, #6366f1, #4f46e5)' : 'transparent',
-                color: (mapTheme === 'dark' && tileType !== 'satellite') ? '#fff' : (mapTheme === 'light' ? '#475569' : 'rgba(255,255,255,0.7)'),
+                color: (mapTheme === 'dark' && tileType !== 'satellite') ? '#fff' : (mapTheme === 'light' ? '#475569' : 'rgba(255,255,255,0.75)'),
                 border: 'none',
-                padding: 'calc(4 * var(--u)) calc(8 * var(--u))',
+                padding: 'calc(5 * var(--u)) calc(10 * var(--u))',
                 borderRadius: 'calc(7 * var(--u))',
-                fontSize: 'calc(10.5 * var(--u))',
+                fontSize: 'calc(11 * var(--u))',
                 fontWeight: 600,
                 cursor: 'pointer',
                 display: 'flex',
@@ -1269,7 +1367,7 @@ export default function WeatherMap() {
               bottom: 'calc(80 * var(--u))',
               left: 'calc(14 * var(--u))',
               right: 'calc(14 * var(--u))',
-              zIndex: 25,
+              zIndex: 1300,
               background: mapTheme === 'light' ? 'rgba(255, 255, 255, 0.96)' : 'rgba(15, 23, 42, 0.94)',
               backdropFilter: 'blur(20px)',
               border: mapTheme === 'light' ? '1px solid rgba(0,0,0,0.15)' : '1px solid rgba(255,255,255,0.15)',
@@ -1354,12 +1452,12 @@ export default function WeatherMap() {
             </div>
           )}
 
-          {/* Dynamic Map Legend & In-Map Bar Chart Toggle (Bottom-Left) */}
+          {/* Dynamic Map Legend & Temperature Bar & In-Map Bar Chart Toggle (Bottom-Left, Elevated in Front) */}
           <div style={{
             position: 'absolute',
             bottom: 'calc(14 * var(--u))',
             left: 'calc(14 * var(--u))',
-            zIndex: 20,
+            zIndex: 1200,
             display: 'flex',
             alignItems: 'flex-end',
             gap: 'calc(8 * var(--u))'
