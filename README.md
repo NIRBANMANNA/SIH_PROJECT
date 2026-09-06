@@ -212,24 +212,58 @@ git clone git@github.com:NIRBANMANNA/SIH_PROJECT.git
 cd SIH_PROJECT
 ```
 
-#### 2. Start the Python ML Backend:
+#### 2. Environment Setup & Dependencies:
 ```bash
-# Optional: Create and activate virtual environment
+# Create and activate Python virtual environment
 python -m venv venv
 # On Windows:
 .\venv\Scripts\activate
 # On Linux/macOS:
 source venv/bin/activate
 
-# Install backend dependencies
+# Install backend dependencies (PyTorch, Lightning, FastAPI, xarray, onnxruntime)
 pip install -r backend/requirements.txt
+```
 
-# Start FastAPI Uvicorn server
+#### 3. Data Ingestion & Dataset Preparation:
+Large NetCDF datasets (`*.nc`) and model weights are ignored by Git. You can acquire real IMD meteorological data or generate an instant synthetic testing dataset:
+
+* **Option A: Real IMD Gridded Rainfall (Recommended for production/research)**
+  ```bash
+  # Download official IMD gridded daily data (e.g., 2020)
+  pip install imddata
+  imddata --name rain --syear 2020 --eyear 2020 --output data/raw/imd_public/
+
+  # Automatically format into standard 9km WRF input & 3km IMD ground-truth:
+  python prepare_dataset.py --mode real --source data/raw/imd_public/IMD_rain_2020.nc
+  ```
+
+* **Option B: Quick-Start Synthetic Surrogates (For instant local testing)**
+  ```bash
+  python prepare_dataset.py --mode synthetic
+  ```
+  *This automatically generates `data/raw/wrf_9km/merged.nc` and `data/raw/imd_3km/merged.nc`.*
+
+#### 4. Train Model Checkpoints & Export ONNX:
+If you want to train the downscaler model from scratch and generate fresh checkpoints:
+```bash
+# 1. Train U-Net with PixelShuffle 3x (saves checkpoint in checkpoints/unet-*.ckpt)
+python -m ml_pipeline.training.train
+
+# 2. Export trained checkpoint to high-performance ONNX model:
+python -m ml_pipeline.training.export
+# Or export multi-variable models (tp, t2m, rh, ws):
+python ml_pipeline/export_all.py
+```
+*This populates `checkpoints/tp_downscaler.onnx` ready for sub-second API inference.*
+
+#### 5. Start the Python ML Backend:
+```bash
 python -m uvicorn backend.main:app --host 0.0.0.0 --port 8001 --reload
 ```
 The backend will be live at `http://localhost:8001` (API docs at `http://localhost:8001/docs`).
 
-#### 3. Start the Frontend Application:
+#### 6. Start the Frontend Application:
 In a separate terminal window:
 ```bash
 # Install NPM dependencies
