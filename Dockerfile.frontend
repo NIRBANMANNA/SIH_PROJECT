@@ -2,10 +2,10 @@ FROM node:20-slim
 
 WORKDIR /app
 
-COPY SIH_PROJECT/package.json /app/package.json
+COPY package*.json ./
 RUN npm install
 
-COPY SIH_PROJECT /app
+COPY . .
 
 EXPOSE 5173
 

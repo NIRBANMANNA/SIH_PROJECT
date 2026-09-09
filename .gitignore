@@ -43,8 +43,8 @@ lightning_logs/
 
 # Ignore raw data and checkpoints by default, but allow our trained production model & dataset
 checkpoints/*
-!checkpoints/tp_downscaler.onnx
-!checkpoints/tp_downscaler.onnx.data
+!checkpoints/*.onnx
+!checkpoints/*.onnx.data
 data/*
 !data/raw/
 data/raw/*

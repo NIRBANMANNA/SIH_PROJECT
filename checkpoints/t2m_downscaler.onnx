@@ -1,0 +1,1345 @@
+
+pytorch
+2.14.0+cpu:ÀË
+ˆ
+lr_input
+enc1.0.weight
+enc1.0.biasconv2dnode_conv2d"Conv*
+group†*
+auto_pad"NOTSET†*
+	dilations@@†*
+strides@@†*
+pads@@@@†Jõ
+	namespaceç: models.unet_3x.DownscaleUNet3x/enc1: torch.nn.modules.container.Sequential/enc1.0: torch.nn.modules.conv.Conv2d/conv2d: aten.conv2d.defaultJ•
+pkg.torch.onnx.class_hierarchyÇ['models.unet_3x.DownscaleUNet3x', 'torch.nn.modules.container.Sequential', 'torch.nn.modules.conv.Conv2d', 'aten.conv2d.default']J¥
+pkg.torch.onnx.fx_nodeô%conv2d : [num_users=1] = call_function[target=torch.ops.aten.conv2d.default](args = (%x, %p_enc1_0_weight, %p_enc1_0_bias, [1, 1], [1, 1]), kwargs = {})J>
+pkg.torch.onnx.name_scopes ['', 'enc1', 'enc1.0', 'conv2d']Jó
+pkg.torch.onnx.stack_trace¯File "D:\arora_AI\models\unet_3x.py", line 64, in forward
+    e1 = self.enc1(x)      # [B, 64, H, W]
+  File "D:\arora_AI\.venv\Lib\site-packages\torch\nn\modules\container.py", line 259, in forward
+    input = module(input)
+  File "D:\arora_AI\.venv\Lib\site-packages\torch\nn\modules\conv.py", line 565, in forward
+    return self._conv_forward(input, self.weight, self.bias)
+Ω
+conv2drelu	node_relu"ReluJõ
+	namespaceç: models.unet_3x.DownscaleUNet3x/enc1: torch.nn.modules.container.Sequential/enc1.1: torch.nn.modules.activation.ReLU/relu: aten.relu.defaultJß
+pkg.torch.onnx.class_hierarchyÑ['models.unet_3x.DownscaleUNet3x', 'torch.nn.modules.container.Sequential', 'torch.nn.modules.activation.ReLU', 'aten.relu.default']JÉ
+pkg.torch.onnx.fx_nodei%relu : [num_users=2] = call_function[target=torch.ops.aten.relu.default](args = (%conv2d,), kwargs = {})J<
+pkg.torch.onnx.name_scopes['', 'enc1', 'enc1.1', 'relu']Jè
+pkg.torch.onnx.stack_traceFile "D:\arora_AI\models\unet_3x.py", line 64, in forward
+    e1 = self.enc1(x)      # [B, 64, H, W]
+  File "D:\arora_AI\.venv\Lib\site-packages\torch\nn\modules\container.py", line 259, in forward
+    input = module(input)
+  File "D:\arora_AI\.venv\Lib\site-packages\torch\nn\modules\activation.py", line 143, in forward
+    return F.relu(input, inplace=self.inplace)
+«
+
+relu
+enc1.2.conv1.weight
+enc1.2.conv1.biasconv2d_1node_conv2d_1"Conv*
+group†*
+auto_pad"NOTSET†*
+	dilations@@†*
+strides@@†*
+pads@@@@†J√
+	namespaceµ: models.unet_3x.DownscaleUNet3x/enc1: torch.nn.modules.container.Sequential/enc1.2: models.unet_3x.ResBlock/enc1.2.conv1: torch.nn.modules.conv.Conv2d/conv2d_1: aten.conv2d.defaultJ¿
+pkg.torch.onnx.class_hierarchyù['models.unet_3x.DownscaleUNet3x', 'torch.nn.modules.container.Sequential', 'models.unet_3x.ResBlock', 'torch.nn.modules.conv.Conv2d', 'aten.conv2d.default']J≈
+pkg.torch.onnx.fx_node™%conv2d_1 : [num_users=1] = call_function[target=torch.ops.aten.conv2d.default](args = (%relu, %p_enc1_2_conv1_weight, %p_enc1_2_conv1_bias, [1, 1], [1, 1]), kwargs = {})JP
+pkg.torch.onnx.name_scopes2['', 'enc1', 'enc1.2', 'enc1.2.conv1', 'conv2d_1']Jˆ
+pkg.torch.onnx.stack_trace◊File "D:\arora_AI\models\unet_3x.py", line 64, in forward
+    e1 = self.enc1(x)      # [B, 64, H, W]
+  File "D:\arora_AI\.venv\Lib\site-packages\torch\nn\modules\container.py", line 259, in forward
+    input = module(input)
+  File "D:\arora_AI\models\unet_3x.py", line 15, in forward
+    out = self.relu(self.conv1(x))
+  File "D:\arora_AI\.venv\Lib\site-packages\torch\nn\modules\conv.py", line 565, in forward
+    return self._conv_forward(input, self.weight, self.bias)
+˘
+conv2d_1relu_1node_relu_1"ReluJ¬
+	namespace¥: models.unet_3x.DownscaleUNet3x/enc1: torch.nn.modules.container.Sequential/enc1.2: models.unet_3x.ResBlock/enc1.2.relu: torch.nn.modules.activation.ReLU/relu_1: aten.relu.defaultJ¬
+pkg.torch.onnx.class_hierarchyü['models.unet_3x.DownscaleUNet3x', 'torch.nn.modules.container.Sequential', 'models.unet_3x.ResBlock', 'torch.nn.modules.activation.ReLU', 'aten.relu.default']Já
+pkg.torch.onnx.fx_nodem%relu_1 : [num_users=1] = call_function[target=torch.ops.aten.relu.default](args = (%conv2d_1,), kwargs = {})JM
+pkg.torch.onnx.name_scopes/['', 'enc1', 'enc1.2', 'enc1.2.relu', 'relu_1']JÓ
+pkg.torch.onnx.stack_traceœFile "D:\arora_AI\models\unet_3x.py", line 64, in forward
+    e1 = self.enc1(x)      # [B, 64, H, W]
+  File "D:\arora_AI\.venv\Lib\site-packages\torch\nn\modules\container.py", line 259, in forward
+    input = module(input)
+  File "D:\arora_AI\models\unet_3x.py", line 15, in forward
+    out = self.relu(self.conv1(x))
+  File "D:\arora_AI\.venv\Lib\site-packages\torch\nn\modules\activation.py", line 143, in forward
+    return F.relu(input, inplace=self.inplace)
+¬
+
+relu_1
+enc1.2.conv2.weight
+enc1.2.conv2.biasconv2d_2node_conv2d_2"Conv*
+group†*
+auto_pad"NOTSET†*
+	dilations@@†*
+strides@@†*
+pads@@@@†J√
+	namespaceµ: models.unet_3x.DownscaleUNet3x/enc1: torch.nn.modules.container.Sequential/enc1.2: models.unet_3x.ResBlock/enc1.2.conv2: torch.nn.modules.conv.Conv2d/conv2d_2: aten.conv2d.defaultJ¿
+pkg.torch.onnx.class_hierarchyù['models.unet_3x.DownscaleUNet3x', 'torch.nn.modules.container.Sequential', 'models.unet_3x.ResBlock', 'torch.nn.modules.conv.Conv2d', 'aten.conv2d.default']J«
+pkg.torch.onnx.fx_node¨%conv2d_2 : [num_users=1] = call_function[target=torch.ops.aten.conv2d.default](args = (%relu_1, %p_enc1_2_conv2_weight, %p_enc1_2_conv2_bias, [1, 1], [1, 1]), kwargs = {})JP
+pkg.torch.onnx.name_scopes2['', 'enc1', 'enc1.2', 'enc1.2.conv2', 'conv2d_2']JÌ
+pkg.torch.onnx.stack_traceŒFile "D:\arora_AI\models\unet_3x.py", line 64, in forward
+    e1 = self.enc1(x)      # [B, 64, H, W]
+  File "D:\arora_AI\.venv\Lib\site-packages\torch\nn\modules\container.py", line 259, in forward
+    input = module(input)
+  File "D:\arora_AI\models\unet_3x.py", line 16, in forward
+    out = self.conv2(out)
+  File "D:\arora_AI\.venv\Lib\site-packages\torch\nn\modules\conv.py", line 565, in forward
+    return self._conv_forward(input, self.weight, self.bias)
+ç
+conv2d_2
+reluadd_35node_add_35"AddJí
+	namespaceÑ: models.unet_3x.DownscaleUNet3x/enc1: torch.nn.modules.container.Sequential/enc1.2: models.unet_3x.ResBlock/add_35: aten.add.TensorJõ
+pkg.torch.onnx.class_hierarchyy['models.unet_3x.DownscaleUNet3x', 'torch.nn.modules.container.Sequential', 'models.unet_3x.ResBlock', 'aten.add.Tensor']Jã
+pkg.torch.onnx.fx_nodeq%add_35 : [num_users=1] = call_function[target=torch.ops.aten.add.Tensor](args = (%conv2d_2, %relu), kwargs = {})J>
+pkg.torch.onnx.name_scopes ['', 'enc1', 'enc1.2', 'add_35']Jﬂ
+pkg.torch.onnx.stack_trace¿File "D:\arora_AI\models\unet_3x.py", line 64, in forward
+    e1 = self.enc1(x)      # [B, 64, H, W]
+  File "D:\arora_AI\.venv\Lib\site-packages\torch\nn\modules\container.py", line 259, in forward
+    input = module(input)
+  File "D:\arora_AI\models\unet_3x.py", line 17, in forward
+    return self.relu(out + residual)
+˜
+add_35relu_2node_relu_2"ReluJ¬
+	namespace¥: models.unet_3x.DownscaleUNet3x/enc1: torch.nn.modules.container.Sequential/enc1.2: models.unet_3x.ResBlock/enc1.2.relu: torch.nn.modules.activation.ReLU/relu_2: aten.relu.defaultJ¬
+pkg.torch.onnx.class_hierarchyü['models.unet_3x.DownscaleUNet3x', 'torch.nn.modules.container.Sequential', 'models.unet_3x.ResBlock', 'torch.nn.modules.activation.ReLU', 'aten.relu.default']JÖ
+pkg.torch.onnx.fx_nodek%relu_2 : [num_users=2] = call_function[target=torch.ops.aten.relu.default](args = (%add_35,), kwargs = {})JM
+pkg.torch.onnx.name_scopes/['', 'enc1', 'enc1.2', 'enc1.2.relu', 'relu_2']J
+pkg.torch.onnx.stack_trace—File "D:\arora_AI\models\unet_3x.py", line 64, in forward
+    e1 = self.enc1(x)      # [B, 64, H, W]
+  File "D:\arora_AI\.venv\Lib\site-packages\torch\nn\modules\container.py", line 259, in forward
+    input = module(input)
+  File "D:\arora_AI\models\unet_3x.py", line 17, in forward
+    return self.relu(out + residual)
+  File "D:\arora_AI\.venv\Lib\site-packages\torch\nn\modules\activation.py", line 143, in forward
+    return F.relu(input, inplace=self.inplace)
+ˇ
+relu_2
+max_pool2dnode_max_pool2d"MaxPool*
+kernel_shape@@†*
+strides@@†*
+	dilations@@†*
+auto_pad"NOTSET†*
+pads@ @ @ @ †*
+	ceil_mode †*
+storage_order †J©
+	namespaceõ: models.unet_3x.DownscaleUNet3x/enc2: torch.nn.modules.container.Sequential/enc2.0: torch.nn.modules.pooling.MaxPool2d/max_pool2d: aten.max_pool2d.defaultJØ
+pkg.torch.onnx.class_hierarchyå['models.unet_3x.DownscaleUNet3x', 'torch.nn.modules.container.Sequential', 'torch.nn.modules.pooling.MaxPool2d', 'aten.max_pool2d.default']Jü
+pkg.torch.onnx.fx_nodeÑ%max_pool2d : [num_users=1] = call_function[target=torch.ops.aten.max_pool2d.default](args = (%relu_2, [2, 2], [2, 2]), kwargs = {})JB
+pkg.torch.onnx.name_scopes$['', 'enc2', 'enc2.0', 'max_pool2d']J˚
+pkg.torch.onnx.stack_trace‹File "D:\arora_AI\models\unet_3x.py", line 65, in forward
+    e2 = self.enc2(e1)     # [B, 128, H/2, W/2]
+  File "D:\arora_AI\.venv\Lib\site-packages\torch\nn\modules\container.py", line 259, in forward
+    input = module(input)
+  File "D:\arora_AI\.venv\Lib\site-packages\torch\nn\modules\pooling.py", line 224, in forward
+    return F.max_pool2d(
+ê	
+
+max_pool2d
+enc2.1.weight
+enc2.1.biasconv2d_3node_conv2d_3"Conv*
+group†*
+auto_pad"NOTSET†*
+	dilations@@†*
+strides@@†*
+pads@@@@†Jù
+	namespaceè: models.unet_3x.DownscaleUNet3x/enc2: torch.nn.modules.container.Sequential/enc2.1: torch.nn.modules.conv.Conv2d/conv2d_3: aten.conv2d.defaultJ•
+pkg.torch.onnx.class_hierarchyÇ['models.unet_3x.DownscaleUNet3x', 'torch.nn.modules.container.Sequential', 'torch.nn.modules.conv.Conv2d', 'aten.conv2d.default']Jø
+pkg.torch.onnx.fx_node§%conv2d_3 : [num_users=1] = call_function[target=torch.ops.aten.conv2d.default](args = (%max_pool2d, %p_enc2_1_weight, %p_enc2_1_bias, [1, 1], [1, 1]), kwargs = {})J@
+pkg.torch.onnx.name_scopes"['', 'enc2', 'enc2.1', 'conv2d_3']Jú
+pkg.torch.onnx.stack_trace˝File "D:\arora_AI\models\unet_3x.py", line 65, in forward
+    e2 = self.enc2(e1)     # [B, 128, H/2, W/2]
+  File "D:\arora_AI\.venv\Lib\site-packages\torch\nn\modules\container.py", line 259, in forward
+    input = module(input)
+  File "D:\arora_AI\.venv\Lib\site-packages\torch\nn\modules\conv.py", line 565, in forward
+    return self._conv_forward(input, self.weight, self.bias)
+–
+conv2d_3relu_3node_relu_3"ReluJù
+	namespaceè: models.unet_3x.DownscaleUNet3x/enc2: torch.nn.modules.container.Sequential/enc2.2: torch.nn.modules.activation.ReLU/relu_3: aten.relu.defaultJß
+pkg.torch.onnx.class_hierarchyÑ['models.unet_3x.DownscaleUNet3x', 'torch.nn.modules.container.Sequential', 'torch.nn.modules.activation.ReLU', 'aten.relu.default']Já
+pkg.torch.onnx.fx_nodem%relu_3 : [num_users=2] = call_function[target=torch.ops.aten.relu.default](args = (%conv2d_3,), kwargs = {})J>
+pkg.torch.onnx.name_scopes ['', 'enc2', 'enc2.2', 'relu_3']Jî
+pkg.torch.onnx.stack_traceıFile "D:\arora_AI\models\unet_3x.py", line 65, in forward
+    e2 = self.enc2(e1)     # [B, 128, H/2, W/2]
+  File "D:\arora_AI\.venv\Lib\site-packages\torch\nn\modules\container.py", line 259, in forward
+    input = module(input)
+  File "D:\arora_AI\.venv\Lib\site-packages\torch\nn\modules\activation.py", line 143, in forward
+    return F.relu(input, inplace=self.inplace)
+–
+
+relu_3
+enc2.3.conv1.weight
+enc2.3.conv1.biasconv2d_4node_conv2d_4"Conv*
+group†*
+auto_pad"NOTSET†*
+	dilations@@†*
+strides@@†*
+pads@@@@†J√
+	namespaceµ: models.unet_3x.DownscaleUNet3x/enc2: torch.nn.modules.container.Sequential/enc2.3: models.unet_3x.ResBlock/enc2.3.conv1: torch.nn.modules.conv.Conv2d/conv2d_4: aten.conv2d.defaultJ¿
+pkg.torch.onnx.class_hierarchyù['models.unet_3x.DownscaleUNet3x', 'torch.nn.modules.container.Sequential', 'models.unet_3x.ResBlock', 'torch.nn.modules.conv.Conv2d', 'aten.conv2d.default']J«
+pkg.torch.onnx.fx_node¨%conv2d_4 : [num_users=1] = call_function[target=torch.ops.aten.conv2d.default](args = (%relu_3, %p_enc2_3_conv1_weight, %p_enc2_3_conv1_bias, [1, 1], [1, 1]), kwargs = {})JP
+pkg.torch.onnx.name_scopes2['', 'enc2', 'enc2.3', 'enc2.3.conv1', 'conv2d_4']J˚
+pkg.torch.onnx.stack_trace‹File "D:\arora_AI\models\unet_3x.py", line 65, in forward
+    e2 = self.enc2(e1)     # [B, 128, H/2, W/2]
+  File "D:\arora_AI\.venv\Lib\site-packages\torch\nn\modules\container.py", line 259, in forward
+    input = module(input)
+  File "D:\arora_AI\models\unet_3x.py", line 15, in forward
+    out = self.relu(self.conv1(x))
+  File "D:\arora_AI\.venv\Lib\site-packages\torch\nn\modules\conv.py", line 565, in forward
+    return self._conv_forward(input, self.weight, self.bias)
+˛
+conv2d_4relu_4node_relu_4"ReluJ¬
+	namespace¥: models.unet_3x.DownscaleUNet3x/enc2: torch.nn.modules.container.Sequential/enc2.3: models.unet_3x.ResBlock/enc2.3.relu: torch.nn.modules.activation.ReLU/relu_4: aten.relu.defaultJ¬
+pkg.torch.onnx.class_hierarchyü['models.unet_3x.DownscaleUNet3x', 'torch.nn.modules.container.Sequential', 'models.unet_3x.ResBlock', 'torch.nn.modules.activation.ReLU', 'aten.relu.default']Já
+pkg.torch.onnx.fx_nodem%relu_4 : [num_users=1] = call_function[target=torch.ops.aten.relu.default](args = (%conv2d_4,), kwargs = {})JM
+pkg.torch.onnx.name_scopes/['', 'enc2', 'enc2.3', 'enc2.3.relu', 'relu_4']JÛ
+pkg.torch.onnx.stack_trace‘File "D:\arora_AI\models\unet_3x.py", line 65, in forward
+    e2 = self.enc2(e1)     # [B, 128, H/2, W/2]
+  File "D:\arora_AI\.venv\Lib\site-packages\torch\nn\modules\container.py", line 259, in forward
+    input = module(input)
+  File "D:\arora_AI\models\unet_3x.py", line 15, in forward
+    out = self.relu(self.conv1(x))
+  File "D:\arora_AI\.venv\Lib\site-packages\torch\nn\modules\activation.py", line 143, in forward
+    return F.relu(input, inplace=self.inplace)
+«
+
+relu_4
+enc2.3.conv2.weight
+enc2.3.conv2.biasconv2d_5node_conv2d_5"Conv*
+group†*
+auto_pad"NOTSET†*
+	dilations@@†*
+strides@@†*
+pads@@@@†J√
+	namespaceµ: models.unet_3x.DownscaleUNet3x/enc2: torch.nn.modules.container.Sequential/enc2.3: models.unet_3x.ResBlock/enc2.3.conv2: torch.nn.modules.conv.Conv2d/conv2d_5: aten.conv2d.defaultJ¿
+pkg.torch.onnx.class_hierarchyù['models.unet_3x.DownscaleUNet3x', 'torch.nn.modules.container.Sequential', 'models.unet_3x.ResBlock', 'torch.nn.modules.conv.Conv2d', 'aten.conv2d.default']J«
+pkg.torch.onnx.fx_node¨%conv2d_5 : [num_users=1] = call_function[target=torch.ops.aten.conv2d.default](args = (%relu_4, %p_enc2_3_conv2_weight, %p_enc2_3_conv2_bias, [1, 1], [1, 1]), kwargs = {})JP
+pkg.torch.onnx.name_scopes2['', 'enc2', 'enc2.3', 'enc2.3.conv2', 'conv2d_5']JÚ
+pkg.torch.onnx.stack_trace”File "D:\arora_AI\models\unet_3x.py", line 65, in forward
+    e2 = self.enc2(e1)     # [B, 128, H/2, W/2]
+  File "D:\arora_AI\.venv\Lib\site-packages\torch\nn\modules\container.py", line 259, in forward
+    input = module(input)
+  File "D:\arora_AI\models\unet_3x.py", line 16, in forward
+    out = self.conv2(out)
+  File "D:\arora_AI\.venv\Lib\site-packages\torch\nn\modules\conv.py", line 565, in forward
+    return self._conv_forward(input, self.weight, self.bias)
+ñ
+conv2d_5
+relu_3add_91node_add_91"AddJí
+	namespaceÑ: models.unet_3x.DownscaleUNet3x/enc2: torch.nn.modules.container.Sequential/enc2.3: models.unet_3x.ResBlock/add_91: aten.add.TensorJõ
+pkg.torch.onnx.class_hierarchyy['models.unet_3x.DownscaleUNet3x', 'torch.nn.modules.container.Sequential', 'models.unet_3x.ResBlock', 'aten.add.Tensor']Jç
+pkg.torch.onnx.fx_nodes%add_91 : [num_users=1] = call_function[target=torch.ops.aten.add.Tensor](args = (%conv2d_5, %relu_3), kwargs = {})J>
+pkg.torch.onnx.name_scopes ['', 'enc2', 'enc2.3', 'add_91']J‰
+pkg.torch.onnx.stack_trace≈File "D:\arora_AI\models\unet_3x.py", line 65, in forward
+    e2 = self.enc2(e1)     # [B, 128, H/2, W/2]
+  File "D:\arora_AI\.venv\Lib\site-packages\torch\nn\modules\container.py", line 259, in forward
+    input = module(input)
+  File "D:\arora_AI\models\unet_3x.py", line 17, in forward
+    return self.relu(out + residual)
+¸
+add_91relu_5node_relu_5"ReluJ¬
+	namespace¥: models.unet_3x.DownscaleUNet3x/enc2: torch.nn.modules.container.Sequential/enc2.3: models.unet_3x.ResBlock/enc2.3.relu: torch.nn.modules.activation.ReLU/relu_5: aten.relu.defaultJ¬
+pkg.torch.onnx.class_hierarchyü['models.unet_3x.DownscaleUNet3x', 'torch.nn.modules.container.Sequential', 'models.unet_3x.ResBlock', 'torch.nn.modules.activation.ReLU', 'aten.relu.default']JÖ
+pkg.torch.onnx.fx_nodek%relu_5 : [num_users=1] = call_function[target=torch.ops.aten.relu.default](args = (%add_91,), kwargs = {})JM
+pkg.torch.onnx.name_scopes/['', 'enc2', 'enc2.3', 'enc2.3.relu', 'relu_5']Jı
+pkg.torch.onnx.stack_trace÷File "D:\arora_AI\models\unet_3x.py", line 65, in forward
+    e2 = self.enc2(e1)     # [B, 128, H/2, W/2]
+  File "D:\arora_AI\.venv\Lib\site-packages\torch\nn\modules\container.py", line 259, in forward
+    input = module(input)
+  File "D:\arora_AI\models\unet_3x.py", line 17, in forward
+    return self.relu(out + residual)
+  File "D:\arora_AI\.venv\Lib\site-packages\torch\nn\modules\activation.py", line 143, in forward
+    return F.relu(input, inplace=self.inplace)
+¢	
+relu_5max_pool2d_1node_max_pool2d_1"MaxPool*
+kernel_shape@@†*
+strides@@†*
+	dilations@@†*
+auto_pad"NOTSET†*
+pads@ @ @ @ †*
+	ceil_mode †*
+storage_order †J∑
+	namespace©: models.unet_3x.DownscaleUNet3x/bottleneck: torch.nn.modules.container.Sequential/bottleneck.0: torch.nn.modules.pooling.MaxPool2d/max_pool2d_1: aten.max_pool2d.defaultJØ
+pkg.torch.onnx.class_hierarchyå['models.unet_3x.DownscaleUNet3x', 'torch.nn.modules.container.Sequential', 'torch.nn.modules.pooling.MaxPool2d', 'aten.max_pool2d.default']J°
+pkg.torch.onnx.fx_nodeÜ%max_pool2d_1 : [num_users=1] = call_function[target=torch.ops.aten.max_pool2d.default](args = (%relu_5, [2, 2], [2, 2]), kwargs = {})JP
+pkg.torch.onnx.name_scopes2['', 'bottleneck', 'bottleneck.0', 'max_pool2d_1']J¸
+pkg.torch.onnx.stack_trace›File "D:\arora_AI\models\unet_3x.py", line 67, in forward
+    b = self.bottleneck(e2) # [B, 128, H/4, W/4]
+  File "D:\arora_AI\.venv\Lib\site-packages\torch\nn\modules\container.py", line 259, in forward
+    input = module(input)
+  File "D:\arora_AI\.venv\Lib\site-packages\torch\nn\modules\pooling.py", line 224, in forward
+    return F.max_pool2d(
+≈	
+max_pool2d_1
+bottleneck.1.weight
+bottleneck.1.biasconv2d_6node_conv2d_6"Conv*
+group†*
+auto_pad"NOTSET†*
+	dilations@@†*
+strides@@†*
+pads@@@@†J©
+	namespaceõ: models.unet_3x.DownscaleUNet3x/bottleneck: torch.nn.modules.container.Sequential/bottleneck.1: torch.nn.modules.conv.Conv2d/conv2d_6: aten.conv2d.defaultJ•
+pkg.torch.onnx.class_hierarchyÇ['models.unet_3x.DownscaleUNet3x', 'torch.nn.modules.container.Sequential', 'torch.nn.modules.conv.Conv2d', 'aten.conv2d.default']JÕ
+pkg.torch.onnx.fx_node≤%conv2d_6 : [num_users=1] = call_function[target=torch.ops.aten.conv2d.default](args = (%max_pool2d_1, %p_bottleneck_1_weight, %p_bottleneck_1_bias, [1, 1], [1, 1]), kwargs = {})JL
+pkg.torch.onnx.name_scopes.['', 'bottleneck', 'bottleneck.1', 'conv2d_6']Jù
+pkg.torch.onnx.stack_trace˛File "D:\arora_AI\models\unet_3x.py", line 67, in forward
+    b = self.bottleneck(e2) # [B, 128, H/4, W/4]
+  File "D:\arora_AI\.venv\Lib\site-packages\torch\nn\modules\container.py", line 259, in forward
+    input = module(input)
+  File "D:\arora_AI\.venv\Lib\site-packages\torch\nn\modules\conv.py", line 565, in forward
+    return self._conv_forward(input, self.weight, self.bias)
+È
+conv2d_6relu_6node_relu_6"ReluJ©
+	namespaceõ: models.unet_3x.DownscaleUNet3x/bottleneck: torch.nn.modules.container.Sequential/bottleneck.2: torch.nn.modules.activation.ReLU/relu_6: aten.relu.defaultJß
+pkg.torch.onnx.class_hierarchyÑ['models.unet_3x.DownscaleUNet3x', 'torch.nn.modules.container.Sequential', 'torch.nn.modules.activation.ReLU', 'aten.relu.default']Já
+pkg.torch.onnx.fx_nodem%relu_6 : [num_users=2] = call_function[target=torch.ops.aten.relu.default](args = (%conv2d_6,), kwargs = {})JJ
+pkg.torch.onnx.name_scopes,['', 'bottleneck', 'bottleneck.2', 'relu_6']Jï
+pkg.torch.onnx.stack_traceˆFile "D:\arora_AI\models\unet_3x.py", line 67, in forward
+    b = self.bottleneck(e2) # [B, 128, H/4, W/4]
+  File "D:\arora_AI\.venv\Lib\site-packages\torch\nn\modules\container.py", line 259, in forward
+    input = module(input)
+  File "D:\arora_AI\.venv\Lib\site-packages\torch\nn\modules\activation.py", line 143, in forward
+    return F.relu(input, inplace=self.inplace)
+ç
+relu_6
+bottleneck.3.conv1.weight
+bottleneck.3.conv1.biasconv2d_7node_conv2d_7"Conv*
+group†*
+auto_pad"NOTSET†*
+	dilations@@†*
+strides@@†*
+pads@@@@†J’
+	namespace«: models.unet_3x.DownscaleUNet3x/bottleneck: torch.nn.modules.container.Sequential/bottleneck.3: models.unet_3x.ResBlock/bottleneck.3.conv1: torch.nn.modules.conv.Conv2d/conv2d_7: aten.conv2d.defaultJ¿
+pkg.torch.onnx.class_hierarchyù['models.unet_3x.DownscaleUNet3x', 'torch.nn.modules.container.Sequential', 'models.unet_3x.ResBlock', 'torch.nn.modules.conv.Conv2d', 'aten.conv2d.default']J”
+pkg.torch.onnx.fx_node∏%conv2d_7 : [num_users=1] = call_function[target=torch.ops.aten.conv2d.default](args = (%relu_6, %p_bottleneck_3_conv1_weight, %p_bottleneck_3_conv1_bias, [1, 1], [1, 1]), kwargs = {})Jb
+pkg.torch.onnx.name_scopesD['', 'bottleneck', 'bottleneck.3', 'bottleneck.3.conv1', 'conv2d_7']J¸
+pkg.torch.onnx.stack_trace›File "D:\arora_AI\models\unet_3x.py", line 67, in forward
+    b = self.bottleneck(e2) # [B, 128, H/4, W/4]
+  File "D:\arora_AI\.venv\Lib\site-packages\torch\nn\modules\container.py", line 259, in forward
+    input = module(input)
+  File "D:\arora_AI\models\unet_3x.py", line 15, in forward
+    out = self.relu(self.conv1(x))
+  File "D:\arora_AI\.venv\Lib\site-packages\torch\nn\modules\conv.py", line 565, in forward
+    return self._conv_forward(input, self.weight, self.bias)
+£	
+conv2d_7relu_7node_relu_7"ReluJ‘
+	namespace∆: models.unet_3x.DownscaleUNet3x/bottleneck: torch.nn.modules.container.Sequential/bottleneck.3: models.unet_3x.ResBlock/bottleneck.3.relu: torch.nn.modules.activation.ReLU/relu_7: aten.relu.defaultJ¬
+pkg.torch.onnx.class_hierarchyü['models.unet_3x.DownscaleUNet3x', 'torch.nn.modules.container.Sequential', 'models.unet_3x.ResBlock', 'torch.nn.modules.activation.ReLU', 'aten.relu.default']Já
+pkg.torch.onnx.fx_nodem%relu_7 : [num_users=1] = call_function[target=torch.ops.aten.relu.default](args = (%conv2d_7,), kwargs = {})J_
+pkg.torch.onnx.name_scopesA['', 'bottleneck', 'bottleneck.3', 'bottleneck.3.relu', 'relu_7']JÙ
+pkg.torch.onnx.stack_trace’File "D:\arora_AI\models\unet_3x.py", line 67, in forward
+    b = self.bottleneck(e2) # [B, 128, H/4, W/4]
+  File "D:\arora_AI\.venv\Lib\site-packages\torch\nn\modules\container.py", line 259, in forward
+    input = module(input)
+  File "D:\arora_AI\models\unet_3x.py", line 15, in forward
+    out = self.relu(self.conv1(x))
+  File "D:\arora_AI\.venv\Lib\site-packages\torch\nn\modules\activation.py", line 143, in forward
+    return F.relu(input, inplace=self.inplace)
+Ñ
+relu_7
+bottleneck.3.conv2.weight
+bottleneck.3.conv2.biasconv2d_8node_conv2d_8"Conv*
+group†*
+auto_pad"NOTSET†*
+	dilations@@†*
+strides@@†*
+pads@@@@†J’
+	namespace«: models.unet_3x.DownscaleUNet3x/bottleneck: torch.nn.modules.container.Sequential/bottleneck.3: models.unet_3x.ResBlock/bottleneck.3.conv2: torch.nn.modules.conv.Conv2d/conv2d_8: aten.conv2d.defaultJ¿
+pkg.torch.onnx.class_hierarchyù['models.unet_3x.DownscaleUNet3x', 'torch.nn.modules.container.Sequential', 'models.unet_3x.ResBlock', 'torch.nn.modules.conv.Conv2d', 'aten.conv2d.default']J”
+pkg.torch.onnx.fx_node∏%conv2d_8 : [num_users=1] = call_function[target=torch.ops.aten.conv2d.default](args = (%relu_7, %p_bottleneck_3_conv2_weight, %p_bottleneck_3_conv2_bias, [1, 1], [1, 1]), kwargs = {})Jb
+pkg.torch.onnx.name_scopesD['', 'bottleneck', 'bottleneck.3', 'bottleneck.3.conv2', 'conv2d_8']JÛ
+pkg.torch.onnx.stack_trace‘File "D:\arora_AI\models\unet_3x.py", line 67, in forward
+    b = self.bottleneck(e2) # [B, 128, H/4, W/4]
+  File "D:\arora_AI\.venv\Lib\site-packages\torch\nn\modules\container.py", line 259, in forward
+    input = module(input)
+  File "D:\arora_AI\models\unet_3x.py", line 16, in forward
+    out = self.conv2(out)
+  File "D:\arora_AI\.venv\Lib\site-packages\torch\nn\modules\conv.py", line 565, in forward
+    return self._conv_forward(input, self.weight, self.bias)
+¥
+conv2d_8
+relu_6add_147node_add_147"AddJü
+	namespaceë: models.unet_3x.DownscaleUNet3x/bottleneck: torch.nn.modules.container.Sequential/bottleneck.3: models.unet_3x.ResBlock/add_147: aten.add.TensorJõ
+pkg.torch.onnx.class_hierarchyy['models.unet_3x.DownscaleUNet3x', 'torch.nn.modules.container.Sequential', 'models.unet_3x.ResBlock', 'aten.add.Tensor']Jé
+pkg.torch.onnx.fx_nodet%add_147 : [num_users=1] = call_function[target=torch.ops.aten.add.Tensor](args = (%conv2d_8, %relu_6), kwargs = {})JK
+pkg.torch.onnx.name_scopes-['', 'bottleneck', 'bottleneck.3', 'add_147']JÂ
+pkg.torch.onnx.stack_trace∆File "D:\arora_AI\models\unet_3x.py", line 67, in forward
+    b = self.bottleneck(e2) # [B, 128, H/4, W/4]
+  File "D:\arora_AI\.venv\Lib\site-packages\torch\nn\modules\container.py", line 259, in forward
+    input = module(input)
+  File "D:\arora_AI\models\unet_3x.py", line 17, in forward
+    return self.relu(out + residual)
+£	
+add_147relu_8node_relu_8"ReluJ‘
+	namespace∆: models.unet_3x.DownscaleUNet3x/bottleneck: torch.nn.modules.container.Sequential/bottleneck.3: models.unet_3x.ResBlock/bottleneck.3.relu: torch.nn.modules.activation.ReLU/relu_8: aten.relu.defaultJ¬
+pkg.torch.onnx.class_hierarchyü['models.unet_3x.DownscaleUNet3x', 'torch.nn.modules.container.Sequential', 'models.unet_3x.ResBlock', 'torch.nn.modules.activation.ReLU', 'aten.relu.default']JÜ
+pkg.torch.onnx.fx_nodel%relu_8 : [num_users=1] = call_function[target=torch.ops.aten.relu.default](args = (%add_147,), kwargs = {})J_
+pkg.torch.onnx.name_scopesA['', 'bottleneck', 'bottleneck.3', 'bottleneck.3.relu', 'relu_8']Jˆ
+pkg.torch.onnx.stack_trace◊File "D:\arora_AI\models\unet_3x.py", line 67, in forward
+    b = self.bottleneck(e2) # [B, 128, H/4, W/4]
+  File "D:\arora_AI\.venv\Lib\site-packages\torch\nn\modules\container.py", line 259, in forward
+    input = module(input)
+  File "D:\arora_AI\models\unet_3x.py", line 17, in forward
+    return self.relu(out + residual)
+  File "D:\arora_AI\.venv\Lib\site-packages\torch\nn\modules\activation.py", line 143, in forward
+    return F.relu(input, inplace=self.inplace)
+õ	
+relu_8
+up1.0.weight
+
+up1.0.biasconv2d_9node_conv2d_9"Conv*
+group†*
+auto_pad"NOTSET†*
+	dilations@@†*
+strides@@†*
+pads@@@@†Jõ
+	namespaceç: models.unet_3x.DownscaleUNet3x/up1: torch.nn.modules.container.Sequential/up1.0: torch.nn.modules.conv.Conv2d/conv2d_9: aten.conv2d.defaultJ•
+pkg.torch.onnx.class_hierarchyÇ['models.unet_3x.DownscaleUNet3x', 'torch.nn.modules.container.Sequential', 'torch.nn.modules.conv.Conv2d', 'aten.conv2d.default']Jπ
+pkg.torch.onnx.fx_nodeû%conv2d_9 : [num_users=1] = call_function[target=torch.ops.aten.conv2d.default](args = (%relu_8, %p_up1_0_weight, %p_up1_0_bias, [1, 1], [1, 1]), kwargs = {})J>
+pkg.torch.onnx.name_scopes ['', 'up1', 'up1.0', 'conv2d_9']J∑
+pkg.torch.onnx.stack_traceòFile "D:\arora_AI\models\unet_3x.py", line 70, in forward
+    d1 = self.up1(b)       # [B, 64, 3H/4, 3W/4] ‚Äî need to align with e1
+  File "D:\arora_AI\.venv\Lib\site-packages\torch\nn\modules\container.py", line 259, in forward
+    input = module(input)
+  File "D:\arora_AI\.venv\Lib\site-packages\torch\nn\modules\conv.py", line 565, in forward
+    return self._conv_forward(input, self.weight, self.bias)
+Ó
+conv2d_9pixel_shufflenode_pixel_shuffle"DepthToSpace*
+	blocksize†*
+mode"CRD†Jµ
+	namespaceß: models.unet_3x.DownscaleUNet3x/up1: torch.nn.modules.container.Sequential/up1.1: torch.nn.modules.pixelshuffle.PixelShuffle/pixel_shuffle: aten.pixel_shuffle.defaultJ∫
+pkg.torch.onnx.class_hierarchyó['models.unet_3x.DownscaleUNet3x', 'torch.nn.modules.container.Sequential', 'torch.nn.modules.pixelshuffle.PixelShuffle', 'aten.pixel_shuffle.default']Jô
+pkg.torch.onnx.fx_node%pixel_shuffle : [num_users=1] = call_function[target=torch.ops.aten.pixel_shuffle.default](args = (%conv2d_9, 3), kwargs = {})JC
+pkg.torch.onnx.name_scopes%['', 'up1', 'up1.1', 'pixel_shuffle']J∏
+pkg.torch.onnx.stack_traceôFile "D:\arora_AI\models\unet_3x.py", line 70, in forward
+    d1 = self.up1(b)       # [B, 64, 3H/4, 3W/4] ‚Äî need to align with e1
+  File "D:\arora_AI\.venv\Lib\site-packages\torch\nn\modules\container.py", line 259, in forward
+    input = module(input)
+  File "D:\arora_AI\.venv\Lib\site-packages\torch\nn\modules\pixelshuffle.py", line 62, in forward
+    return F.pixel_shuffle(input, self.upscale_factor)
+Ò
+pixel_shufflerelu_9node_relu_9"ReluJõ
+	namespaceç: models.unet_3x.DownscaleUNet3x/up1: torch.nn.modules.container.Sequential/up1.2: torch.nn.modules.activation.ReLU/relu_9: aten.relu.defaultJß
+pkg.torch.onnx.class_hierarchyÑ['models.unet_3x.DownscaleUNet3x', 'torch.nn.modules.container.Sequential', 'torch.nn.modules.activation.ReLU', 'aten.relu.default']Jå
+pkg.torch.onnx.fx_noder%relu_9 : [num_users=1] = call_function[target=torch.ops.aten.relu.default](args = (%pixel_shuffle,), kwargs = {})J<
+pkg.torch.onnx.name_scopes['', 'up1', 'up1.2', 'relu_9']JØ
+pkg.torch.onnx.stack_traceêFile "D:\arora_AI\models\unet_3x.py", line 70, in forward
+    d1 = self.up1(b)       # [B, 64, 3H/4, 3W/4] ‚Äî need to align with e1
+  File "D:\arora_AI\.venv\Lib\site-packages\torch\nn\modules\container.py", line 259, in forward
+    input = module(input)
+  File "D:\arora_AI\.venv\Lib\site-packages\torch\nn\modules\activation.py", line 143, in forward
+    return F.relu(input, inplace=self.inplace)
+Ø
+relu_2val_2node_Shape_0"Shape*
+start †*
+
+end†J_
+	namespaceR: models.unet_3x.DownscaleUNet3x/upsample_bilinear2d: aten.upsample_bilinear2d.vecJd
+pkg.torch.onnx.class_hierarchyB['models.unet_3x.DownscaleUNet3x', 'aten.upsample_bilinear2d.vec']J¥
+pkg.torch.onnx.fx_nodeô%upsample_bilinear2d : [num_users=1] = call_function[target=torch.ops.aten.upsample_bilinear2d.vec](args = (%relu_2, [24, 24], False, None), kwargs = {})J9
+pkg.torch.onnx.name_scopes['', 'upsample_bilinear2d']Jµ
+pkg.torch.onnx.stack_traceñFile "D:\arora_AI\models\unet_3x.py", line 72, in forward
+    e1_cropped = F.interpolate(e1, size=d1.shape[-2:], mode='bilinear', align_corners=False)
+™
+val_2
+val_4val_5node_Concat_3"Concat*
+axis †J_
+	namespaceR: models.unet_3x.DownscaleUNet3x/upsample_bilinear2d: aten.upsample_bilinear2d.vecJd
+pkg.torch.onnx.class_hierarchyB['models.unet_3x.DownscaleUNet3x', 'aten.upsample_bilinear2d.vec']J¥
+pkg.torch.onnx.fx_nodeô%upsample_bilinear2d : [num_users=1] = call_function[target=torch.ops.aten.upsample_bilinear2d.vec](args = (%relu_2, [24, 24], False, None), kwargs = {})J9
+pkg.torch.onnx.name_scopes['', 'upsample_bilinear2d']Jµ
+pkg.torch.onnx.stack_traceñFile "D:\arora_AI\models\unet_3x.py", line 72, in forward
+    e1_cropped = F.interpolate(e1, size=d1.shape[-2:], mode='bilinear', align_corners=False)
+£
+relu_2
+ 
+ 
+val_5upsample_bilinear2dnode_upsample_bilinear2d"Resize*
+mode"linear†*
+cubic_coeff_a  @ø†*/
+coordinate_transformation_mode"
+half_pixel†*
+exclude_outside †*
+nearest_mode"floor†*
+	antialias †*
+extrapolation_value    †*&
+keep_aspect_ratio_policy"stretch†J_
+	namespaceR: models.unet_3x.DownscaleUNet3x/upsample_bilinear2d: aten.upsample_bilinear2d.vecJd
+pkg.torch.onnx.class_hierarchyB['models.unet_3x.DownscaleUNet3x', 'aten.upsample_bilinear2d.vec']J¥
+pkg.torch.onnx.fx_nodeô%upsample_bilinear2d : [num_users=1] = call_function[target=torch.ops.aten.upsample_bilinear2d.vec](args = (%relu_2, [24, 24], False, None), kwargs = {})J9
+pkg.torch.onnx.name_scopes['', 'upsample_bilinear2d']Jµ
+pkg.torch.onnx.stack_traceñFile "D:\arora_AI\models\unet_3x.py", line 72, in forward
+    e1_cropped = F.interpolate(e1, size=d1.shape[-2:], mode='bilinear', align_corners=False)
+¢
+relu_9
+upsample_bilinear2dadd_188node_add_188"AddJF
+	namespace9: models.unet_3x.DownscaleUNet3x/add_188: aten.add.TensorJW
+pkg.torch.onnx.class_hierarchy5['models.unet_3x.DownscaleUNet3x', 'aten.add.Tensor']Jô
+pkg.torch.onnx.fx_node%add_188 : [num_users=2] = call_function[target=torch.ops.aten.add.Tensor](args = (%relu_9, %upsample_bilinear2d), kwargs = {})J-
+pkg.torch.onnx.name_scopes['', 'add_188']J{
+pkg.torch.onnx.stack_trace]File "D:\arora_AI\models\unet_3x.py", line 73, in forward
+    d1 = self.dec1(d1 + e1_cropped)
+‚
+add_188
+dec1.conv1.weight
+dec1.conv1.bias	conv2d_10node_conv2d_10"Conv*
+group†*
+auto_pad"NOTSET†*
+	dilations@@†*
+strides@@†*
+pads@@@@†Jî
+	namespaceÜ: models.unet_3x.DownscaleUNet3x/dec1: models.unet_3x.ResBlock/dec1.conv1: torch.nn.modules.conv.Conv2d/conv2d_10: aten.conv2d.defaultJñ
+pkg.torch.onnx.class_hierarchyt['models.unet_3x.DownscaleUNet3x', 'models.unet_3x.ResBlock', 'torch.nn.modules.conv.Conv2d', 'aten.conv2d.default']J≈
+pkg.torch.onnx.fx_node™%conv2d_10 : [num_users=1] = call_function[target=torch.ops.aten.conv2d.default](args = (%add_188, %p_dec1_conv1_weight, %p_dec1_conv1_bias, [1, 1], [1, 1]), kwargs = {})JE
+pkg.torch.onnx.name_scopes'['', 'dec1', 'dec1.conv1', 'conv2d_10']JÙ
+pkg.torch.onnx.stack_trace’File "D:\arora_AI\models\unet_3x.py", line 73, in forward
+    d1 = self.dec1(d1 + e1_cropped)
+  File "D:\arora_AI\models\unet_3x.py", line 15, in forward
+    out = self.relu(self.conv1(x))
+  File "D:\arora_AI\.venv\Lib\site-packages\torch\nn\modules\conv.py", line 565, in forward
+    return self._conv_forward(input, self.weight, self.bias)
+ò
+	conv2d_10relu_10node_relu_10"ReluJì
+	namespaceÖ: models.unet_3x.DownscaleUNet3x/dec1: models.unet_3x.ResBlock/dec1.relu: torch.nn.modules.activation.ReLU/relu_10: aten.relu.defaultJò
+pkg.torch.onnx.class_hierarchyv['models.unet_3x.DownscaleUNet3x', 'models.unet_3x.ResBlock', 'torch.nn.modules.activation.ReLU', 'aten.relu.default']Jâ
+pkg.torch.onnx.fx_nodeo%relu_10 : [num_users=1] = call_function[target=torch.ops.aten.relu.default](args = (%conv2d_10,), kwargs = {})JB
+pkg.torch.onnx.name_scopes$['', 'dec1', 'dec1.relu', 'relu_10']JÏ
+pkg.torch.onnx.stack_traceÕFile "D:\arora_AI\models\unet_3x.py", line 73, in forward
+    d1 = self.dec1(d1 + e1_cropped)
+  File "D:\arora_AI\models\unet_3x.py", line 15, in forward
+    out = self.relu(self.conv1(x))
+  File "D:\arora_AI\.venv\Lib\site-packages\torch\nn\modules\activation.py", line 143, in forward
+    return F.relu(input, inplace=self.inplace)
+Ÿ
+relu_10
+dec1.conv2.weight
+dec1.conv2.bias	conv2d_11node_conv2d_11"Conv*
+group†*
+auto_pad"NOTSET†*
+	dilations@@†*
+strides@@†*
+pads@@@@†Jî
+	namespaceÜ: models.unet_3x.DownscaleUNet3x/dec1: models.unet_3x.ResBlock/dec1.conv2: torch.nn.modules.conv.Conv2d/conv2d_11: aten.conv2d.defaultJñ
+pkg.torch.onnx.class_hierarchyt['models.unet_3x.DownscaleUNet3x', 'models.unet_3x.ResBlock', 'torch.nn.modules.conv.Conv2d', 'aten.conv2d.default']J≈
+pkg.torch.onnx.fx_node™%conv2d_11 : [num_users=1] = call_function[target=torch.ops.aten.conv2d.default](args = (%relu_10, %p_dec1_conv2_weight, %p_dec1_conv2_bias, [1, 1], [1, 1]), kwargs = {})JE
+pkg.torch.onnx.name_scopes'['', 'dec1', 'dec1.conv2', 'conv2d_11']JÎ
+pkg.torch.onnx.stack_traceÃFile "D:\arora_AI\models\unet_3x.py", line 73, in forward
+    d1 = self.dec1(d1 + e1_cropped)
+  File "D:\arora_AI\models\unet_3x.py", line 16, in forward
+    out = self.conv2(out)
+  File "D:\arora_AI\.venv\Lib\site-packages\torch\nn\modules\conv.py", line 565, in forward
+    return self._conv_forward(input, self.weight, self.bias)
+¥
+	conv2d_11
+add_188add_214node_add_214"AddJd
+	namespaceW: models.unet_3x.DownscaleUNet3x/dec1: models.unet_3x.ResBlock/add_214: aten.add.TensorJr
+pkg.torch.onnx.class_hierarchyP['models.unet_3x.DownscaleUNet3x', 'models.unet_3x.ResBlock', 'aten.add.Tensor']Jê
+pkg.torch.onnx.fx_nodev%add_214 : [num_users=1] = call_function[target=torch.ops.aten.add.Tensor](args = (%conv2d_11, %add_188), kwargs = {})J5
+pkg.torch.onnx.name_scopes['', 'dec1', 'add_214']J›
+pkg.torch.onnx.stack_traceæFile "D:\arora_AI\models\unet_3x.py", line 73, in forward
+    d1 = self.dec1(d1 + e1_cropped)
+  File "D:\arora_AI\models\unet_3x.py", line 17, in forward
+    return self.relu(out + residual)
+ñ
+add_214relu_11node_relu_11"ReluJì
+	namespaceÖ: models.unet_3x.DownscaleUNet3x/dec1: models.unet_3x.ResBlock/dec1.relu: torch.nn.modules.activation.ReLU/relu_11: aten.relu.defaultJò
+pkg.torch.onnx.class_hierarchyv['models.unet_3x.DownscaleUNet3x', 'models.unet_3x.ResBlock', 'torch.nn.modules.activation.ReLU', 'aten.relu.default']Já
+pkg.torch.onnx.fx_nodem%relu_11 : [num_users=1] = call_function[target=torch.ops.aten.relu.default](args = (%add_214,), kwargs = {})JB
+pkg.torch.onnx.name_scopes$['', 'dec1', 'dec1.relu', 'relu_11']JÓ
+pkg.torch.onnx.stack_traceœFile "D:\arora_AI\models\unet_3x.py", line 73, in forward
+    d1 = self.dec1(d1 + e1_cropped)
+  File "D:\arora_AI\models\unet_3x.py", line 17, in forward
+    return self.relu(out + residual)
+  File "D:\arora_AI\.venv\Lib\site-packages\torch\nn\modules\activation.py", line 143, in forward
+    return F.relu(input, inplace=self.inplace)
+à	
+relu_11
+up2.0.weight
+
+up2.0.bias	conv2d_12node_conv2d_12"Conv*
+group†*
+auto_pad"NOTSET†*
+	dilations@@†*
+strides@@†*
+pads@@@@†Jú
+	namespaceé: models.unet_3x.DownscaleUNet3x/up2: torch.nn.modules.container.Sequential/up2.0: torch.nn.modules.conv.Conv2d/conv2d_12: aten.conv2d.defaultJ•
+pkg.torch.onnx.class_hierarchyÇ['models.unet_3x.DownscaleUNet3x', 'torch.nn.modules.container.Sequential', 'torch.nn.modules.conv.Conv2d', 'aten.conv2d.default']Jª
+pkg.torch.onnx.fx_node†%conv2d_12 : [num_users=1] = call_function[target=torch.ops.aten.conv2d.default](args = (%relu_11, %p_up2_0_weight, %p_up2_0_bias, [1, 1], [1, 1]), kwargs = {})J?
+pkg.torch.onnx.name_scopes!['', 'up2', 'up2.0', 'conv2d_12']Jù
+pkg.torch.onnx.stack_trace˛File "D:\arora_AI\models\unet_3x.py", line 75, in forward
+    d2 = self.up2(d1)      # [B, 64, 9H/4, 9W/4]
+  File "D:\arora_AI\.venv\Lib\site-packages\torch\nn\modules\container.py", line 259, in forward
+    input = module(input)
+  File "D:\arora_AI\.venv\Lib\site-packages\torch\nn\modules\conv.py", line 565, in forward
+    return self._conv_forward(input, self.weight, self.bias)
+·
+	conv2d_12pixel_shuffle_1node_pixel_shuffle_1"DepthToSpace*
+	blocksize†*
+mode"CRD†J∑
+	namespace©: models.unet_3x.DownscaleUNet3x/up2: torch.nn.modules.container.Sequential/up2.1: torch.nn.modules.pixelshuffle.PixelShuffle/pixel_shuffle_1: aten.pixel_shuffle.defaultJ∫
+pkg.torch.onnx.class_hierarchyó['models.unet_3x.DownscaleUNet3x', 'torch.nn.modules.container.Sequential', 'torch.nn.modules.pixelshuffle.PixelShuffle', 'aten.pixel_shuffle.default']Jù
+pkg.torch.onnx.fx_nodeÇ%pixel_shuffle_1 : [num_users=1] = call_function[target=torch.ops.aten.pixel_shuffle.default](args = (%conv2d_12, 3), kwargs = {})JE
+pkg.torch.onnx.name_scopes'['', 'up2', 'up2.1', 'pixel_shuffle_1']Jû
+pkg.torch.onnx.stack_traceˇFile "D:\arora_AI\models\unet_3x.py", line 75, in forward
+    d2 = self.up2(d1)      # [B, 64, 9H/4, 9W/4]
+  File "D:\arora_AI\.venv\Lib\site-packages\torch\nn\modules\container.py", line 259, in forward
+    input = module(input)
+  File "D:\arora_AI\.venv\Lib\site-packages\torch\nn\modules\pixelshuffle.py", line 62, in forward
+    return F.pixel_shuffle(input, self.upscale_factor)
+‡
+pixel_shuffle_1relu_12node_relu_12"ReluJú
+	namespaceé: models.unet_3x.DownscaleUNet3x/up2: torch.nn.modules.container.Sequential/up2.2: torch.nn.modules.activation.ReLU/relu_12: aten.relu.defaultJß
+pkg.torch.onnx.class_hierarchyÑ['models.unet_3x.DownscaleUNet3x', 'torch.nn.modules.container.Sequential', 'torch.nn.modules.activation.ReLU', 'aten.relu.default']Jè
+pkg.torch.onnx.fx_nodeu%relu_12 : [num_users=1] = call_function[target=torch.ops.aten.relu.default](args = (%pixel_shuffle_1,), kwargs = {})J=
+pkg.torch.onnx.name_scopes['', 'up2', 'up2.2', 'relu_12']Jï
+pkg.torch.onnx.stack_traceˆFile "D:\arora_AI\models\unet_3x.py", line 75, in forward
+    d2 = self.up2(d1)      # [B, 64, 9H/4, 9W/4]
+  File "D:\arora_AI\.venv\Lib\site-packages\torch\nn\modules\container.py", line 259, in forward
+    input = module(input)
+  File "D:\arora_AI\.venv\Lib\site-packages\torch\nn\modules\activation.py", line 143, in forward
+    return F.relu(input, inplace=self.inplace)
+’
+relu_12
+dec2.conv1.weight
+dec2.conv1.bias	conv2d_13node_conv2d_13"Conv*
+group†*
+auto_pad"NOTSET†*
+	dilations@@†*
+strides@@†*
+pads@@@@†Jî
+	namespaceÜ: models.unet_3x.DownscaleUNet3x/dec2: models.unet_3x.ResBlock/dec2.conv1: torch.nn.modules.conv.Conv2d/conv2d_13: aten.conv2d.defaultJñ
+pkg.torch.onnx.class_hierarchyt['models.unet_3x.DownscaleUNet3x', 'models.unet_3x.ResBlock', 'torch.nn.modules.conv.Conv2d', 'aten.conv2d.default']J≈
+pkg.torch.onnx.fx_node™%conv2d_13 : [num_users=1] = call_function[target=torch.ops.aten.conv2d.default](args = (%slice_2, %p_dec2_conv1_weight, %p_dec2_conv1_bias, [1, 1], [1, 1]), kwargs = {})JE
+pkg.torch.onnx.name_scopes'['', 'dec2', 'dec2.conv1', 'conv2d_13']JÁ
+pkg.torch.onnx.stack_trace»File "D:\arora_AI\models\unet_3x.py", line 79, in forward
+    d2 = self.dec2(d2)
+  File "D:\arora_AI\models\unet_3x.py", line 15, in forward
+    out = self.relu(self.conv1(x))
+  File "D:\arora_AI\.venv\Lib\site-packages\torch\nn\modules\conv.py", line 565, in forward
+    return self._conv_forward(input, self.weight, self.bias)
+ã
+	conv2d_13relu_13node_relu_13"ReluJì
+	namespaceÖ: models.unet_3x.DownscaleUNet3x/dec2: models.unet_3x.ResBlock/dec2.relu: torch.nn.modules.activation.ReLU/relu_13: aten.relu.defaultJò
+pkg.torch.onnx.class_hierarchyv['models.unet_3x.DownscaleUNet3x', 'models.unet_3x.ResBlock', 'torch.nn.modules.activation.ReLU', 'aten.relu.default']Jâ
+pkg.torch.onnx.fx_nodeo%relu_13 : [num_users=1] = call_function[target=torch.ops.aten.relu.default](args = (%conv2d_13,), kwargs = {})JB
+pkg.torch.onnx.name_scopes$['', 'dec2', 'dec2.relu', 'relu_13']Jﬂ
+pkg.torch.onnx.stack_trace¿File "D:\arora_AI\models\unet_3x.py", line 79, in forward
+    d2 = self.dec2(d2)
+  File "D:\arora_AI\models\unet_3x.py", line 15, in forward
+    out = self.relu(self.conv1(x))
+  File "D:\arora_AI\.venv\Lib\site-packages\torch\nn\modules\activation.py", line 143, in forward
+    return F.relu(input, inplace=self.inplace)
+Ã
+relu_13
+dec2.conv2.weight
+dec2.conv2.bias	conv2d_14node_conv2d_14"Conv*
+group†*
+auto_pad"NOTSET†*
+	dilations@@†*
+strides@@†*
+pads@@@@†Jî
+	namespaceÜ: models.unet_3x.DownscaleUNet3x/dec2: models.unet_3x.ResBlock/dec2.conv2: torch.nn.modules.conv.Conv2d/conv2d_14: aten.conv2d.defaultJñ
+pkg.torch.onnx.class_hierarchyt['models.unet_3x.DownscaleUNet3x', 'models.unet_3x.ResBlock', 'torch.nn.modules.conv.Conv2d', 'aten.conv2d.default']J≈
+pkg.torch.onnx.fx_node™%conv2d_14 : [num_users=1] = call_function[target=torch.ops.aten.conv2d.default](args = (%relu_13, %p_dec2_conv2_weight, %p_dec2_conv2_bias, [1, 1], [1, 1]), kwargs = {})JE
+pkg.torch.onnx.name_scopes'['', 'dec2', 'dec2.conv2', 'conv2d_14']Jﬁ
+pkg.torch.onnx.stack_traceøFile "D:\arora_AI\models\unet_3x.py", line 79, in forward
+    d2 = self.dec2(d2)
+  File "D:\arora_AI\models\unet_3x.py", line 16, in forward
+    out = self.conv2(out)
+  File "D:\arora_AI\.venv\Lib\site-packages\torch\nn\modules\conv.py", line 565, in forward
+    return self._conv_forward(input, self.weight, self.bias)
+ß
+	conv2d_14
+relu_12add_275node_add_275"AddJd
+	namespaceW: models.unet_3x.DownscaleUNet3x/dec2: models.unet_3x.ResBlock/add_275: aten.add.TensorJr
+pkg.torch.onnx.class_hierarchyP['models.unet_3x.DownscaleUNet3x', 'models.unet_3x.ResBlock', 'aten.add.Tensor']Jê
+pkg.torch.onnx.fx_nodev%add_275 : [num_users=1] = call_function[target=torch.ops.aten.add.Tensor](args = (%conv2d_14, %slice_2), kwargs = {})J5
+pkg.torch.onnx.name_scopes['', 'dec2', 'add_275']J–
+pkg.torch.onnx.stack_trace±File "D:\arora_AI\models\unet_3x.py", line 79, in forward
+    d2 = self.dec2(d2)
+  File "D:\arora_AI\models\unet_3x.py", line 17, in forward
+    return self.relu(out + residual)
+â
+add_275relu_14node_relu_14"ReluJì
+	namespaceÖ: models.unet_3x.DownscaleUNet3x/dec2: models.unet_3x.ResBlock/dec2.relu: torch.nn.modules.activation.ReLU/relu_14: aten.relu.defaultJò
+pkg.torch.onnx.class_hierarchyv['models.unet_3x.DownscaleUNet3x', 'models.unet_3x.ResBlock', 'torch.nn.modules.activation.ReLU', 'aten.relu.default']Já
+pkg.torch.onnx.fx_nodem%relu_14 : [num_users=1] = call_function[target=torch.ops.aten.relu.default](args = (%add_275,), kwargs = {})JB
+pkg.torch.onnx.name_scopes$['', 'dec2', 'dec2.relu', 'relu_14']J·
+pkg.torch.onnx.stack_trace¬File "D:\arora_AI\models\unet_3x.py", line 79, in forward
+    d2 = self.dec2(d2)
+  File "D:\arora_AI\models\unet_3x.py", line 17, in forward
+    return self.relu(out + residual)
+  File "D:\arora_AI\.venv\Lib\site-packages\torch\nn\modules\activation.py", line 143, in forward
+    return F.relu(input, inplace=self.inplace)
+ù
+relu_14
+
+out.weight
+out.bias	hr_outputnode_conv2d_15"Conv*
+group†*
+auto_pad"NOTSET†*
+	dilations@@†*
+strides@@†*
+pads@@@@†Jn
+	namespacea: models.unet_3x.DownscaleUNet3x/out: torch.nn.modules.conv.Conv2d/conv2d_15: aten.conv2d.defaultJ{
+pkg.torch.onnx.class_hierarchyY['models.unet_3x.DownscaleUNet3x', 'torch.nn.modules.conv.Conv2d', 'aten.conv2d.default']J∑
+pkg.torch.onnx.fx_nodeú%conv2d_15 : [num_users=1] = call_function[target=torch.ops.aten.conv2d.default](args = (%relu_14, %p_out_weight, %p_out_bias, [1, 1], [1, 1]), kwargs = {})J6
+pkg.torch.onnx.name_scopes['', 'out', 'conv2d_15']Jù
+pkg.torch.onnx.stack_trace˛File "D:\arora_AI\models\unet_3x.py", line 81, in forward
+    return self.out(d2)    # [B, 1, 3H, 3W]
+  File "D:\arora_AI\.venv\Lib\site-packages\torch\nn\modules\conv.py", line 565, in forward
+    return self._conv_forward(input, self.weight, self.bias)
+main_graph*a@Benc1.0.weightj$
+locationt2m_downscaler.onnx.dataj
+offset3072j
+length2304p*î@Benc1.0.biasJÄ≠u…ºà˘Bæe> o◊Ωõ6+>Œ⁄Oæ˝ÿoΩTZPæ§~Á=Õ¸Ω'a>="sæÑ>ì¶-ΩﬁˇàæpQΩ√,ó>gÆå='Ìò<!Ä]=û>ÔÇæ£›,=≥^Ω|ì°æ7È•æﬁ∆ñæœ∂kæ·Ñ(>≤j>ƒµÖæ*ùæÓL«ºÍ†ñ>˛jGæí‚¶=BñÛ=‹Ê^æ≈rΩü©8æ_M>¿’>Ô%á>.™|=µ\>b>k¸˙ΩÄ±¯=ÿK	æ+FæàFÔ=-å>B+çæD<	=gY>ÒÛŸ=”N\>~sæ_)æT:æÕΩmlI>,Uìº*j@@Benc1.2.conv1.weightj$
+locationt2m_downscaler.onnx.dataj
+offset12288j
+length147456p*ö@Benc1.2.conv1.biasJÄÉÎ?ºŒΩºOóÎº™ÇÜ<µﬁº:wΩÛ÷;¯Dkªıõ∑<{H'=…Föºì÷<>8ß<§N‰º≤ÿπ3ﬂÄ<ÎÍÓ<]'D<›1=,,ΩMS‚<Ohºíæ;‚¥vπ˙G’<Ù &=T=#Ω\π#Øíºc—!=héªvΩ])=Ï+º1,˚ºI§=·dñ<≤äçª'=∆YºñΩ€xΩò†Åª‹≥à<÷Øj<g˝óº”=âR<<õΩÓ7=ì∂ö<–¡<mÏ√º!„<æ‚<‹„Ω¶÷ <Pv†<UB∫†b(Ω~Ω≠Á˝<˘˚˘ºõwéº*k@@Benc1.2.conv2.weightj$
+locationt2m_downscaler.onnx.dataj
+offset159744j
+length147456p*ö@Benc1.2.conv2.biasJÄ‘W™ºZÖ:m≠≤º·X=¯!=´—P;?ùªÅñ;D‡Ωñ∞ˆ<†f˚ºﬂ±<ph◊<¬9î< ﬂ=Vû€<ê–øº˘S’∫∏êœ<Èú<ÄAÍºœØî<i'RºØõº√ÖΩªAÔª*û∫º"8ƒº˛H÷:bu“<P∆~<iË◊ºÏQ=e‚¢<Fo=·d∏ŒªΩÓä|º¸Ω…G5<5 =TcΩC$ΩôìΩÈYÀª#«=}*=¸>∫Ã∆äºN;<àC«ª!&s<à§¸<«‘º€£œº5•ª!p·ºq\…ºLf'<¶`ôπß™œºä∂q<√pºı º*fÄ@Benc2.1.weightj$
+locationt2m_downscaler.onnx.dataj
+offset897024j
+length294912p*VÄBenc2.1.biasj$
+locationt2m_downscaler.onnx.dataj
+offset0j
+length512p*nÄÄBenc2.3.conv1.weightj$
+locationt2m_downscaler.onnx.dataj
+offset1191936j
+length589824p*^ÄBenc2.3.conv1.biasj$
+locationt2m_downscaler.onnx.dataj
+offset512j
+length512p*nÄÄBenc2.3.conv2.weightj$
+locationt2m_downscaler.onnx.dataj
+offset1781760j
+length589824p*_ÄBenc2.3.conv2.biasj$
+locationt2m_downscaler.onnx.dataj
+offset1024j
+length512p*nÄÄBbottleneck.1.weightj$
+locationt2m_downscaler.onnx.dataj
+offset2371584j
+length589824p*_ÄBbottleneck.1.biasj$
+locationt2m_downscaler.onnx.dataj
+offset1536j
+length512p*tÄÄBbottleneck.3.conv1.weightj$
+locationt2m_downscaler.onnx.dataj
+offset2961408j
+length589824p*eÄBbottleneck.3.conv1.biasj$
+locationt2m_downscaler.onnx.dataj
+offset2048j
+length512p*tÄÄBbottleneck.3.conv2.weightj$
+locationt2m_downscaler.onnx.dataj
+offset3551232j
+length589824p*eÄBbottleneck.3.conv2.biasj$
+locationt2m_downscaler.onnx.dataj
+offset2560j
+length512p*h¿ÄBup1.0.weightj$
+locationt2m_downscaler.onnx.dataj
+offset5570560j
+length2654208p*Y¿B
+up1.0.biasj$
+locationt2m_downscaler.onnx.dataj
+offset5376j
+length2304p*i@@Bdec1.conv1.weightj$
+locationt2m_downscaler.onnx.dataj
+offset307200j
+length147456p*ò@Bdec1.conv1.biasJÄı‹<lN˘<Ω∞
+ ΩeÛ—ºñËºm·•ºﬂÎº'TªÊºˇ◊©;r¶º<≠ûoº]∏	=tÀ&<Î!∆<¢ù©ºìd0Ω]e›<o…Ω£ƒA<& ºy¥üªbbˆ<HÉºª &—<√ÒÒªíµ⁄ºŒ<o»r<mÁ´:åÅ=ÇJ«<âG,=œ¯<ÚÍF∫§¶§º.Ω#-ü<˚#<¢îº«uÊ<Õyüº≥òº«Ÿå<Ùuﬁ<√â'=qÅ∫éÍâ<ÏäÃ<5LA<ÈÈ©º#L‚<v˚Öºd@ª£§<cªºÕ®º7Ç£ª(Îã;i†'<#=™]êªËÂ=*i@@Bdec1.conv2.weightj$
+locationt2m_downscaler.onnx.dataj
+offset454656j
+length147456p*ò@Bdec1.conv2.biasJÄ≥Ωõ í<:‹=æö<%Ñ;>”›<†]“ª%-ô; ∫â<}ú´º-\<SòΩséÀºNÛé73ô~ºê#º£ =¯DÍ∫Å›ı<ßª=∫-0õ<„¢«ºÅÈóº≠˜åº¿Ñ∞<Ù=Dn≤;º»<áÂïºÔ]ÑºRX˛<Øˇìº≥ü¡ºke=ïéô<X¬=ÒÑ?<`õ•<7JÓ∫FÇXº¸[=é¿ºe»ˇ;úı$=É2</◊S<œãB<E’ıªu¿äº≤Ö∏aLKºì”<$¶<Ω<Â¿…<®ÄºèY.:IîΩ€ÓΩ>Ùº≈`™∫Döº©Q‘<°0Û<*g¿@Bup2.0.weightj$
+locationt2m_downscaler.onnx.dataj
+offset4194304j
+length1327104p*Y¿B
+up2.0.biasj$
+locationt2m_downscaler.onnx.dataj
+offset7680j
+length2304p*i@@Bdec2.conv1.weightj$
+locationt2m_downscaler.onnx.dataj
+offset602112j
+length147456p*ò@Bdec2.conv1.biasJÄXE	=ŸZº˙¶=M>’ºmWÆºÌ.Fºﬁ†¯;Ñ=˝ºÖ·˘<£‚º,°#Ω:ó¶º»˚ÍºHÎ™< 5
+º=¬›≠<m©ΩYQΩ3¨€<+øºI‹ =íu"ºJ√∏º a=—é=∂
+=Œ=;º€≈`∫°ªº∏u=ycΩ¿ª•÷ê<7±÷ªLYóº∂G¡;Ò{=ú{`<W#+Ωëﬂ‰<8=M-5<≥P`ºì‰=FJªºµ√´º–÷"<ﬁb= Ωú|=öa@<]@º‘•ÎºˆuR<∂HΩ>zΩÍWù<@</ºUIõº«f=}ÑË;˝g1=*i@@Bdec2.conv2.weightj$
+locationt2m_downscaler.onnx.dataj
+offset749568j
+length147456p*ò@Bdec2.conv2.biasJÄ6ªÂ<çZ1Ωÿ¡Ωñüä<Îs∞<äm#ºbDΩΩ[ºT+ºA◊ºÎ&ê<B:⁄;TíºS;1ÔΩtQºø√=2”ßºΩöá$Ω∂=œ|$ΩÂóe<r©º—¥)Ωg\X<5îΩùWê<a+ó<Ûûèº’›=K%ÿª„Œ <ä6◊ªÏ4=Çqì<7÷=VÇµ<ºåï;hÂ™<<*l<Ûı;ôÚÓºª´"=å˘\<ƒï‘:UÃºQ=$·j<ﬁ¶;•ÔN;1:5<,ìº∫H›<fÁÄºÖh˜ª_nº-\=sÆö<&N=Ö¥‚ª|∫‡<ù©Ω s<*^@B
+out.weightj$
+locationt2m_downscaler.onnx.dataj
+offset9984j
+length2304p*Bout.biasJ.¨=*Bval_4J              ZÕ
+lr_input
+
+batch
+
+ 
+ "=
+/pkg.torch.export.graph_signature.InputSpec.kind
+USER_INPUT"=
+5pkg.torch.export.graph_signature.InputSpec.persistentNone"&
+!pkg.torch.onnx.original_node_namexbô
+	hr_output
+
+batch
+
+H
+H"?
+0pkg.torch.export.graph_signature.OutputSpec.kindUSER_OUTPUT".
+!pkg.torch.onnx.original_node_name	conv2d_15j⁄
+enc1.0.weight
+
+@
+
+
+"<
+/pkg.torch.export.graph_signature.InputSpec.kind	PARAMETER"=
+5pkg.torch.export.graph_signature.InputSpec.persistentNone"4
+!pkg.torch.onnx.original_node_namep_enc1_0_weightj 
+enc1.0.bias
+
+
+@"<
+/pkg.torch.export.graph_signature.InputSpec.kind	PARAMETER"=
+5pkg.torch.export.graph_signature.InputSpec.persistentNone"2
+!pkg.torch.onnx.original_node_namep_enc1_0_biasjÊ
+enc1.2.conv1.weight
+
+@
+@
+
+"<
+/pkg.torch.export.graph_signature.InputSpec.kind	PARAMETER"=
+5pkg.torch.export.graph_signature.InputSpec.persistentNone":
+!pkg.torch.onnx.original_node_namep_enc1_2_conv1_weightj÷
+enc1.2.conv1.bias
+
+
+@"<
+/pkg.torch.export.graph_signature.InputSpec.kind	PARAMETER"=
+5pkg.torch.export.graph_signature.InputSpec.persistentNone"8
+!pkg.torch.onnx.original_node_namep_enc1_2_conv1_biasjÊ
+enc1.2.conv2.weight
+
+@
+@
+
+"<
+/pkg.torch.export.graph_signature.InputSpec.kind	PARAMETER"=
+5pkg.torch.export.graph_signature.InputSpec.persistentNone":
+!pkg.torch.onnx.original_node_namep_enc1_2_conv2_weightj÷
+enc1.2.conv2.bias
+
+
+@"<
+/pkg.torch.export.graph_signature.InputSpec.kind	PARAMETER"=
+5pkg.torch.export.graph_signature.InputSpec.persistentNone"8
+!pkg.torch.onnx.original_node_namep_enc1_2_conv2_biasj€
+enc2.1.weight
+
+Ä
+@
+
+"<
+/pkg.torch.export.graph_signature.InputSpec.kind	PARAMETER"=
+5pkg.torch.export.graph_signature.InputSpec.persistentNone"4
+!pkg.torch.onnx.original_node_namep_enc2_1_weightjÀ
+enc2.1.bias
+	
+Ä"<
+/pkg.torch.export.graph_signature.InputSpec.kind	PARAMETER"=
+5pkg.torch.export.graph_signature.InputSpec.persistentNone"2
+!pkg.torch.onnx.original_node_namep_enc2_1_biasjË
+enc2.3.conv1.weight
+
+Ä
+Ä
+
+"<
+/pkg.torch.export.graph_signature.InputSpec.kind	PARAMETER"=
+5pkg.torch.export.graph_signature.InputSpec.persistentNone":
+!pkg.torch.onnx.original_node_namep_enc2_3_conv1_weightj◊
+enc2.3.conv1.bias
+	
+Ä"<
+/pkg.torch.export.graph_signature.InputSpec.kind	PARAMETER"=
+5pkg.torch.export.graph_signature.InputSpec.persistentNone"8
+!pkg.torch.onnx.original_node_namep_enc2_3_conv1_biasjË
+enc2.3.conv2.weight
+
+Ä
+Ä
+
+"<
+/pkg.torch.export.graph_signature.InputSpec.kind	PARAMETER"=
+5pkg.torch.export.graph_signature.InputSpec.persistentNone":
+!pkg.torch.onnx.original_node_namep_enc2_3_conv2_weightj◊
+enc2.3.conv2.bias
+	
+Ä"<
+/pkg.torch.export.graph_signature.InputSpec.kind	PARAMETER"=
+5pkg.torch.export.graph_signature.InputSpec.persistentNone"8
+!pkg.torch.onnx.original_node_namep_enc2_3_conv2_biasjË
+bottleneck.1.weight
+
+Ä
+Ä
+
+"<
+/pkg.torch.export.graph_signature.InputSpec.kind	PARAMETER"=
+5pkg.torch.export.graph_signature.InputSpec.persistentNone":
+!pkg.torch.onnx.original_node_namep_bottleneck_1_weightj◊
+bottleneck.1.bias
+	
+Ä"<
+/pkg.torch.export.graph_signature.InputSpec.kind	PARAMETER"=
+5pkg.torch.export.graph_signature.InputSpec.persistentNone"8
+!pkg.torch.onnx.original_node_namep_bottleneck_1_biasjÙ
+bottleneck.3.conv1.weight
+
+Ä
+Ä
+
+"<
+/pkg.torch.export.graph_signature.InputSpec.kind	PARAMETER"=
+5pkg.torch.export.graph_signature.InputSpec.persistentNone"@
+!pkg.torch.onnx.original_node_namep_bottleneck_3_conv1_weightj„
+bottleneck.3.conv1.bias
+	
+Ä"<
+/pkg.torch.export.graph_signature.InputSpec.kind	PARAMETER"=
+5pkg.torch.export.graph_signature.InputSpec.persistentNone">
+!pkg.torch.onnx.original_node_namep_bottleneck_3_conv1_biasjÙ
+bottleneck.3.conv2.weight
+
+Ä
+Ä
+
+"<
+/pkg.torch.export.graph_signature.InputSpec.kind	PARAMETER"=
+5pkg.torch.export.graph_signature.InputSpec.persistentNone"@
+!pkg.torch.onnx.original_node_namep_bottleneck_3_conv2_weightj„
+bottleneck.3.conv2.bias
+	
+Ä"<
+/pkg.torch.export.graph_signature.InputSpec.kind	PARAMETER"=
+5pkg.torch.export.graph_signature.InputSpec.persistentNone">
+!pkg.torch.onnx.original_node_namep_bottleneck_3_conv2_biasj⁄
+up1.0.weight
+
+¿
+Ä
+
+"<
+/pkg.torch.export.graph_signature.InputSpec.kind	PARAMETER"=
+5pkg.torch.export.graph_signature.InputSpec.persistentNone"3
+!pkg.torch.onnx.original_node_namep_up1_0_weightj…
+
+up1.0.bias
+	
+¿"<
+/pkg.torch.export.graph_signature.InputSpec.kind	PARAMETER"=
+5pkg.torch.export.graph_signature.InputSpec.persistentNone"1
+!pkg.torch.onnx.original_node_namep_up1_0_biasj‚
+dec1.conv1.weight
+
+@
+@
+
+"<
+/pkg.torch.export.graph_signature.InputSpec.kind	PARAMETER"=
+5pkg.torch.export.graph_signature.InputSpec.persistentNone"8
+!pkg.torch.onnx.original_node_namep_dec1_conv1_weightj“
+dec1.conv1.bias
+
+
+@"<
+/pkg.torch.export.graph_signature.InputSpec.kind	PARAMETER"=
+5pkg.torch.export.graph_signature.InputSpec.persistentNone"6
+!pkg.torch.onnx.original_node_namep_dec1_conv1_biasj‚
+dec1.conv2.weight
+
+@
+@
+
+"<
+/pkg.torch.export.graph_signature.InputSpec.kind	PARAMETER"=
+5pkg.torch.export.graph_signature.InputSpec.persistentNone"8
+!pkg.torch.onnx.original_node_namep_dec1_conv2_weightj“
+dec1.conv2.bias
+
+
+@"<
+/pkg.torch.export.graph_signature.InputSpec.kind	PARAMETER"=
+5pkg.torch.export.graph_signature.InputSpec.persistentNone"6
+!pkg.torch.onnx.original_node_namep_dec1_conv2_biasjŸ
+up2.0.weight
+
+¿
+@
+
+"<
+/pkg.torch.export.graph_signature.InputSpec.kind	PARAMETER"=
+5pkg.torch.export.graph_signature.InputSpec.persistentNone"3
+!pkg.torch.onnx.original_node_namep_up2_0_weightj…
+
+up2.0.bias
+	
+¿"<
+/pkg.torch.export.graph_signature.InputSpec.kind	PARAMETER"=
+5pkg.torch.export.graph_signature.InputSpec.persistentNone"1
+!pkg.torch.onnx.original_node_namep_up2_0_biasj‚
+dec2.conv1.weight
+
+@
+@
+
+"<
+/pkg.torch.export.graph_signature.InputSpec.kind	PARAMETER"=
+5pkg.torch.export.graph_signature.InputSpec.persistentNone"8
+!pkg.torch.onnx.original_node_namep_dec2_conv1_weightj“
+dec2.conv1.bias
+
+
+@"<
+/pkg.torch.export.graph_signature.InputSpec.kind	PARAMETER"=
+5pkg.torch.export.graph_signature.InputSpec.persistentNone"6
+!pkg.torch.onnx.original_node_namep_dec2_conv1_biasj‚
+dec2.conv2.weight
+
+@
+@
+
+"<
+/pkg.torch.export.graph_signature.InputSpec.kind	PARAMETER"=
+5pkg.torch.export.graph_signature.InputSpec.persistentNone"8
+!pkg.torch.onnx.original_node_namep_dec2_conv2_weightj“
+dec2.conv2.bias
+
+
+@"<
+/pkg.torch.export.graph_signature.InputSpec.kind	PARAMETER"=
+5pkg.torch.export.graph_signature.InputSpec.persistentNone"6
+!pkg.torch.onnx.original_node_namep_dec2_conv2_biasj‘
+
+out.weight
+
+
+@
+
+"<
+/pkg.torch.export.graph_signature.InputSpec.kind	PARAMETER"=
+5pkg.torch.export.graph_signature.InputSpec.persistentNone"1
+!pkg.torch.onnx.original_node_namep_out_weightjƒ
+out.bias
+
+
+"<
+/pkg.torch.export.graph_signature.InputSpec.kind	PARAMETER"=
+5pkg.torch.export.graph_signature.InputSpec.persistentNone"/
+!pkg.torch.onnx.original_node_name
+p_out_biasjF
+val_4
+
+
+"1
+$pkg.onnxscript.optimizer.folded_from	['val_3']j%
+conv2d
+
+batch
+@
+ 
+ j#
+relu
+
+batch
+@
+ 
+ j'
+conv2d_1
+
+batch
+@
+ 
+ j%
+relu_1
+
+batch
+@
+ 
+ j'
+conv2d_2
+
+batch
+@
+ 
+ j%
+add_35
+
+batch
+@
+ 
+ j%
+relu_2
+
+batch
+@
+ 
+ j)
+
+max_pool2d
+
+batch
+@
+
+j(
+conv2d_3
+
+batch
+Ä
+
+j&
+relu_3
+
+batch
+Ä
+
+j(
+conv2d_4
+
+batch
+Ä
+
+j&
+relu_4
+
+batch
+Ä
+
+j(
+conv2d_5
+
+batch
+Ä
+
+j&
+add_91
+
+batch
+Ä
+
+j&
+relu_5
+
+batch
+Ä
+
+j,
+max_pool2d_1
+
+batch
+Ä
+
+j(
+conv2d_6
+
+batch
+Ä
+
+j&
+relu_6
+
+batch
+Ä
+
+j(
+conv2d_7
+
+batch
+Ä
+
+j&
+relu_7
+
+batch
+Ä
+
+j(
+conv2d_8
+
+batch
+Ä
+
+j'
+add_147
+
+batch
+Ä
+
+j&
+relu_8
+
+batch
+Ä
+
+j(
+conv2d_9
+
+batch
+¿
+
+j,
+pixel_shuffle
+
+batch
+@
+
+j%
+relu_9
+
+batch
+@
+
+j
+val_2
+
+
+j
+val_5
+
+
+j2
+upsample_bilinear2d
+
+batch
+@
+
+j&
+add_188
+
+batch
+@
+
+j(
+	conv2d_10
+
+batch
+@
+
+j&
+relu_10
+
+batch
+@
+
+j(
+	conv2d_11
+
+batch
+@
+
+j&
+add_214
+
+batch
+@
+
+j&
+relu_11
+
+batch
+@
+
+j)
+	conv2d_12
+
+batch
+¿
+
+j.
+pixel_shuffle_1
+
+batch
+@
+H
+Hj&
+relu_12
+
+batch
+@
+H
+Hj(
+	conv2d_13
+
+batch
+@
+H
+Hj&
+relu_13
+
+batch
+@
+H
+Hj(
+	conv2d_14
+
+batch
+@
+H
+Hj&
+add_275
+
+batch
+@
+H
+Hj&
+relu_14
+
+batch
+@
+H
+HÇÛ
+0pkg.torch.export.ExportedProgram.graph_signatureæ
+# inputs
+p_enc1_0_weight: PARAMETER target='enc1.0.weight'
+p_enc1_0_bias: PARAMETER target='enc1.0.bias'
+p_enc1_2_conv1_weight: PARAMETER target='enc1.2.conv1.weight'
+p_enc1_2_conv1_bias: PARAMETER target='enc1.2.conv1.bias'
+p_enc1_2_conv2_weight: PARAMETER target='enc1.2.conv2.weight'
+p_enc1_2_conv2_bias: PARAMETER target='enc1.2.conv2.bias'
+p_enc2_1_weight: PARAMETER target='enc2.1.weight'
+p_enc2_1_bias: PARAMETER target='enc2.1.bias'
+p_enc2_3_conv1_weight: PARAMETER target='enc2.3.conv1.weight'
+p_enc2_3_conv1_bias: PARAMETER target='enc2.3.conv1.bias'
+p_enc2_3_conv2_weight: PARAMETER target='enc2.3.conv2.weight'
+p_enc2_3_conv2_bias: PARAMETER target='enc2.3.conv2.bias'
+p_bottleneck_1_weight: PARAMETER target='bottleneck.1.weight'
+p_bottleneck_1_bias: PARAMETER target='bottleneck.1.bias'
+p_bottleneck_3_conv1_weight: PARAMETER target='bottleneck.3.conv1.weight'
+p_bottleneck_3_conv1_bias: PARAMETER target='bottleneck.3.conv1.bias'
+p_bottleneck_3_conv2_weight: PARAMETER target='bottleneck.3.conv2.weight'
+p_bottleneck_3_conv2_bias: PARAMETER target='bottleneck.3.conv2.bias'
+p_up1_0_weight: PARAMETER target='up1.0.weight'
+p_up1_0_bias: PARAMETER target='up1.0.bias'
+p_dec1_conv1_weight: PARAMETER target='dec1.conv1.weight'
+p_dec1_conv1_bias: PARAMETER target='dec1.conv1.bias'
+p_dec1_conv2_weight: PARAMETER target='dec1.conv2.weight'
+p_dec1_conv2_bias: PARAMETER target='dec1.conv2.bias'
+p_up2_0_weight: PARAMETER target='up2.0.weight'
+p_up2_0_bias: PARAMETER target='up2.0.bias'
+p_dec2_conv1_weight: PARAMETER target='dec2.conv1.weight'
+p_dec2_conv1_bias: PARAMETER target='dec2.conv1.bias'
+p_dec2_conv2_weight: PARAMETER target='dec2.conv2.weight'
+p_dec2_conv2_bias: PARAMETER target='dec2.conv2.bias'
+p_out_weight: PARAMETER target='out.weight'
+p_out_bias: PARAMETER target='out.bias'
+x: USER_INPUT
+
+# outputs
+conv2d_15: USER_OUTPUT
+ÇJ
+2pkg.torch.export.ExportedProgram.range_constraints{s77: VR[0, int_oo]}B
+ 

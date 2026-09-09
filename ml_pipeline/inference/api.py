@@ -17,13 +17,12 @@ logger = logging.getLogger(__name__)
 
 app = FastAPI(title="Aurora Downscaling API")
 
-# Allow the Vite dev server on any local port (dev-only)
 app.add_middleware(
     CORSMiddleware,
-    allow_origin_regex=r"http://(localhost|127\.0\.0\.1)(:\d+)?",
-    allow_credentials=False,
-    allow_methods=["GET", "POST", "OPTIONS"],
-    allow_headers=["Content-Type", "Accept", "Authorization"],
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # ── ONNX session loader ──────────────────────────────────────────────────────
@@ -34,6 +33,7 @@ def _maybe_create_session(var: str) -> ort.InferenceSession | None:
         Path(__file__).resolve().parents[2] / "checkpoints" / f"{var}_downscaler.onnx",
         Path(__file__).resolve().parents[1] / "checkpoints" / f"{var}_downscaler.onnx",
         Path(__file__).resolve().parents[3] / "checkpoints" / f"{var}_downscaler.onnx",
+        Path("/app/checkpoints") / f"{var}_downscaler.onnx",
     ]
     model_path = next((p for p in candidates if p.exists()), None)
     if not model_path:
@@ -107,9 +107,42 @@ class PredictRequest(BaseModel):
     date: str  # YYYY-MM-DD
 
 
+class AdvisoryChatRequest(BaseModel):
+    question: str
+    crop: str = "Rice (Kharif)"
+    growthStage: str = "Tillering"
+    location: dict = {}
+    weather: dict = {}
+    language: str = "bn"
+
+
 # ── Endpoints ────────────────────────────────────────────────────────────────
 
+@app.get("/")
+@app.get("/api")
+def root():
+    """Root landing endpoint — returns API health, model index, and documentation link."""
+    return {
+        "status": "online",
+        "service": "Aurora Downscaling & Kisan Darpan AI API",
+        "version": "1.0.0",
+        "documentation": "/docs",
+        "endpoints": {
+            "health": "/health (or /api/health)",
+            "predict": "/predict (or /api/predict)",
+            "accuracy": "/accuracy (or /api/accuracy)",
+            "advisory_chat": "/advisor/chat (or /api/advisor/chat)"
+        },
+        "models": {
+            var: ("loaded" if sess is not None else "missing")
+            for var, sess in sessions.items()
+        },
+        "wrf_data": wrf_status(),
+    }
+
+
 @app.get("/health")
+@app.get("/api/health")
 def health():
     """Quick health check — shows which models are loaded and WRF data status."""
     return {
@@ -123,6 +156,7 @@ def health():
 
 
 @app.post("/predict")
+@app.post("/api/predict")
 def predict(req: PredictRequest):
     """
     Run downscaling inference for a given block / panchayat / date.
@@ -188,6 +222,7 @@ def predict(req: PredictRequest):
 
 
 @app.get("/accuracy")
+@app.get("/api/accuracy")
 def get_accuracy_metrics():
     """Feeds the Accuracy.jsx page with R², MAE, RMSE per variable."""
     return {
@@ -195,4 +230,28 @@ def get_accuracy_metrics():
         "t2m": {"r2": 0.94, "mae": 0.82, "rmse": 1.15},
         "rh":  {"r2": 0.91, "mae": 4.30, "rmse": 6.10},
         "ws":  {"r2": 0.85, "mae": 1.20, "rmse": 1.80},
+    }
+
+
+@app.post("/advisor/chat")
+@app.post("/api/advisor/chat")
+def advisor_chat(req: AdvisoryChatRequest):
+    """Provides local agromet advisory chat response."""
+    crop = req.crop or "crop"
+    stage = req.growthStage or "active"
+    block = req.location.get("block", "your block") if isinstance(req.location, dict) else "your block"
+    weather = req.weather if isinstance(req.weather, dict) else {}
+    temp = weather.get("temp", 30)
+    rain = weather.get("rainfall", "normal")
+    
+    if req.language == "bn":
+        reply = f"কিষাণদর্পণ পরামর্শ: {block} ব্লকে {crop}-এর {stage} দশায় বর্তমান তাপমাত্রা {temp}°C ও বৃষ্টিপাত {rain}। জমিতে পরিমিত নিষ্কাশন ব্যবস্থা রাখুন এবং সার ও বালাইনাশক ব্যবহারের সময় স্থানীয় আবহাওয়া পূর্বাভাস অনুসরণ করুন।"
+    elif req.language == "hi":
+        reply = f"किसान दर्पण सलाह: {block} ब्लॉक में {crop} की {stage} अवस्था पर वर्तमान तापमान {temp}°C और वर्षा {rain} है। खेत में जल निकासी बनाए रखें और मौसम के अनुसार कृषि कार्य करें।"
+    else:
+        reply = f"Kisan Darpan Agromet Advisory: For {crop} at {stage} stage in {block} with temperature {temp}°C and rainfall {rain}, ensure optimal field drainage and follow AMFU guidelines."
+    
+    return {
+        "reply": reply,
+        "status": "ok"
     }
