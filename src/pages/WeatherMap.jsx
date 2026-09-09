@@ -76,7 +76,7 @@ function MapThemeController({ mapTheme }) {
 }
 
 // ─── Map auto-recentre & pinpoint controller ─────────────────────────────────
-function MapController({ panchayats, selectedPanchayat, activeBlock }) {
+function MapController({ panchayats, selectedPanchayat, activeBlock, liveGeoData }) {
   const map = useMap()
   const blockRef = useRef(activeBlock)
   const selectedPIdRef = useRef(selectedPanchayat?.id)
@@ -100,16 +100,23 @@ function MapController({ panchayats, selectedPanchayat, activeBlock }) {
     }
   }, [map])
 
-  // Fit bounds to the selected block's panchayats whenever activeBlock changes or on mount
+  // Fit bounds to the selected block's panchayats or live geocoded centroid whenever activeBlock changes or on mount
   useEffect(() => {
-    if (!panchayats || panchayats.length === 0) return
-    const bounds = L.latLngBounds(panchayats.map(p => [p.lat, p.lng]))
-    if (bounds.isValid()) {
-      map.fitBounds(bounds, { padding: [50, 50], maxZoom: 14 })
+    if (panchayats && panchayats.length > 0) {
+      const bounds = L.latLngBounds(panchayats.map(p => [p.lat, p.lng]))
+      if (bounds.isValid()) {
+        map.fitBounds(bounds, { padding: [50, 50], maxZoom: 14 })
+        setTimeout(() => map.invalidateSize(false), 250)
+        blockRef.current = activeBlock
+        return
+      }
+    }
+    if (liveGeoData?.lat && liveGeoData?.lng) {
+      map.flyTo([liveGeoData.lat, liveGeoData.lng], 13, { duration: 1.0 })
       setTimeout(() => map.invalidateSize(false), 250)
     }
     blockRef.current = activeBlock
-  }, [activeBlock, panchayats, map])
+  }, [activeBlock, panchayats, liveGeoData, map])
 
   // Fly directly to selected panchayat when clicked or changed
   useEffect(() => {
@@ -160,20 +167,21 @@ function LeafletMap({
   panchayats, activeLayer, selectedPanchayatId,
   showPopupModal, onSelect, activeBlock,
   showNodePins, showFlowStreamlines, activeLayerId,
-  mapTheme, tileType
+  mapTheme, tileType, liveGeoData, effectiveDistrict
 }) {
   const selectedPanchayat = useMemo(() => {
     return panchayats.find(p => p.id === selectedPanchayatId) || panchayats[0]
   }, [panchayats, selectedPanchayatId])
 
-  // Compute block centroid from panchayat coords
+  // Compute block centroid from selected panchayat, live geocoding, or average
   const center = useMemo(() => {
     if (selectedPanchayat) return [selectedPanchayat.lat, selectedPanchayat.lng]
-    if (!panchayats.length) return [22.18, 87.98]
+    if (liveGeoData?.lat && liveGeoData?.lng) return [liveGeoData.lat, liveGeoData.lng]
+    if (!panchayats.length) return [24.1350, 88.7000] // Default to authentic Jalangi/Murshidabad centroid
     const avgLat = panchayats.reduce((s, p) => s + p.lat, 0) / panchayats.length
     const avgLng = panchayats.reduce((s, p) => s + p.lng, 0) / panchayats.length
     return [avgLat, avgLng]
-  }, [activeBlock, selectedPanchayat])
+  }, [activeBlock, selectedPanchayat, liveGeoData, panchayats])
 
   // Dynamic Tile configuration (100% Free, NO API Key required, NO Watermarks)
   const tileConfig = useMemo(() => {
@@ -241,6 +249,7 @@ function LeafletMap({
         panchayats={panchayats}
         selectedPanchayat={selectedPanchayat}
         activeBlock={activeBlock}
+        liveGeoData={liveGeoData}
       />
 
       {/* Dynamic tile layer without blocking flags to guarantee complete 100% canvas tile fill */}
@@ -258,12 +267,14 @@ function LeafletMap({
         style={{ color: '#38bdf8', weight: 1.5, fill: false, dashArray: '6 4', opacity: 0.5 }}
       />
 
-      {/* Hooghly district boundary */}
-      <GeoJSON
-        key="hooghly-boundary"
-        data={HOOGHLY_BOUNDARY}
-        style={{ color: '#818cf8', weight: 1.5, fill: false, dashArray: '3 3', opacity: 0.7 }}
-      />
+      {/* Hooghly district boundary (only when Hooghly district is active) */}
+      {effectiveDistrict === 'Hooghly' && (
+        <GeoJSON
+          key="hooghly-boundary"
+          data={HOOGHLY_BOUNDARY}
+          style={{ color: '#818cf8', weight: 1.5, fill: false, dashArray: '3 3', opacity: 0.7 }}
+        />
+      )}
 
       {/* Dynamic Atmospheric Vectors & Animated Flow Streamlines (100% Moving) */}
       {showFlowStreamlines && panchayats.map((p, pIdx) => {
@@ -764,20 +775,34 @@ export default function WeatherMap() {
     activeState, 
     activePanchayat, 
     handlePanchayatChange,
-    blocksInDistrict
+    blocksInDistrict,
+    panchayatsInBlock,
+    liveGeoData
   } = useDashboard()
 
   const effectiveDistrict = useMemo(() => {
+    const trueDist = getDistrictForBlock(activeBlock)
+    if (trueDist) return trueDist
     if (activeDistrict && activeDistrict !== "West Bengal" && mockBlocks[activeDistrict]) {
       return activeDistrict
     }
-    return getDistrictForBlock(activeBlock)
+    return "Murshidabad"
   }, [activeDistrict, activeBlock])
 
   const districtBlocks = useMemo(() => {
     if (blocksInDistrict && blocksInDistrict.length > 0) return blocksInDistrict
-    return mockBlocks[effectiveDistrict] || ["Mahishadal", "Tamluk", "Haldia", "Nandigram-I", "Contai-I"]
+    return mockBlocks[effectiveDistrict] || ["Jalangi", "Domkal", "Raninagar-I", "Berhampore", "Hariharpara"]
   }, [blocksInDistrict, effectiveDistrict])
+
+  const allKnownBlocks = useMemo(() => {
+    const list = []
+    Object.entries(mockBlocks).forEach(([_, blocks]) => {
+      blocks.forEach(b => {
+        if (!list.includes(b)) list.push(b)
+      })
+    })
+    return list
+  }, [])
 
   const [activeLayerId, setActiveLayerId] = useState('rainfall')
   const [hoveredPanchayatId, setHoveredPanchayatId] = useState(null)
@@ -796,8 +821,9 @@ export default function WeatherMap() {
   }, [activeLayerId])
 
   const panchayats = useMemo(() => {
+    if (panchayatsInBlock && panchayatsInBlock.length > 0) return panchayatsInBlock
     return getPanchayatsForBlock(activeBlock)
-  }, [activeBlock])
+  }, [panchayatsInBlock, activeBlock])
 
   // Automatically update selectedPanchayatId whenever activeBlock or panchayats change
   useEffect(() => {
@@ -1007,19 +1033,9 @@ export default function WeatherMap() {
               }}
             />
             <datalist id="wb-all-blocks-list">
-              <option value="Mahishadal" />
-              <option value="Polba-Dadpur" />
-              <option value="Chinsurah-Mogra" />
-              <option value="Singur" />
-              <option value="Haripal" />
-              <option value="Tamluk" />
-              <option value="Haldia" />
-              <option value="Nandigram-I" />
-              <option value="Krishnanagar-I" />
-              <option value="Burdwan-I" />
-              <option value="Uluberia-I" />
-              <option value="Barasat-I" />
-              <option value="Baruipur" />
+              {allKnownBlocks.map(blk => (
+                <option key={blk} value={blk} />
+              ))}
             </datalist>
           </div>
 
@@ -1255,6 +1271,8 @@ export default function WeatherMap() {
               activeLayerId={activeLayerId}
               mapTheme={mapTheme}
               tileType={tileType}
+              liveGeoData={liveGeoData}
+              effectiveDistrict={effectiveDistrict}
             />
           </div>
 

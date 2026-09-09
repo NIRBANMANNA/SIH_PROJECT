@@ -1,8 +1,9 @@
-import React, { createContext, useContext, useState, useCallback } from 'react'
+import React, { createContext, useContext, useState, useCallback, useEffect, useMemo } from 'react'
 import { getWeatherData, getBlockWeatherData, mockBlockWeather } from '../data/mockWeather'
 import { getPanchayatsForBlock, mockPanchayatDetails, mockBlocks, getDistrictForBlock } from '../data/mockPanchayats'
 import { mockGrowthStages } from '../data/mockAdvisory'
 import { fetchDownscaledForecast } from '../lib/api'
+import { geocodeBlock, fetchLiveWeatherForCoords, fetchPanchayatsForBlock } from '../lib/geoService'
 
 const DashboardContext = createContext()
 
@@ -52,9 +53,46 @@ export function DashboardProvider({ children }) {
   const [liveApiLoading, setLiveApiLoading] = useState(false)
   const [liveApiError, setLiveApiError] = useState(null)
 
+  // Live Geospatial & Open-Meteo Telemetry state
+  const [liveGeoData, setLiveGeoData] = useState(null)
+  const [liveTelemetry, setLiveTelemetry] = useState(null)
+  const [livePanchayats, setLivePanchayats] = useState([])
+
+  // Live Geocoding effect whenever activeBlock or activeDistrict changes
+  useEffect(() => {
+    let isMounted = true
+    const cleanBlock = (activeBlock || "Polba-Dadpur").trim()
+    const resolvedDist = getDistrictForBlock(cleanBlock)
+
+    geocodeBlock(cleanBlock, resolvedDist, activeState).then(geo => {
+      if (!isMounted || !geo) return
+      setLiveGeoData(geo)
+
+      if (geo.district && geo.district !== activeDistrict) {
+        setActiveDistrict(geo.district)
+      }
+
+      // Fetch live high-resolution weather telemetry for the exact coordinates
+      fetchLiveWeatherForCoords(geo.lat, geo.lng).then(weather => {
+        if (isMounted && weather) {
+          setLiveTelemetry(weather)
+        }
+      }).catch(() => {})
+
+      // Fetch authentic Gram Panchayats around GPS coordinates
+      fetchPanchayatsForBlock(cleanBlock, geo.district, geo.lat, geo.lng).then(gps => {
+        if (isMounted && gps && gps.length > 0) {
+          setLivePanchayats(gps)
+        }
+      }).catch(() => {})
+    }).catch(() => {})
+
+    return () => { isMounted = false }
+  }, [activeBlock, activeState])
+
   const setCustomLocation = useCallback((newState, newDistrict, newBlock, newPanchayat) => {
     if (newState) setActiveState(newState)
-    const resolvedDist = (newDistrict && newDistrict !== "West Bengal") ? newDistrict : getDistrictForBlock(newBlock)
+    const resolvedDist = getDistrictForBlock(newBlock) || ((newDistrict && newDistrict !== "West Bengal") ? newDistrict : "Murshidabad")
     if (resolvedDist) setActiveDistrict(resolvedDist)
     if (newBlock) setActiveBlock(newBlock)
     if (newPanchayat) setActivePanchayat(newPanchayat)
@@ -87,11 +125,10 @@ export function DashboardProvider({ children }) {
   const setLocationAndPredict = useCallback(async ({ state, district, block, panchayat, date }) => {
     if (state) setActiveState(state)
 
-    let resolvedDistrict = district
-    if (!resolvedDistrict || resolvedDistrict === "West Bengal") {
-      resolvedDistrict = getDistrictForBlock(block)
+    let resolvedDistrict = getDistrictForBlock(block) || district
+    if (resolvedDistrict && resolvedDistrict !== "West Bengal") {
+      setActiveDistrict(resolvedDistrict)
     }
-    if (resolvedDistrict) setActiveDistrict(resolvedDistrict)
 
     if (block) {
       const cleanBlock = block.trim()
@@ -112,19 +149,73 @@ export function DashboardProvider({ children }) {
     return await runPrediction(block || activeBlock, panchayat || activePanchayat, targetDate)
   }, [activeBlock, activePanchayat, runPrediction])
 
-  const effectiveDistrict = (activeDistrict && activeDistrict !== "West Bengal" && mockBlocks[activeDistrict])
-    ? activeDistrict
-    : getDistrictForBlock(activeBlock)
+  // Resolve true district: prioritize block's real district over stale context state
+  const effectiveDistrict = useMemo(() => {
+    const trueBlockDist = getDistrictForBlock(activeBlock)
+    if (trueBlockDist) return trueBlockDist
+    if (activeDistrict && activeDistrict !== "West Bengal" && mockBlocks[activeDistrict]) {
+      return activeDistrict
+    }
+    return "Murshidabad"
+  }, [activeBlock, activeDistrict])
 
-  const weatherData = getWeatherData(activePanchayat)
-  const blockWeatherData = getBlockWeatherData(activeBlock, effectiveDistrict, liveApiResult)
-  const panchayatsInBlock = getPanchayatsForBlock(activeBlock)
+  // Panchayats in active block (live settlements or authentic registry)
+  const panchayatsInBlock = useMemo(() => {
+    if (livePanchayats && livePanchayats.length > 0) {
+      const first = livePanchayats[0]
+      if (first && first.block?.toLowerCase() === activeBlock.trim().toLowerCase()) {
+        return livePanchayats
+      }
+    }
+    return getPanchayatsForBlock(activeBlock)
+  }, [livePanchayats, activeBlock])
 
-  // Find blocks for activeDistrict
-  const blocksInDistrict = mockBlocks[effectiveDistrict] || 
-    (activeBlock && (activeBlock.toLowerCase().includes("tamluk") || activeBlock.toLowerCase().includes("haldia") || activeBlock.toLowerCase().includes("mahishadal") || activeBlock.toLowerCase().includes("contai") || activeBlock.toLowerCase().includes("nandigram"))
-      ? ["Mahishadal", "Tamluk", "Haldia", "Nandigram-I", "Contai-I"]
-      : ["Polba-Dadpur", "Chinsurah-Mogra", "Singur", "Haripal"])
+  // Weather observations with live Open-Meteo telemetry overlay
+  const baseWeatherData = getWeatherData(activePanchayat)
+  const weatherData = useMemo(() => {
+    if (!liveTelemetry) return baseWeatherData
+    return {
+      ...baseWeatherData,
+      temp: liveTelemetry.temp,
+      feelsLike: liveTelemetry.feelsLike,
+      humidity: liveTelemetry.humidity,
+      rainfall: liveTelemetry.rainfall,
+      wind: liveTelemetry.wind,
+      gusts: liveTelemetry.gusts,
+      condition: liveTelemetry.condition,
+      conditionId: liveTelemetry.conditionId,
+      days: liveTelemetry.days || baseWeatherData.days,
+      city: `${activeBlock} (${effectiveDistrict})`,
+      region: `${effectiveDistrict}, West Bengal`
+    }
+  }, [baseWeatherData, liveTelemetry, activeBlock, effectiveDistrict])
+
+  const baseBlockWeatherData = getBlockWeatherData(activeBlock, effectiveDistrict, liveApiResult)
+  const blockWeatherData = useMemo(() => {
+    if (!liveTelemetry) return baseBlockWeatherData
+    return {
+      ...baseBlockWeatherData,
+      district: effectiveDistrict,
+      temp: liveTelemetry.temp,
+      humidity: liveTelemetry.humidity,
+      rainfall: liveTelemetry.rainfall,
+      wind: liveTelemetry.wind,
+      gusts: liveTelemetry.gusts,
+      condition: liveTelemetry.condition,
+      conditionId: liveTelemetry.conditionId,
+      days: liveTelemetry.days || baseBlockWeatherData.days,
+      city: `${activeBlock} (Block)`,
+      region: `${effectiveDistrict}, West Bengal`
+    }
+  }, [baseBlockWeatherData, liveTelemetry, activeBlock, effectiveDistrict])
+
+  // Blocks list for effectiveDistrict
+  const blocksInDistrict = useMemo(() => {
+    if (mockBlocks && mockBlocks[effectiveDistrict]) {
+      return mockBlocks[effectiveDistrict]
+    }
+    return ["Jalangi", "Domkal", "Raninagar-I", "Berhampore", "Hariharpara"]
+  }, [effectiveDistrict])
 
   // Handlers to auto-update dependent fields
   const handlePanchayatChange = (pid) => {
@@ -183,6 +274,8 @@ export function DashboardProvider({ children }) {
         blocksInDistrict,
         mockBlocks,
         mockBlockWeather,
+        liveGeoData,
+        liveTelemetry,
         // Settings & Units
         tempUnit, setTempUnit,
         windUnit, setWindUnit,

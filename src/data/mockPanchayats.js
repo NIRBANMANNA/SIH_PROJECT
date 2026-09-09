@@ -2,32 +2,64 @@ export const mockStates = ["West Bengal", "Odisha", "Bihar"]
 
 export const mockDistricts = {
   "West Bengal": [
+    "Murshidabad",
     "PurbaMedinipur",
     "East Medinipur",
     "Hooghly",
     "Nadia",
     "Burdwan",
+    "Purba Bardhaman",
+    "Paschim Bardhaman",
     "Howrah",
     "North 24 Parganas",
     "South 24 Parganas",
     "Bankura",
-    "Murshidabad",
-    "Malda"
+    "Birbhum",
+    "Malda",
+    "Paschim Medinipur",
+    "Purulia",
+    "Jalpaiguri",
+    "Alipurduar",
+    "Cooch Behar",
+    "Darjeeling",
+    "Kalimpong",
+    "Uttar Dinajpur",
+    "Dakshin Dinajpur"
   ],
   "Odisha": ["Khurda", "Cuttack"],
   "Bihar": ["Patna", "Gaya"]
 }
 
 export const mockBlocks = {
-  "PurbaMedinipur": ["Mahishadal", "Tamluk", "Haldia", "Nandigram-I", "Contai-I"],
-  "East Medinipur": ["Mahishadal", "Tamluk", "Haldia", "Nandigram-I", "Contai-I"],
-  "Hooghly": ["Polba-Dadpur", "Chinsurah-Mogra", "Singur", "Haripal"],
-  "Burdwan": ["Burdwan-I", "Burdwan-II", "Kalna-I"],
-  "Nadia": ["Krishnanagar-I", "Ranaghat-I", "Santipur"],
-  "Howrah": ["Uluberia-I", "Bally-Jagachha"],
-  "Bankura": ["Bankura-I", "Bishnupur"],
-  "North 24 Parganas": ["Barasat-I", "Habra-I", "Basirhat-I"],
-  "South 24 Parganas": ["Baruipur", "Diamond Harbour-I", "Canning-I"]
+  "Murshidabad": [
+    "Jalangi", "Domkal", "Raninagar-I", "Raninagar-II", "Berhampore", 
+    "Hariharpara", "Murshidabad-Jiaganj", "Bhagawangola-I", "Bhagawangola-II", 
+    "Lalgola", "Kandi", "Bharatpur-I", "Bharatpur-II", "Beldanga-I", "Beldanga-II", 
+    "Nowda", "Farakka", "Samserganj", "Suti-I", "Suti-II", "Raghunathganj-I", 
+    "Raghunathganj-II", "Nabagram", "Khargram", "Burwan"
+  ],
+  "PurbaMedinipur": ["Mahishadal", "Tamluk", "Haldia", "Nandigram-I", "Contai-I", "Panskura", "Kolaghat", "Egra-I"],
+  "East Medinipur": ["Mahishadal", "Tamluk", "Haldia", "Nandigram-I", "Contai-I", "Panskura", "Kolaghat", "Egra-I"],
+  "Hooghly": ["Polba-Dadpur", "Chinsurah-Mogra", "Singur", "Haripal", "Tarakeswar", "Arambagh", "Balagarh", "Pandua", "Dhaniakhali"],
+  "Burdwan": ["Burdwan-I", "Burdwan-II", "Kalna-I", "Katwa-I", "Memari-I", "Durgapur-Faridpur", "Asansol"],
+  "Purba Bardhaman": ["Burdwan-I", "Burdwan-II", "Kalna-I", "Katwa-I", "Memari-I"],
+  "Paschim Bardhaman": ["Durgapur-Faridpur", "Andal", "Raniganj", "Barabani", "Salanpur"],
+  "Nadia": ["Krishnanagar-I", "Ranaghat-I", "Santipur", "Nabadwip", "Tehatta-I", "Chakdaha", "Haringhata", "Karimpur-I"],
+  "Howrah": ["Uluberia-I", "Bally-Jagachha", "Domjur", "Panchla", "Sankrail", "Amta-I", "Bagnan-I"],
+  "Bankura": ["Bankura-I", "Bishnupur", "Khatra", "Barjora", "Onda", "Sonamukhi"],
+  "Birbhum": ["Bolpur-Sriniketan", "Suri-I", "Rampurhat-I", "Sainthia", "Dubrajpur", "Ilambazar", "Nalhati-I"],
+  "Malda": ["English Bazar", "Old Malda", "Chanchal-I", "Ratua-I", "Gazole", "Kaliachak-I", "Manikchak"],
+  "North 24 Parganas": ["Barasat-I", "Habra-I", "Basirhat-I", "Bongaon", "Rajarhat", "Barrackpore-I", "Deganga"],
+  "South 24 Parganas": ["Baruipur", "Diamond Harbour-I", "Canning-I", "Kakdwip", "Gosaba", "Sonarpur", "Bhangar-I"],
+  "Paschim Medinipur": ["Midnapore Sadar", "Kharagpur-I", "Debra", "Ghatal", "Chandrakona-I", "Garhbeta-I"],
+  "Purulia": ["Purulia-I", "Raghunathpur-I", "Jhalda-I", "Baghmundi", "Manbazar-I"],
+  "Jalpaiguri": ["Jalpaiguri Sadar", "Mal", "Dhupguri", "Maynaguri", "Rajganj"],
+  "Alipurduar": ["Alipurduar-I", "Falakata", "Kalchini", "Kumargram", "Madarihat"],
+  "Cooch Behar": ["Cooch Behar-I", "Dinhata-I", "Mathabhanga-I", "Tufanganj-I", "Mekhliganj"],
+  "Darjeeling": ["Kurseong", "Siliguri", "Matigara", "Naxalbari", "Phansidewa"],
+  "Kalimpong": ["Kalimpong-I", "Kalimpong-II"],
+  "Uttar Dinajpur": ["Raiganj", "Kaliyaganj", "Islampur", "Itahar", "Chopra"],
+  "Dakshin Dinajpur": ["Balurghat", "Gangarampur", "Banshihari", "Kushmandi"]
 }
 
 export const mockPanchayatDetails = {
@@ -984,6 +1016,256 @@ export const mockPanchayatDetails = {
       summary: "Favorable rainfall accumulation for tillering. High humidity warrants pest vigilance.",
       actions: ["Monitor pest threshold levels."]
     }
+  },
+
+  // ─── JALANGI BLOCK, MURSHIDABAD (jal_p1 - jal_p8) ───
+  "jal_p1": {
+    id: "jal_p1",
+    name: "Debipur",
+    block: "Jalangi",
+    district: "Murshidabad",
+    state: "West Bengal",
+    lat: 24.1220,
+    lng: 88.6850,
+    rainfall: 18.4,
+    rainfallStatus: "Moderate Rain (18.4 mm)",
+    rainProb: 65,
+    temp: 31.8,
+    feelsLike: 36.2,
+    humidity: 82,
+    soilMoisture: "78% (Optimal)",
+    windSpeed: 16,
+    windDirection: "SE (135°)",
+    windGust: 26,
+    riskLevel: "Moderate",
+    riskScore: 48,
+    riskColor: "#facc15",
+    riskFactors: ["Padma river basin moisture flux", "High relative humidity"],
+    cropRisk: {
+      crop: "Jute / Rice",
+      stage: "Vegetative Stage",
+      level: "Moderate Risk",
+      alertTitle: "Riverine Basin Telemetry",
+      summary: "Optimal moisture in Jalangi Debipur GP. Jute & Kharif paddy in healthy vegetative progression.",
+      actions: ["Maintain field drainage channels along river banks.", "Monitor for leaf folder in paddy."]
+    }
+  },
+  "jal_p2": {
+    id: "jal_p2",
+    name: "Choa",
+    block: "Jalangi",
+    district: "Murshidabad",
+    state: "West Bengal",
+    lat: 24.1520,
+    lng: 88.6720,
+    rainfall: 22.0,
+    rainfallStatus: "Moderate Rain (22.0 mm)",
+    rainProb: 72,
+    temp: 31.2,
+    feelsLike: 35.8,
+    humidity: 85,
+    soilMoisture: "82% (High Moisture)",
+    windSpeed: 19,
+    windDirection: "SSE (155°)",
+    windGust: 30,
+    riskLevel: "Moderate",
+    riskScore: 54,
+    riskColor: "#facc15",
+    riskFactors: ["Localized convective shower", "Low-lying soil saturation"],
+    cropRisk: {
+      crop: "Rice (Kharif)",
+      stage: "Tillering",
+      level: "Moderate Risk",
+      alertTitle: "Tillering Stage Advisory",
+      summary: "Precipitation 22mm favors tillering. Avoid urea top dressing during shower spells.",
+      actions: ["Hold fertilizer broadcast until rain ceases.", "Scout for sheath blight."]
+    }
+  },
+  "jal_p3": {
+    id: "jal_p3",
+    name: "Faridpur",
+    block: "Jalangi",
+    district: "Murshidabad",
+    state: "West Bengal",
+    lat: 24.1105,
+    lng: 88.7210,
+    rainfall: 14.2,
+    rainfallStatus: "Passing Showers (14.2 mm)",
+    rainProb: 55,
+    temp: 32.4,
+    feelsLike: 37.0,
+    humidity: 79,
+    soilMoisture: "74% (Optimal)",
+    windSpeed: 14,
+    windDirection: "S (180°)",
+    windGust: 22,
+    riskLevel: "Low",
+    riskScore: 28,
+    riskColor: "#22c55e",
+    riskFactors: ["Stable microclimate"],
+    cropRisk: {
+      crop: "Jute / Vegetables",
+      stage: "Active Vegetative",
+      level: "Low Risk",
+      alertTitle: "Optimal Field Conditions",
+      summary: "Favorable conditions for Faridpur farming plots. Adequate sunshine and moisture balance.",
+      actions: ["Standard interculture operations permitted.", "Routine weed management."]
+    }
+  },
+  "jal_p4": {
+    id: "jal_p4",
+    name: "Ghoshpara",
+    block: "Jalangi",
+    district: "Murshidabad",
+    state: "West Bengal",
+    lat: 24.1460,
+    lng: 88.7180,
+    rainfall: 16.5,
+    rainfallStatus: "Moderate Rain (16.5 mm)",
+    rainProb: 60,
+    temp: 31.5,
+    feelsLike: 36.0,
+    humidity: 83,
+    soilMoisture: "76% (Optimal)",
+    windSpeed: 17,
+    windDirection: "SE (140°)",
+    windGust: 27,
+    riskLevel: "Moderate",
+    riskScore: 42,
+    riskColor: "#facc15",
+    riskFactors: ["Moderate precipitation"],
+    cropRisk: {
+      crop: "Rice (Kharif)",
+      stage: "Tillering",
+      level: "Moderate Risk",
+      alertTitle: "Microclimate Telemetry Active",
+      summary: "Soil moisture adequate for Ghoshpara paddy fields.",
+      actions: ["Ensure field water depth 3-5 cm.", "Check bund integrity."]
+    }
+  },
+  "jal_p5": {
+    id: "jal_p5",
+    name: "Jalangi (Sadar)",
+    block: "Jalangi",
+    district: "Murshidabad",
+    state: "West Bengal",
+    lat: 24.1350,
+    lng: 88.7000,
+    rainfall: 19.8,
+    rainfallStatus: "Moderate Rain (19.8 mm)",
+    rainProb: 68,
+    temp: 31.0,
+    feelsLike: 35.5,
+    humidity: 84,
+    soilMoisture: "80% (High Moisture)",
+    windSpeed: 18,
+    windDirection: "SSE (160°)",
+    windGust: 28,
+    riskLevel: "Moderate",
+    riskScore: 50,
+    riskColor: "#facc15",
+    riskFactors: ["Border sector rainfall front"],
+    cropRisk: {
+      crop: "Rice / Jute / Maize",
+      stage: "Vegetative Phase",
+      level: "Moderate Risk",
+      alertTitle: "Block HQ Agronomy Advisory",
+      summary: "Jalangi block center microclimate stable. Good soil moisture index.",
+      actions: ["Maintain standard nutrient schedule.", "Clear border drainage ditches."]
+    }
+  },
+  "jal_p6": {
+    id: "jal_p6",
+    name: "Katabari",
+    block: "Jalangi",
+    district: "Murshidabad",
+    state: "West Bengal",
+    lat: 24.1680,
+    lng: 88.7320,
+    rainfall: 26.5,
+    rainfallStatus: "Heavy Rain (26.5 mm)",
+    rainProb: 80,
+    temp: 30.5,
+    feelsLike: 35.2,
+    humidity: 88,
+    soilMoisture: "89% (Saturated)",
+    windSpeed: 21,
+    windDirection: "S (175°)",
+    windGust: 34,
+    riskLevel: "High",
+    riskScore: 72,
+    riskColor: "#f97316",
+    riskFactors: ["Intense localized precipitation cell", "Water accumulation in low plots"],
+    cropRisk: {
+      crop: "Rice (Kharif)",
+      stage: "Tillering / Active Vegetative",
+      level: "High Risk",
+      alertTitle: "Precipitation Warning",
+      summary: "Heavy shower cell over Katabari GP. Water runoff channels need urgent clearing.",
+      actions: ["Drain excess ponding from fields.", "Postpone all pesticide spraying."]
+    }
+  },
+  "jal_p7": {
+    id: "jal_p7",
+    name: "Khairamari",
+    block: "Jalangi",
+    district: "Murshidabad",
+    state: "West Bengal",
+    lat: 24.1820,
+    lng: 88.6910,
+    rainfall: 15.0,
+    rainfallStatus: "Moderate Rain (15.0 mm)",
+    rainProb: 58,
+    temp: 31.9,
+    feelsLike: 36.5,
+    humidity: 81,
+    soilMoisture: "75% (Optimal)",
+    windSpeed: 15,
+    windDirection: "SE (130°)",
+    windGust: 24,
+    riskLevel: "Low",
+    riskScore: 32,
+    riskColor: "#22c55e",
+    riskFactors: ["Normal seasonal conditions"],
+    cropRisk: {
+      crop: "Vegetables / Jute",
+      stage: "Ripening / Vegetative",
+      level: "Low Risk",
+      alertTitle: "Favorable Weather Window",
+      summary: "Khairamari reports gentle monsoon showers, optimal for crop growth.",
+      actions: ["Routine farm operations clear.", "Maintain irrigation canals."]
+    }
+  },
+  "jal_p8": {
+    id: "jal_p8",
+    name: "Sadikhanr Diar",
+    block: "Jalangi",
+    district: "Murshidabad",
+    state: "West Bengal",
+    lat: 24.2120,
+    lng: 88.7420,
+    rainfall: 21.5,
+    rainfallStatus: "Moderate Rain (21.5 mm)",
+    rainProb: 70,
+    temp: 30.8,
+    feelsLike: 35.4,
+    humidity: 86,
+    soilMoisture: "84% (High Moisture)",
+    windSpeed: 20,
+    windDirection: "SSE (150°)",
+    windGust: 32,
+    riskLevel: "Moderate",
+    riskScore: 56,
+    riskColor: "#facc15",
+    riskFactors: ["Padma river corridor wind gusts"],
+    cropRisk: {
+      crop: "Rice / Jute",
+      stage: "Tillering",
+      level: "Moderate Risk",
+      alertTitle: "River Corridor Alert",
+      summary: "Moderate gusts along river diara plots. Check field embankments.",
+      actions: ["Fortify earthen field bunds.", "Ensure proper surface drainage."]
+    }
   }
 }
 
@@ -1022,6 +1304,26 @@ export const mockPanchayats = {
     mockPanchayatDetails["m_p3"],
     mockPanchayatDetails["m_p4"],
     mockPanchayatDetails["m_p5"]
+  ],
+  "Jalangi": [
+    mockPanchayatDetails["jal_p1"],
+    mockPanchayatDetails["jal_p2"],
+    mockPanchayatDetails["jal_p3"],
+    mockPanchayatDetails["jal_p4"],
+    mockPanchayatDetails["jal_p5"],
+    mockPanchayatDetails["jal_p6"],
+    mockPanchayatDetails["jal_p7"],
+    mockPanchayatDetails["jal_p8"]
+  ],
+  "jalangi": [
+    mockPanchayatDetails["jal_p1"],
+    mockPanchayatDetails["jal_p2"],
+    mockPanchayatDetails["jal_p3"],
+    mockPanchayatDetails["jal_p4"],
+    mockPanchayatDetails["jal_p5"],
+    mockPanchayatDetails["jal_p6"],
+    mockPanchayatDetails["jal_p7"],
+    mockPanchayatDetails["jal_p8"]
   ]
 }
 
@@ -1034,7 +1336,61 @@ function hashString(str) {
   return hash
 }
 
+export const KNOWN_DISTRICT_CENTROIDS = {
+  "murshidabad": [24.1800, 88.2700],
+  "malda": [25.0100, 88.1400],
+  "hooghly": [22.9000, 88.3000],
+  "purbamedinipur": [22.0000, 87.8500],
+  "east medinipur": [22.0000, 87.8500],
+  "paschim medinipur": [22.4000, 87.3200],
+  "nadia": [23.4700, 88.5500],
+  "burdwan": [23.2400, 87.8600],
+  "purba bardhaman": [23.2400, 87.8600],
+  "paschim bardhaman": [23.6800, 86.9800],
+  "howrah": [22.5900, 88.2600],
+  "bankura": [23.2300, 87.0700],
+  "birbhum": [23.8400, 87.6100],
+  "purulia": [23.3300, 86.3600],
+  "north 24 parganas": [22.7200, 88.5000],
+  "south 24 parganas": [22.1800, 88.5000],
+  "jalpaiguri": [26.5400, 88.7200],
+  "alipurduar": [26.4900, 89.5200],
+  "cooch behar": [26.3400, 89.4400],
+  "darjeeling": [27.0400, 88.2600],
+  "kalimpong": [27.0600, 88.4700],
+  "uttar dinajpur": [25.6200, 88.1200],
+  "dakshin dinajpur": [25.2200, 88.7600]
+}
+
 export const KNOWN_BLOCK_CENTROIDS = {
+  // Murshidabad (Precise Coordinates)
+  "jalangi": [24.1350, 88.7000],
+  "domkal": [24.0800, 88.5400],
+  "raninagar": [24.2000, 88.5800],
+  "raninagar-i": [24.2000, 88.5800],
+  "raninagar-ii": [24.2200, 88.5200],
+  "berhampore": [24.1000, 88.2500],
+  "hariharpara": [23.9700, 88.4200],
+  "lalgola": [24.4200, 88.2500],
+  "kandi": [23.9500, 88.0300],
+  "beldanga-i": [23.9300, 88.2500],
+  "beldanga-ii": [23.8500, 88.2500],
+  "farakka": [24.7900, 87.9100],
+  "bhagawangola-i": [24.3200, 88.3000],
+  "bhagawangola-ii": [24.3500, 88.3500],
+  "nabagram": [24.1800, 88.1000],
+  "khargram": [24.0300, 87.9800],
+  "burwan": [23.9300, 87.9800],
+  "nowda": [23.8900, 88.4300],
+  "samserganj": [24.6400, 87.9600],
+  "suti-i": [24.6200, 88.0200],
+  "suti-ii": [24.6000, 88.0000],
+  "raghunathganj-i": [24.4700, 88.0700],
+  "raghunathganj-ii": [24.4800, 88.1400],
+  "murshidabad-jiaganj": [24.2300, 88.2700],
+  "murshidabad": [24.1800, 88.2700],
+
+  // Purba Medinipur
   "mahishadal": [22.180, 87.985],
   "tamluk": [22.298, 87.922],
   "haldia": [22.065, 88.070],
@@ -1047,40 +1403,93 @@ export const KNOWN_BLOCK_CENTROIDS = {
   "panskura": [22.420, 87.730],
   "kolaghat": [22.430, 87.870],
   "sutahata": [22.140, 88.080],
+  "egra-i": [21.900, 87.530],
+
+  // Hooghly
   "polba-dadpur": [22.952, 88.304],
   "chinsurah-mogra": [22.903, 88.397],
   "singur": [22.813, 88.232],
   "haripal": [22.831, 88.117],
   "tarakeswar": [22.880, 88.020],
   "arambagh": [22.880, 87.780],
+  "balagarh": [23.120, 88.460],
+  "pandua": [23.080, 88.280],
+  "dhaniakhali": [22.970, 88.150],
+
+  // Nadia
   "krishnanagar-i": [23.400, 88.500],
   "ranaghat-i": [23.180, 88.580],
   "santipur": [23.250, 88.430],
+  "nabadwip": [23.420, 88.370],
+  "tehatta-i": [23.750, 88.520],
+  "karimpur-i": [23.970, 88.620],
+
+  // Bardhaman
   "burdwan-i": [23.240, 87.860],
   "burdwan-ii": [23.250, 87.880],
   "kalna-i": [23.220, 88.360],
+  "katwa-i": [23.650, 88.130],
+  "memari-i": [23.180, 88.110],
+  "durgapur-faridpur": [23.550, 87.280],
+  "asansol": [23.680, 86.980],
+
+  // Howrah
   "uluberia-i": [22.470, 88.110],
   "bally-jagachha": [22.650, 88.340],
+  "domjur": [22.640, 88.220],
+  "bagnan-i": [22.470, 87.970],
+
+  // North 24 Parganas
   "barasat-i": [22.720, 88.480],
   "habra-i": [22.830, 88.630],
   "basirhat-i": [22.660, 88.870],
+  "bongaon": [23.040, 88.820],
+  "rajarhat": [22.620, 88.520],
+
+  // South 24 Parganas
   "baruipur": [22.360, 88.430],
   "diamond harbour-i": [22.190, 88.190],
   "canning-i": [22.310, 88.660],
+  "kakdwip": [21.870, 88.180],
+  "gosaba": [22.160, 88.810],
+
+  // Bankura & Birbhum
   "bankura-i": [23.230, 87.070],
   "bishnupur": [23.070, 87.320],
+  "bolpur-sriniketan": [23.670, 87.680],
+  "suri-i": [23.910, 87.530],
+  "rampurhat-i": [24.170, 87.780],
+
+  // Malda & North Bengal
+  "english bazar": [25.000, 88.140],
+  "old malda": [25.040, 88.140],
+  "gazole": [25.220, 88.190],
   "malda": [25.010, 88.140],
-  "murshidabad": [24.180, 88.270]
+  "siliguri": [26.720, 88.420],
+  "jalpaiguri sadar": [26.540, 88.720],
+  "cooch behar-i": [26.340, 89.440],
+  "alipurduar-i": [26.490, 89.520],
+  "raiganj": [25.620, 88.120],
+  "balurghat": [25.220, 88.760]
 }
 
 // Automatically generates authentic Gram Panchayats with geo-coordinates and weather for ANY block
-export function generatePanchayatsForBlock(blockName, district = "West Bengal") {
+export function generatePanchayatsForBlock(blockName, districtHint = "West Bengal") {
   const cleanName = blockName.trim()
   const key = cleanName.toLowerCase()
   const known = KNOWN_BLOCK_CENTROIDS[key]
 
-  const baseLat = known ? known[0] : 22.25 + (Math.abs(hashString(cleanName) % 130) / 100)
-  const baseLng = known ? known[1] : 87.85 + (Math.abs(hashString(cleanName + 'lng') % 85) / 100)
+  const resolvedDist = (districtHint && districtHint !== "West Bengal") 
+    ? districtHint 
+    : getDistrictForBlock(cleanName)
+
+  const distKey = resolvedDist ? resolvedDist.toLowerCase().replace(/[^a-z0-9]/g, '') : ''
+  const distCentroid = Object.entries(KNOWN_DISTRICT_CENTROIDS).find(([k]) => k.replace(/[^a-z0-9]/g, '') === distKey)?.[1]
+    || KNOWN_DISTRICT_CENTROIDS[resolvedDist?.toLowerCase()]
+    || [24.1800, 88.2700]
+
+  const baseLat = known ? known[0] : +(distCentroid[0] + ((Math.abs(hashString(cleanName) % 80) - 40) / 400)).toFixed(4)
+  const baseLng = known ? known[1] : +(distCentroid[1] + ((Math.abs(hashString(cleanName + 'lng') % 80) - 40) / 400)).toFixed(4)
 
   const panchayatNames = [
     `${cleanName} North`,
@@ -1097,17 +1506,17 @@ export function generatePanchayatsForBlock(blockName, district = "West Bengal") 
     const lat = +(baseLat + offsetLat).toFixed(4)
     const lng = +(baseLng + offsetLng).toFixed(4)
 
-    const rain = +(12.0 + (Math.abs(hashString(id + 'r') % 260) / 10)).toFixed(1)
-    const temp = +(29.5 + (Math.abs(hashString(id + 't') % 45) / 10)).toFixed(1)
-    const hum = 66 + (Math.abs(hashString(id + 'h') % 24))
-    const wind = 12 + (Math.abs(hashString(id + 'w') % 16))
+    const rain = +(14.0 + (Math.abs(hashString(id + 'r') % 240) / 10)).toFixed(1)
+    const temp = +(30.0 + (Math.abs(hashString(id + 't') % 40) / 10)).toFixed(1)
+    const hum = 70 + (Math.abs(hashString(id + 'h') % 20))
+    const wind = 14 + (Math.abs(hashString(id + 'w') % 14))
     const gust = wind + 8 + (Math.abs(hashString(id + 'g') % 10))
 
     const p = {
       id,
       name,
       block: cleanName,
-      district: district || "West Bengal",
+      district: resolvedDist || "West Bengal",
       state: "West Bengal",
       lat,
       lng,
@@ -1118,21 +1527,21 @@ export function generatePanchayatsForBlock(blockName, district = "West Bengal") 
       feelsLike: +(temp + 4.2).toFixed(1),
       humidity: hum,
       dewPoint: +(temp - (100 - hum) / 5).toFixed(1),
-      soilMoisture: rain >= 25 ? "85% (High Moisture)" : "72% (Optimal)",
+      soilMoisture: rain >= 25 ? "85% (High Moisture)" : "75% (Optimal)",
       windSpeed: wind,
       windDirection: "SSW (205°)",
       windGust: gust,
       riskLevel: rain >= 30 || temp >= 33.5 ? "High" : rain >= 15 ? "Moderate" : "Low",
       riskScore: Math.round(rain * 1.5 + (temp > 32 ? 20 : 5)),
       riskColor: rain >= 30 || temp >= 33.5 ? "#f97316" : rain >= 15 ? "#facc15" : "#22c55e",
-      riskFactors: ["Localized microclimate flux", "Precipitation gradient"],
+      riskFactors: ["Localized microclimate telemetry active", "Surface soil moisture stable"],
       cropRisk: {
         crop: "Rice / Multi-crop",
         stage: "Vegetative Stage",
         level: rain >= 30 ? "High Risk" : "Moderate Risk",
         levelColor: rain >= 30 ? "#f97316" : "#facc15",
         alertTitle: "Field Telemetry Active",
-        summary: `Microclimate telemetry active for ${name}. Moisture levels favorable for seasonal crops.`,
+        summary: `Microclimate telemetry active for ${name} (${cleanName}). Moisture levels favorable for seasonal crops.`,
         actions: ["Maintain clear irrigation runoffs.", "Follow local block advisory."]
       }
     }
@@ -1145,7 +1554,7 @@ export function generatePanchayatsForBlock(blockName, district = "West Bengal") 
 }
 
 export const getPanchayatsForBlock = (block) => {
-  if (!block) return mockPanchayats["Polba-Dadpur"]
+  if (!block) return mockPanchayats["Jalangi"] || mockPanchayats["Polba-Dadpur"]
   const trimmed = block.trim()
   if (mockPanchayats[trimmed]) return mockPanchayats[trimmed]
   
@@ -1157,40 +1566,79 @@ export const getPanchayatsForBlock = (block) => {
   return generatePanchayatsForBlock(trimmed)
 }
 
-export const getPanchayatDetail = (pid) => mockPanchayatDetails[pid] || mockPanchayatDetails["p1"]
+export const getPanchayatDetail = (pid) => mockPanchayatDetails[pid] || mockPanchayatDetails["jal_p5"] || mockPanchayatDetails["p1"]
 
 export const getDistrictForBlock = (block) => {
-  if (!block) return "PurbaMedinipur"
+  if (!block) return "Murshidabad"
   const b = block.trim().toLowerCase()
   for (const [dist, blkList] of Object.entries(mockBlocks || {})) {
     if (blkList.some(item => item.toLowerCase() === b)) {
       return dist
     }
   }
-  if (b.includes("tamluk") || b.includes("haldia") || b.includes("mahishadal") || b.includes("contai") || b.includes("nandigram")) {
+  
+  // Specific block keyword mapping
+  if (b.includes("jalangi") || b.includes("domkal") || b.includes("raninagar") || b.includes("berhampore") || b.includes("hariharpara") || b.includes("lalgola") || b.includes("kandi") || b.includes("beldanga") || b.includes("farakka") || b.includes("murshidabad") || b.includes("bhagawangola") || b.includes("nabagram") || b.includes("khargram") || b.includes("nowda") || b.includes("samserganj") || b.includes("suti") || b.includes("raghunathganj")) {
+    return "Murshidabad"
+  }
+  if (b.includes("tamluk") || b.includes("haldia") || b.includes("mahishadal") || b.includes("contai") || b.includes("nandigram") || b.includes("panskura") || b.includes("kolaghat") || b.includes("egra") || b.includes("khejuri") || b.includes("ramnagar")) {
     return "PurbaMedinipur"
   }
-  if (b.includes("polba") || b.includes("singur") || b.includes("haripal") || b.includes("chinsurah") || b.includes("mogra")) {
+  if (b.includes("polba") || b.includes("singur") || b.includes("haripal") || b.includes("chinsurah") || b.includes("mogra") || b.includes("tarakeswar") || b.includes("arambagh") || b.includes("balagarh") || b.includes("pandua") || b.includes("dhaniakhali")) {
     return "Hooghly"
   }
-  if (b.includes("burdwan") || b.includes("kalna")) {
-    return "Burdwan"
+  if (b.includes("burdwan") || b.includes("kalna") || b.includes("katwa") || b.includes("memari")) {
+    return "Purba Bardhaman"
   }
-  if (b.includes("krishnanagar") || b.includes("ranaghat") || b.includes("santipur")) {
+  if (b.includes("durgapur") || b.includes("asansol") || b.includes("andal") || b.includes("raniganj")) {
+    return "Paschim Bardhaman"
+  }
+  if (b.includes("krishnanagar") || b.includes("ranaghat") || b.includes("santipur") || b.includes("tehatta") || b.includes("nabadwip") || b.includes("karimpur") || b.includes("chakdaha")) {
     return "Nadia"
   }
-  if (b.includes("uluberia") || b.includes("bally")) {
+  if (b.includes("uluberia") || b.includes("bally") || b.includes("domjur") || b.includes("amta") || b.includes("bagnan") || b.includes("sankrail")) {
     return "Howrah"
   }
-  if (b.includes("bankura") || b.includes("bishnupur")) {
+  if (b.includes("bankura") || b.includes("bishnupur") || b.includes("khatra") || b.includes("barjora") || b.includes("onda")) {
     return "Bankura"
   }
-  if (b.includes("barasat") || b.includes("habra") || b.includes("basirhat")) {
+  if (b.includes("bolpur") || b.includes("suri") || b.includes("rampurhat") || b.includes("sainthia") || b.includes("ilambazar") || b.includes("dubrajpur") || b.includes("birbhum")) {
+    return "Birbhum"
+  }
+  if (b.includes("english bazar") || b.includes("old malda") || b.includes("malda") || b.includes("chanchal") || b.includes("gazole") || b.includes("ratua")) {
+    return "Malda"
+  }
+  if (b.includes("barasat") || b.includes("habra") || b.includes("basirhat") || b.includes("bongaon") || b.includes("rajarhat") || b.includes("barrackpore")) {
     return "North 24 Parganas"
   }
-  if (b.includes("baruipur") || b.includes("canning") || b.includes("diamond")) {
+  if (b.includes("baruipur") || b.includes("canning") || b.includes("diamond") || b.includes("kakdwip") || b.includes("gosaba") || b.includes("sonarpur")) {
     return "South 24 Parganas"
   }
-  return "PurbaMedinipur"
+  if (b.includes("midnapore") || b.includes("kharagpur") || b.includes("debra") || b.includes("ghatal") || b.includes("garhbeta")) {
+    return "Paschim Medinipur"
+  }
+  if (b.includes("purulia") || b.includes("raghunathpur") || b.includes("jhalda") || b.includes("baghmundi")) {
+    return "Purulia"
+  }
+  if (b.includes("siliguri") || b.includes("kurseong") || b.includes("darjeeling") || b.includes("mirik")) {
+    return "Darjeeling"
+  }
+  if (b.includes("jalpaiguri") || b.includes("mal") || b.includes("maynaguri") || b.includes("dhupguri")) {
+    return "Jalpaiguri"
+  }
+  if (b.includes("alipurduar") || b.includes("falakata") || b.includes("kalchini") || b.includes("madarihat")) {
+    return "Alipurduar"
+  }
+  if (b.includes("cooch") || b.includes("dinhata") || b.includes("mathabhanga") || b.includes("tufanganj")) {
+    return "Cooch Behar"
+  }
+  if (b.includes("raiganj") || b.includes("kaliyaganj") || b.includes("islampur")) {
+    return "Uttar Dinajpur"
+  }
+  if (b.includes("balurghat") || b.includes("gangarampur") || b.includes("banshihari")) {
+    return "Dakshin Dinajpur"
+  }
+
+  return "Murshidabad"
 }
 

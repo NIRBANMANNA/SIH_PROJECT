@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Icon } from './IconSprite'
 import { useDashboard } from '../context/DashboardContext'
+import { getDistrictForBlock, mockBlocks, mockDistricts } from '../data/mockPanchayats'
 
 export default function LocationSelectorModal({ isOpen, onClose }) {
   const navigate = useNavigate()
@@ -21,6 +22,28 @@ export default function LocationSelectorModal({ isOpen, onClose }) {
 
   const [isProcessing, setIsProcessing] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
+
+  const allDistricts = useMemo(() => {
+    return mockDistricts["West Bengal"] || []
+  }, [])
+
+  const allBlocks = useMemo(() => {
+    const list = []
+    Object.values(mockBlocks).forEach(blocks => {
+      blocks.forEach(b => {
+        if (!list.includes(b)) list.push(b)
+      })
+    })
+    return list
+  }, [])
+
+  const handleBlockChange = (val) => {
+    setBlock(val)
+    const detected = getDistrictForBlock(val)
+    if (detected) {
+      setDistrict(detected)
+    }
+  }
 
   // Sync with context whenever modal opens
   useEffect(() => {
@@ -286,16 +309,9 @@ export default function LocationSelectorModal({ isOpen, onClose }) {
               required
             />
             <datalist id="wb-districts-list">
-              <option value="PurbaMedinipur" />
-              <option value="Hooghly" />
-              <option value="Nadia" />
-              <option value="Burdwan" />
-              <option value="Howrah" />
-              <option value="North 24 Parganas" />
-              <option value="South 24 Parganas" />
-              <option value="Bankura" />
-              <option value="Murshidabad" />
-              <option value="Malda" />
+              {allDistricts.map(d => (
+                <option key={d} value={d} />
+              ))}
             </datalist>
           </div>
 
@@ -308,23 +324,16 @@ export default function LocationSelectorModal({ isOpen, onClose }) {
               type="text"
               className="loc-glass-input"
               list="wb-blocks-list"
-              placeholder="e.g. Mahishadal, Polba-Dadpur, Singur"
+              placeholder="e.g. Jalangi, Mahishadal, Polba-Dadpur"
               value={block}
-              onChange={e => setBlock(e.target.value)}
+              onChange={e => handleBlockChange(e.target.value)}
               style={inputStyle}
               required
             />
             <datalist id="wb-blocks-list">
-              <option value="Mahishadal" />
-              <option value="Tamluk" />
-              <option value="Haldia" />
-              <option value="Nandigram-I" />
-              <option value="Polba-Dadpur" />
-              <option value="Chinsurah-Mogra" />
-              <option value="Singur" />
-              <option value="Haripal" />
-              <option value="Krishnanagar-I" />
-              <option value="Burdwan-I" />
+              {allBlocks.map(b => (
+                <option key={b} value={b} />
+              ))}
             </datalist>
           </div>
 
