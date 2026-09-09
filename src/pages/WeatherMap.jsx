@@ -1258,11 +1258,11 @@ export default function WeatherMap() {
             />
           </div>
 
-          {/* Location Badge (Top-Left, Elevated in Front) */}
+          {/* Location Badge (Top-Left, Elevated in Front, offset to the right of the zoom controls) */}
           <div style={{
             position: 'absolute',
             top: 'calc(14 * var(--u))',
-            left: 'calc(14 * var(--u))',
+            left: 'calc(58 * var(--u))',
             zIndex: 1200,
             pointerEvents: 'none',
             display: 'flex',
