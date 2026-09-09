@@ -1,7 +1,8 @@
 // src/lib/api.js
 // Use the Vite proxy (/api → http://localhost:8001) during dev.
 // VITE_API_URL can be set for production deployments (e.g., Render, Railway).
-const API_URL = import.meta.env.VITE_API_URL ? `${import.meta.env.VITE_API_URL}` : '/api';
+const RAW_API_URL = import.meta.env.VITE_API_URL ? `${import.meta.env.VITE_API_URL}` : '/api';
+const API_URL = RAW_API_URL.replace(/\/+$/, '');
 
 function generateClientDownscaling(block = 'Polba-Dadpur', panchayat = 'Babnan', date = new Date().toISOString().slice(0, 10)) {
   const seed = (String(block) + String(panchayat)).split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
